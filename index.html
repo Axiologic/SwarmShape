@@ -6,10 +6,12 @@
     <script type="text/javascript">
         function shapeOnReady(){
             var model = {
-                title:"Hello world page",
+                buttonModel:{
+                    text:"Click me pls!"
+                },
                 result:"Click on button!"
             };
-            shape(document.getElementById("main"), "home",model);
+            setShape(document.getElementById("main"), "home",model);
             console.log("Waw!!!");
         }
     </script>

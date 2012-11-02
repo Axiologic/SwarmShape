@@ -1,23 +1,39 @@
 console.log("Loading shape...");
 
-shape = function(domObj, view,model,ctrlName){
+shapeContext={
+    controllers:[],
+    views:[]
+};
+
+setShape = function(domObj, view,model,ctrlName){
     if(ctrlName == undefined || ctrlName == null){
         ctrlName = view;
     }
 
     var ctrl = getController(ctrlName);
     $.get("view/"+view+".html", function(data) {
-        ctrl.fill(data,model);
         domObj.innerHTML = data;
+        shapeExpand(domObj, model, ctrl);
     });
 }
 
-shapeContext={
-    controllers:[],
-    views:[]
-};
+function shapeExpand(domObj, model, ctrl){
+    var elems = $(domObj).find('div');
+    var attr;
+    for(var i=0;i<elems.length;i++){
+        attr = elems[i].getAttribute("shape");
+        if(attr != null){
+            var args = attr.split(" ");
+            var myModel = null
 
-
+            if(args[1] != undefined){
+                myModel = model[args[1]];
+            }
+            setShape(elems[i],args[0],myModel,null);
+            console.log("ShapeExpanding: " + attr + "\n");
+        }
+    }
+}
 
 function BaseController(){
 
@@ -36,7 +52,7 @@ registerShapeController = function(name,functObj){
 }
 
 function getController(name,model){
-    console.log("Lookup for controller" + name);
+    console.log("Lookup for controller " + name);
     var newCtrl = new BaseController();
     var specific =  shapeContext.controllers[name];
     for(var vn in specific){
