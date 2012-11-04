@@ -3,12 +3,13 @@
  */
 
 registerShapeController("home",{
-    model:null,
-    ctor:function(model){
-        this.model = model;
-
+    count:0,
+    init:function(){
     },
-    click:function(objectId){
-        window.alert(objectId.innerText + " Clicked!")
+    dispatch:function(event, viewElement, value){
+        //window.alert(viewElement.id + " got event " + event);
+        this.count++;
+        this.model.labelText = "Clicked " + this.count + " times";
     }
 });
+

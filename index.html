@@ -2,10 +2,12 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <body onload="shapeOnReady()">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <script type="text/javascript">
         function shapeOnReady(){
             var model = {
+                buttonText:"Click me!",
+                labelText:"No click yet!",
                 buttonModel:{
                     text:"Click me pls!"
                 },
@@ -15,13 +17,16 @@
             console.log("Waw!!!");
         }
     </script>
-    <script type="text/javascript"
-            src="deps/jquery.min.js"></script>
+    <script type="text/javascript" src="deps/jquery.min.js"></script>
+    <script type="text/javascript" src="core/core.js"> </script>
     <script type="text/javascript" src="core/shape.js"> </script>
     <script type="text/javascript" src="ctrl/base/button.js"> </script>
+    <script type="text/javascript" src="ctrl/base/label.js"> </script>
+    <script type="text/javascript" src="ctrl/base/input.js"> </script>
     <script type="text/javascript" src="ctrl/home.js"> </script>
 </head>
 
-<div id="main"> Not loaded!</div>
+<body onload="shapeOnReady()">
+    <div id="main"> Not loaded!!! </div>
 </body>
 </html>
