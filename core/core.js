@@ -40,18 +40,19 @@ if (!Object.prototype.watchChange) {
         , configurable: true
         , writable: false
         , value: function (prop, handler) {
-            if(addWatcher(this,handler) ==1 ){
+            if(addWatcher(this,handler) == 1 ){
                 var oldval = this[prop],
                     newval = oldval,
                     getter = function () {
                         return newval;
-                    }
-                    ,  setter = function (val) {
+                    },
+                    setter = function (val) {
                         oldval = newval;
                         newval = val;
                         callWatchers(this, prop, oldval, val);
                         return newval;
                     };
+
                 if (delete this[prop]) { // can't watch constants
                     Object.defineProperty(this, prop, {
                         get: getter
@@ -65,7 +66,7 @@ if (!Object.prototype.watchChange) {
     });
 }
 
-// object.unwatch
+// object.unwatch: TODO: fix it because it is buggy (leaks inactive bindings and god knows what)
 if (!Object.prototype.unwatchChange) {
     Object.defineProperty(Object.prototype, "unwatchChange", {
         enumerable: false
