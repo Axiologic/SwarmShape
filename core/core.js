@@ -19,10 +19,11 @@ function addMetaProp(model,metaName,value){
         meta[metaName] = [];
     }
     meta[metaName].push(value);
+    return meta[metaName].length;
 }
 
 
-function callHandlers(model, prop, oldval, val){
+function callWatchers(model, prop, oldval, val){
     var w = model[".meta"]["watchers"];
     for(var i=0;i< w.length;i++){
         w[i].call(this, prop, oldval, val);
@@ -30,7 +31,7 @@ function callHandlers(model, prop, oldval, val){
 }
 
 function addWatcher(model,handler){
-    addMetaProp(model,"watches",handler);
+    return addMetaProp(model,"watchers",handler);
 }
 
 if (!Object.prototype.watchChange) {
@@ -39,25 +40,26 @@ if (!Object.prototype.watchChange) {
         , configurable: true
         , writable: false
         , value: function (prop, handler) {
-            var oldval = this[prop],
-                newval = oldval,
-                getter = function () {
-                    return newval;
+            if(addWatcher(this,handler) ==1 ){
+                var oldval = this[prop],
+                    newval = oldval,
+                    getter = function () {
+                        return newval;
+                    }
+                    ,  setter = function (val) {
+                        oldval = newval;
+                        newval = val;
+                        callWatchers(this, prop, oldval, val);
+                        return newval;
+                    };
+                if (delete this[prop]) { // can't watch constants
+                    Object.defineProperty(this, prop, {
+                        get: getter
+                        , set: setter
+                        , enumerable: true
+                        , configurable: true
+                    });
                 }
-                ,  setter = function (val) {
-                    oldval = newval;
-                    newval = val;
-                    callHandlers(this, prop, oldval, val);
-                    return newval;
-                };
-            addWatcher(this,handler);
-            if (delete this[prop]) { // can't watch constants
-                Object.defineProperty(this, prop, {
-                    get: getter
-                    , set: setter
-                    , enumerable: true
-                    , configurable: true
-                });
             }
         }
     });
