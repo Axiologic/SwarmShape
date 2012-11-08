@@ -11,19 +11,25 @@
                 buttonModel:{
                     text:"Click me pls!"
                 },
-                result:"Click on button!"
+                result:"Click on button!",
+                isBold:false,
+                labelStyle:"boldStyle"
             };
             setShape(document.getElementById("main"), "home",model);
             console.log("Waw!!!");
         }
     </script>
     <script type="text/javascript" src="deps/jquery.min.js"></script>
-    <script type="text/javascript" src="core/core.js"> </script>
+    <script type="text/javascript" src="core/CoolObject.js"> </script>
     <script type="text/javascript" src="core/shape.js"> </script>
     <script type="text/javascript" src="ctrl/base/button.js"> </script>
     <script type="text/javascript" src="ctrl/base/label.js"> </script>
     <script type="text/javascript" src="ctrl/base/input.js"> </script>
+    <script type="text/javascript" src="ctrl/base/checkbox.js"> </script>
     <script type="text/javascript" src="ctrl/home.js"> </script>
+    <script type="text/javascript" src="ctrl/home.js"> </script>
+    <link rel="stylesheet" type="text/css"  href="view/style.css" />
+
 </head>
 
 <body onload="shapeOnReady()">

@@ -7,7 +7,7 @@ registerShapeController("base/button",{
     init:function(){
         this.toView();
         var inp = $(this.view).find("input")[0];
-        $(inp).live("click", this.click.bind(this));
+        $(inp).live("click", this.onClick);
         //
     },
     toView:function(){
@@ -15,7 +15,7 @@ registerShapeController("base/button",{
         inp.value = this.model;
         console.log("Binding button text: " + JSON.stringify(this.model));
     },
-    click:function(objectId){
+    onClick:function(objectId){
         this.getCtxtCtrl().dispatch("click",this.view);
         //alert(this.model + " got clicked!")
     }

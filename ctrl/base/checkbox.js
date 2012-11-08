@@ -1,8 +1,8 @@
 /**
     default button controller
  */
-
-registerShapeController("base/input",{
+//TODO: hide those damn binds
+registerShapeController("base/checkbox",{
     model:null,
     init:function(){
         this.toView();
