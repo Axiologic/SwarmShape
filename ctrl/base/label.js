@@ -9,6 +9,6 @@ registerShapeController("base/label",{
     toView:function(){
         var label = $(this.view).find("label")[0];
         label.innerHTML = this.model;
-        console.log("Label " + this.model);
+        //console.log("Label " + this.model);
     }
 });

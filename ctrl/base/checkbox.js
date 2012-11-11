@@ -12,10 +12,12 @@ registerShapeController("base/checkbox",{
     toView:function(){
         var inp = $(this.view).find("input")[0];
         inp.value = this.model;
-        console.log("Binding input text: " + JSON.stringify(this.model));
+        //console.log("Binding input text: " + JSON.stringify(this.model));
     },
     onChange:function(){
         var inp = $(this.view).find("input")[0];
-        this.chainAssign(inp.value);
+        this.model = ! this.model;
+        console.log("Checkbox:" + this.model)
+        this.chainAssign(this.model);
     }
 });

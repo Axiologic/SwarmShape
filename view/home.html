@@ -1,7 +1,9 @@
 <div >
-    <b>Binding example: </b> <div shape = "base/input labelStyle" style="display:inline-block;"> </div>
-    <div shape = "base/button buttonModel.text" > </div>
-    <b>Result: </b> <div shape = "base/label labelText" style="display:inline-block;"> </div>
-    <div shape = "base/label labelText"  class = "@labelStyle">  </div>
-    <div shape ="base/checkbox isBold" > </div>
+    <b>Binding example: </b> <div shape = "base/input" model="@labelStyle" style="display:inline-block;"> </div>
+        <div shape = "base/button" model="@buttonModel.text" > </div>
+    <div shape = "base/label"  model ="@labelStyle" class = "@labelStyle">  </div>
+    <b>Result: </b> <div shape = "base/label" model="@labelText" style="display:inline-block;"> </div>
+    <div shape = "base/label"  model ="@labelText" class = "@labelStyle">  </div>
+    <div shape ="base/checkbox" model="@isBold"> </div>
+
 </div>
