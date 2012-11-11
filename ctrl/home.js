@@ -9,8 +9,7 @@ registerShapeController("home",{
     },
     dispatch:function(event, viewElement, value){
         this.count++;
-        this.model.labelText = "Clicked " + this.count + " times";
-        console.log(this.model.labelText);
+        this.model.buttonModel.text = "Clicked " + this.count + " times";
     },
     boldChecked :function(){
         console.log("Bold Checked!!!");

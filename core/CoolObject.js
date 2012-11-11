@@ -61,7 +61,7 @@ function ChangeWatcher(model, chain, handler){
 }
 
 ChangeWatcher.prototype.cleanWatcher = function(poorObject){
-    if(poorObject.__meta.watchers != undefined){
+    if(poorObject && poorObject.__meta.watchers != undefined){
         delete poorObject.__meta.watchers[this];
     }
 }
@@ -91,31 +91,24 @@ ChangeWatcher.prototype.onChange = function(changedModel, property, value, oldVa
     var i = 0;
     var cmodel = this.model;
     var oldModel;
-    var propagateChangeMode = false;
 
-    for(;i < this.args.length-1;i++){
+    for( ; i < this.args.length-1; i++){
         cmodel = cmodel[this.args[i]];
         if(cmodel == null){
-            for(;i < this.args.length-1;i++) {
+            for(; i < this.args.length-1; i++) {
                 if(this.chainValues[i] != null) {
                     this.cleanWatcher(this.chainValues[i]);
                 }
                 this.chainValues[i] = null;
             }
-            this.handler(null, this.chain);
+            this.handler(null, null,null);
             return ;
         }
         else {
             oldModel = this.chainValues[i];
-            if(!(oldModel === cmodel)){
-                propagatChangeMode = true;
-            }
-
-            if(propagateChangeMode) {
-                this.cleanWatcher(chainValues[i]);
-                this.chainValues[i] = cmodel;
-                this.addWatcher(this.chainValues[i], this.args[i]);
-            }
+            this.cleanWatcher(oldModel);
+            this.chainValues[i] = cmodel;
+            this.addWatcher(cmodel, this.args[i+1]);
         }
     }
 
@@ -151,7 +144,7 @@ function callWatchers(model, prop, val, oldVal){
 }
 
 function haveToExpandProperty(obj, prop){
-    console.log("haveToExpandProperty " + obj + " " + prop);
+    //console.log("haveToExpandProperty " + obj + " " + prop);
     if(obj.__meta.bindablePropery[prop] == prop){
         return false;
     } else{
@@ -175,7 +168,7 @@ if (!Object.prototype.bindablePropery) {
                     setter = function (val) {
                         oldval = newval;
                         newval = val;
-                        if(oldval != val) {
+                        if(oldval !== val) {
                             callWatchers(this, prop, val, oldval);
                         }
                         return newval;
