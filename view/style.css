@@ -4,3 +4,34 @@
 .lightStyle { font-weight: normal;color:#00ff00;}
 
 @blueStyle {font-weight: normal;color:#0000ff;}
+
+
+.navbar {
+    width:100%;
+    height:40px;
+    background-color:#000;
+}
+
+.navbar ul {
+    width:80%;
+    margin:0 auto 0 auto;
+}
+
+.navbar ul li {
+    float:left;
+    color:#CC0000;
+    padding:0 20px 0 20px;
+    border-right:1px solid #FFF;
+    border-left:1px solid #FFF;
+    height:40px;
+    list-style:none;
+    display:block;
+    line-height:30px;
+    text-align:center;
+    cursor:pointer;
+}
+
+#navbar ul li:hover {
+    background-color:#CCC;
+}
+

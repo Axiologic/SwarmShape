@@ -6,13 +6,15 @@
     <script type="text/javascript">
         function shapeOnReady(){
             var model = {
+                menu:["Inc","Dec","Alert"],
                 buttonText:"Click me!",
                 labelText:"No click yet!",
                 buttonModel:{
                     text:"Click here!"
                 },
                 isBold:false,
-                labelStyle:"boldStyle"
+                labelStyle:"boldStyle",
+                addBtn:"Add"
             };
             setShapeWithModel(document.getElementById("main"), "home",model);
             console.log("Waw!!!");
@@ -25,8 +27,9 @@
     <script type="text/javascript" src="ctrl/base/label.js"> </script>
     <script type="text/javascript" src="ctrl/base/input.js"> </script>
     <script type="text/javascript" src="ctrl/base/checkbox.js"> </script>
+    <script type="text/javascript" src="ctrl/base/menu.js"> </script>
     <script type="text/javascript" src="ctrl/home.js"> </script>
-    <script type="text/javascript" src="ctrl/home.js"> </script>
+
     <link rel="stylesheet" type="text/css"  href="view/style.css" />
 
 </head>

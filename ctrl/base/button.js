@@ -16,7 +16,7 @@ registerShapeController("base/button",{
         //console.log("Binding button text: " + JSON.stringify(this.model));
     },
     onClick:function(objectId){
-        this.getCtxtCtrl().dispatch("click",this.view);
+        this.getCtxtCtrl().dispatch(this.model);
         //alert(this.model + " got clicked!")
     }
 });

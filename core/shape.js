@@ -149,8 +149,9 @@ BaseController.prototype.changeModel = function(model){
     }
 
     this.onModelChanged();
-    //console.log("Model changed for " + this.ctrlName);
     this.toView();
+
+
 }
 
 BaseController.prototype.onModelChanged = function(){
