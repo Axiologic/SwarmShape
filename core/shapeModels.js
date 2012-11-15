@@ -1,0 +1,6 @@
+
+registerModel = function(modelName,declaration){
+
+
+
+}
