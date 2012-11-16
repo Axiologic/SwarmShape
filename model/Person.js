@@ -35,7 +35,7 @@ registerModel("Person",{
 
         },
         query:{
-            type:"sql",
+            lang:"sql",
             params:"personId",
             typeName:"Person",
             value:"select * from Person p where p.id={personId}"
