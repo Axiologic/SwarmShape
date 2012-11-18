@@ -4,11 +4,16 @@
 
 registerShapeController("base/label",{
     init:function(){
+        this.label = this.view;
+        /*if(this.view.attr("shape-view") == "label"){
+            this.label = this.view.find("label")[0];
+        }*/
         this.toView();
     },
     toView:function(){
-        var label = $(this.view).find("label")[0];
-        label.innerHTML = this.model;
-        //console.log("Label " + this.model);
+        if(this.model != undefined){
+            this.label.innerText = this.model;
+            //console.log("Label " +  this.model + this.domView);
+        }
     }
 });

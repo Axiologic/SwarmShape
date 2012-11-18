@@ -1,0 +1,39 @@
+<section id="todoapp">
+    <header id="header">
+        <h1>todos</h1>
+        <input id="new-todo" type="text" shape-model="@newTitle" placeholder="What needs to be done?" autofocus>
+    </header>
+
+    <div id="main" >
+        <input id="toggle-all" type="checkbox">
+        <label for="toggle-all">Mark all as complete</label>
+        <ul id="todo-list" shape-ctrl="base/ul" shape-model="@current" >
+        </ul>
+    </div>
+
+    <footer id="footer">
+        <span id="todo-count">
+            <strong shape-ctrl="base/label" shape-model = '@todoCount'>
+            </strong> item <span shape-ctrl="base/label" shape-model='@pluralizer'>
+            </span> left</span>
+
+        <ul id="filters">
+            <li>
+                <a class="selected" href="#/">All</a>
+            </li>
+            <li>
+                <a href="#/active">Active</a>
+            </li>
+            <li>
+                <a href="#/completed">Completed</a>
+            </li>
+        </ul>
+
+        <button id="clear-completed"> Completed (<span shape-ctrl="base/label" shape-model = "@completedCount"></span>)</button>
+    </footer>
+</section>
+<footer id="info">
+    <p>Double-click to edit a todo</p>
+    <p>Created to show <b>shape js</b>'s capabilities for <a href="http://github.com/tshm/todomvc/">TODOMVC project </a> by Alboaie Sînică</p>
+    <p>Last task: [<span shape-ctrl="base/label" shape-model = "@recentTask"></span>]</p>
+</footer>

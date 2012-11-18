@@ -1,36 +1,67 @@
 
+
 var classRegistry = {};
-function QSClassDescription(declaration, qsName)){
-    members = {};
-    triggers = {};
-    queries = {};
-    functions = {};
+function QSClassDescription(declaration, qsName){
+    var members = {};
+    var triggers = {};
+    var queries = {};
+    var functions = {};
     this.className = qsName;
     for(var a in declaration){
        if(typeof declaration[a] === 'function'){
-           this.functions[a] = declaration[a];
+           functions[a] = declaration[a];
         }
         else
         if(declaration[a].type != undefined ){
-            this.members[a] = declaration[a];
+            members[a] = declaration[a];
         }
         else
             if(declaration[a].chains != undefined ){
-                this.triggers[a] = declaration[a];
+                triggers[a] = declaration[a];
             }
          else if(declaration[a].lang != undefined ){
-                this.queries[a] = declaration[a];
+                queries[a] = declaration[a];
             }
     }
 
-    this.attachClassDescription = function(model,classDescription){
-        youAreCool(model);
-        if(model.__meta.classDescription == undefined){
-            model.__meta.classDescription = classDescription;
-        }
+    this.attachClassDescription = function(model){
+        youAreBindable(model);
+        setMetaAttr(model,"className",this.className);
+
         var n;
         for(n in functions){
             model[n] =  functions[n].bind(model);
+        }
+
+        for(n in members){
+            var m = members[n];
+            if(m.value != undefined){
+                if(m.value == "null"){
+                    model[n] = null;
+                }
+                else {
+                    model[n] = m.value;
+                }
+            } else
+              if(m.type == "int"){
+                  model[n] = 0;
+              } else  if(m.type == "string"){
+                  model[n] = "";
+              } else if(m.type == "boolean"){
+                    model[n] = false;
+                }
+                else if(m.type == "array"){
+                model[n] = new Array();
+                youAreBindableArray(model[n]);
+                }
+                else {
+                model[n] = newObject(m.type);
+                }
+            addChangeWatcher(model,n,changeCallBack)
+        }
+
+        if(model.ctor != undefined && typeof model.ctor == "function"){
+            model.ctor();
         }
 
         for(n in triggers){
@@ -38,20 +69,26 @@ function QSClassDescription(declaration, qsName)){
             var chains = t.chains.split(",");
             for(var i=0; i<chains.length; i++){
                 addChangeWatcher(model,chains[i],function(){
-                    model[n] = t.code();
+                    model[n] = t.code.call(model);
+                    //console.log("Calling chain " + chains[i] + " " + model[n]);
                 });
             }
         }
+
+
     }
 
-
-    this.update(objId, newValues){
-
+    this.update = function(objId, newValues){
+    //TODO: update from external sources
     }
 }
 
+function changeCallBack(){
+    //do nothing until adding persistence
+}
+
 registerModel = function(modelName,declaration){
-    classRegistry[modelName] = new QSClassDescription(declaration);
+    classRegistry[modelName] = new QSClassDescription(declaration,modelName);
 }
 
 var dataRegistries = {};
@@ -60,7 +97,7 @@ function DataRegistry(name){
     this.name       = name;
     this.dict       = {};
 
-    this.lookup(objId){
+    this.lookup = function(objId){
         var o = this.dict[objId];
         if(o == undefined){
             this.dict[objId] = objId;
@@ -68,3 +105,27 @@ function DataRegistry(name){
     }
 }
 
+newObject = function(className){
+    var res = {};
+    var qsClass = classRegistry[className];
+    if(qsClass != undefined){
+    qsClass.attachClassDescription(res);
+    }
+    else{
+        wprint("Undefined class " + className);
+    }
+    return res;
+}
+
+newTransientObject = function(className){
+    var res = newObject(className);
+    setMetaAttr(res,"persistence", "transient");
+    return res;
+}
+
+newPersistentObject = function(className){
+    var res = newObject(className);
+    //TODO: add in dataRegistries
+    setMetaAttr(res,"persistence", "global");
+    return res;
+}

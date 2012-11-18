@@ -31,7 +31,7 @@
     cursor:pointer;
 }
 
-#navbar ul li:hover {
+.navbar ul li:hover {
     background-color:#CCC;
 }
 

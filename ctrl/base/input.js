@@ -5,17 +5,29 @@
 registerShapeController("base/input",{
     model:null,
     init:function(){
+        if(this.view.tagName.toLowerCase() == "input"){
+            this.input = this.view;
+        } else{
+            this.input = $(this.view).find("input")[0];
+        }
         this.toView();
-        var inp = $(this.view).find("input")[0];
-        $(inp).change(this.onChange);
+        $(this.input).change(this.onChange);
+    },
+    getDOMInput:function(){
+
     },
     toView:function(){
-        var inp = $(this.view).find("input")[0];
-        inp.value = this.model;
+        if(this.model != undefined && this.model != null){
+            this.input.value = this.model;
+        }
         //console.log("Binding input text: " + JSON.stringify(this.model));
     },
     onChange:function(){
-        var inp = $(this.view).find("input")[0];
-        this.chainAssign(inp.value);
+        if($(this.view).attr("type") == "checkbox"){
+            this.model = ! this.model;
+        } else{
+            this.model = this.input.value;
+        }
+        this.modelAssign(this.model);
     }
 });

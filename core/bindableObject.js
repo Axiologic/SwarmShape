@@ -1,5 +1,4 @@
 
-
 J = function(obj) {
     var tmpObj={};
     for(var v in obj) {
@@ -15,14 +14,31 @@ var localObjectsCount = 0;
 var defaultToString = Object.prototype.toString;
 Object.prototype.toString = function(){
     if(this.__meta != undefined){
+        var typeName = this.__meta.className;
+        if(typeName == undefined){
+            if(typeof this == "string"){
+                 typeName = "string:";
+            }
+            else {
+                typeName = "obj:"
+            }
+        }
+        else{
+            typeName = typeName +":";
+        }
        var retId = this.__meta.__globalId;
+
+        if(typeof this == "array"){
+            console.log("Array object");
+        }
        if(retId != undefined){
            return retId;
        }
         else {
            retId = this.__meta.__localId;
            if(retId != undefined){
-               retId = "COOL/"+ retId;
+               retId = typeName + retId;
+               //console.log("toString for object "+ retId);
            }
            else {
                retId = defaultToString.apply(this);
@@ -33,7 +49,7 @@ Object.prototype.toString = function(){
     return defaultToString.apply(this);
 }
 
-function youAreCool(obj){
+function youAreBindable(obj){
     if(obj.__meta == undefined){
         obj.__meta = {};
         obj.__meta.watchers = {};
@@ -44,8 +60,8 @@ function youAreCool(obj){
 
 
 function ChangeWatcher(model, chain, handler){
-    youAreCool(this);
-    youAreCool(model);
+    youAreBindable(this);
+    youAreBindable(model);
     this.model          = model;
     this.chain          = chain;
     this.handler        = handler;
@@ -68,13 +84,13 @@ ChangeWatcher.prototype.cleanWatcher = function(poorObject){
 
 ChangeWatcher.prototype.addWatcher  = function(poorObject,property){
     try{
-        youAreCool(poorObject);
+        youAreBindable(poorObject);
         poorObject.__meta.watchers[this] = this;
         poorObject.bindablePropery(property);
-        console.log("Adding watcher " + poorObject + " :" + property );
+        //console.log("Adding watcher " + poorObject + " :" + property );
     }
     catch(err) {
-        console.log("Errrrror " + err + err.stack);
+        wprint("Errrrror " + err + err.stack);
     }
 }
 
@@ -90,9 +106,10 @@ ChangeWatcher.prototype.release  = function(){
 ChangeWatcher.prototype.onChange = function(changedModel, property, value, oldValue ) {
     var i = 0;
     var cmodel = this.model;
-    var oldModel;
+    var parentModel;
 
     for( ; i < this.args.length-1; i++){
+        parentModel = cmodel;
         cmodel = cmodel[this.args[i]];
         if(cmodel == null){
             for(; i < this.args.length-1; i++) {
@@ -105,15 +122,17 @@ ChangeWatcher.prototype.onChange = function(changedModel, property, value, oldVa
             return ;
         }
         else {
-            oldModel = this.chainValues[i];
-            this.cleanWatcher(oldModel);
-            this.chainValues[i] = cmodel;
-            this.addWatcher(cmodel, this.args[i+1]);
+            if(cmodel != this.chainValues[i]){
+                var oldModel = this.chainValues[i];
+                this.cleanWatcher(oldModel);
+                this.chainValues[i] = cmodel;
+                this.addWatcher(parentModel, this.args[i]);
+            }
         }
     }
 
     this.handler(cmodel, this.args[i], cmodel[this.args[i]]);
-    console.log("Calling back parent " + cmodel +  " property " + this.args[i] +  " value " + cmodel[this.args[i]]);
+    //console.log("Calling back parent " + cmodel +  " property " + this.args[i] +  " value " + cmodel[this.args[i]]);
     return;
 }
 
@@ -126,11 +145,13 @@ removeChangeWatcher = function(changeWatcher){
 }
 
 
-setMeta = function(model,prop,value){
-    youAreCool(model);
+setMetaAttr = function(model,prop,value){
     model.__meta[prop] = value;
 }
 
+getMetaAttr = function(model,prop,value){
+    return model.__meta[prop];
+}
 
 function callWatchers(model, prop, val, oldVal){
     var w = model.__meta.watchers;
@@ -140,7 +161,7 @@ function callWatchers(model, prop, val, oldVal){
         w[vn].onChange(model, prop, val, oldVal);
         length++;
     }
-    console.log("Calling "+ length + " watchers for " + model + "::" + prop);
+    //console.log("Calling "+ length + " watchers for " + model + "::" + prop);
 }
 
 function haveToExpandProperty(obj, prop){
@@ -186,18 +207,3 @@ if (!Object.prototype.bindablePropery) {
         }
     });
 }
-
-// object.unwatch: TODO: fix it because it is buggy (leaks inactive bindings and god knows what)
-/*if (!Object.prototype.unwatchChange) {
-    Object.defineProperty(Object.prototype, "unwatchChange", {
-        enumerable: false
-        , configurable: true
-        , writable: false
-        , value: function (prop) {
-            var val = this[prop];
-            delete this[prop]; // remove accessors
-            this[prop] = val;
-        }
-    });
-}
- */
