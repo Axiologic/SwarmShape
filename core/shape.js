@@ -68,7 +68,7 @@ function expandShape(domObj, parentCtrl){
         bindAttributes(domObj,parentCtrl);
         var myChain = parentCtrl.getCompleteChain(modelChain.substring(1));
         parentCtrl.ctxtCtrl.addChangeWatcher__absolute(myChain,
-            function(changedModel, modelProperty, value, oldValue ){
+            function(changedModel, modelProperty, value){
                 ctrl.parentModel = changedModel;
                 ctrl.parentModelProperty = modelProperty;
                 ctrl.changeModel(value);

@@ -55,85 +55,91 @@ function youAreBindable(obj){
         obj.__meta.watchers = {};
         obj.__meta.__localId = localObjectsCount;
         localObjectsCount = localObjectsCount + 1;
+        obj.__meta.bindableProperties = {};
     }
 }
 
 
 function ChangeWatcher(model, chain, handler){
-    youAreBindable(this);
-    youAreBindable(model);
-    this.model          = model;
-    this.chain          = chain;
-    this.handler        = handler;
-    this.chainValues    = [];
-    this.args           = this.chain.split(".");
-
-    for(var i=0; i < this.args.length-1; i++){
-        this.chainValues.push(null);
-    }
-    console.log("Creating changeWatcher " + this + " for model " + model + " chain " + chain );
-    this.addWatcher(this.model, this.args[0]);
-    this.onChange();
-}
-
-ChangeWatcher.prototype.cleanWatcher = function(poorObject){
-    if(poorObject && poorObject.__meta.watchers != undefined){
-        delete poorObject.__meta.watchers[this];
-    }
-}
-
-ChangeWatcher.prototype.addWatcher  = function(poorObject,property){
     try{
-        youAreBindable(poorObject);
-        poorObject.__meta.watchers[this] = this;
-        poorObject.bindablePropery(property);
-        //console.log("Adding watcher " + poorObject + " :" + property );
-    }
-    catch(err) {
-        wprint("Errrrror " + err + err.stack);
-    }
-}
 
-ChangeWatcher.prototype.release  = function(){
-    for(var i=0; i < this.args.length-1; i++) {
-        if(this.chainValues[i] != null) {
-            this.cleanWatcher(this.chainValues[i]);
+        youAreBindable(this);
+        youAreBindable(model);
+        var model          = model;
+        var chain          = chain;
+        var handler        = handler;
+        var chainValues    = [];
+        var callBackRefs   = [];
+        var args           = chain.split(".");
+        var endOfChain     = args.length;
+
+        chainValues.push(model);
+        callBackRefs.push(null);
+        for(var i=0; i < args.length; i++){
+            chainValues.push(null);
+            callBackRefs.push(null);
         }
-        this.chainValues[i] = null;
-    }
-}
+        //console.log("Creating changeWatcher " + this + " for model " + model + " chain " + chain );
 
-ChangeWatcher.prototype.onChange = function(changedModel, property, value, oldValue ) {
-    var i = 0;
-    var cmodel = this.model;
-    var parentModel;
+        function getWatcherClosure (pos){
 
-    for( ; i < this.args.length-1; i++){
-        parentModel = cmodel;
-        cmodel = cmodel[this.args[i]];
-        if(cmodel == null){
-            for(; i < this.args.length-1; i++) {
-                if(this.chainValues[i] != null) {
-                    this.cleanWatcher(this.chainValues[i]);
+            return function(changedModel, property, value, oldValue ){
+
+                var myOldValue = chainValues[endOfChain];
+                var oldParent  = chainValues[endOfChain-1];
+                rebuildWatchers(pos);
+                var newValue  = chainValues[endOfChain];
+                var newParent = chainValues[endOfChain-1];
+
+                if(myOldValue != newValue || newParent != oldParent){
+                    handler(newParent,args[endOfChain-1],newValue);
+                }
+            }
+        }
+
+        function rebuildWatchers(startFrom){
+            var newModel,oldModel, ref, parent;
+            var i = startFrom;
+            if(i == 0){
+                callBackRefs[0] = addWatcher(model, args[0], getWatcherClosure(1));
+                i = 1;
+            }
+            for(; i<=args.length; i++){
+                parent      = chainValues[i-1];
+                newModel    = chainValues[i-1][args[i-1]];
+                oldModel    = chainValues[i];
+                ref         = callBackRefs[i];
+
+                if(newModel === oldModel){
+                    break;
+                } else {
+                    if(ref != null){
+                        removeWatcher(parent,args[i-1],ref);
+                    }
+                    chainValues[i] = newModel;
+                    callBackRefs[i] = addWatcher(parent, args[i-1], getWatcherClosure(i));
+                }
+            }
+        }
+
+        this.release  = function(){
+            for(var i=0; i < callBackRefs.length; i++) {
+                ref = callBackRefs[i];
+                if(ref != null){
+                    removeWatcher(this.chainValues[i],args[i],ref);
                 }
                 this.chainValues[i] = null;
             }
-            this.handler(null, null,null);
-            return ;
         }
-        else {
-            if(cmodel != this.chainValues[i]){
-                var oldModel = this.chainValues[i];
-                this.cleanWatcher(oldModel);
-                this.chainValues[i] = cmodel;
-                this.addWatcher(parentModel, this.args[i]);
-            }
-        }
-    }
 
-    this.handler(cmodel, this.args[i], cmodel[this.args[i]]);
-    //console.log("Calling back parent " + cmodel +  " property " + this.args[i] +  " value " + cmodel[this.args[i]]);
-    return;
+        rebuildWatchers(0);
+        var newValue  = chainValues[endOfChain];
+        var newParent = chainValues[endOfChain-1];
+        handler(newParent,args[endOfChain-1],newValue);
+    }
+    catch(err){
+        wprint("Unexpected error on chain " + chain + "\nError: " + err);
+    }
 }
 
 addChangeWatcher = function(model, chain, handler){
@@ -153,33 +159,47 @@ getMetaAttr = function(model,prop,value){
     return model.__meta[prop];
 }
 
-function callWatchers(model, prop, val, oldVal){
-    var w = model.__meta.watchers;
-    var length=0;
+function addWatcher(model,property, nw){
+    //console.log("Adding watcher " + model + "." + property);
+    if(model.__meta.watchers[property] == undefined){
+        model.__meta.watchers[property] = {};
+    }
+    var w = model.__meta.watchers[property];
+    var fctRef = model.bindableProperty(property, nw);
+    w[fctRef] = fctRef;
+    return fctRef;
+}
 
+function removeWatcher(model,property,nwRef){
+    var w = model.__meta.watchers[property];
+    w[nwRef] = null;
+    delete w[nwRef];
+}
+
+function callWatchers(model, prop, val, oldVal){
+    var w = model.__meta.watchers[prop];
     for(var vn in w){
-        w[vn].onChange(model, prop, val, oldVal);
-        length++;
+        w[vn].call(model, prop, val, oldVal);
     }
     //console.log("Calling "+ length + " watchers for " + model + "::" + prop);
 }
 
 function haveToExpandProperty(obj, prop){
     //console.log("haveToExpandProperty " + obj + " " + prop);
-    if(obj.__meta.bindablePropery[prop] == prop){
+    if(obj.__meta.bindableProperties[prop] == prop){
         return false;
     } else{
-        obj.__meta.bindablePropery[prop] = prop;
+        obj.__meta.bindableProperties[prop] = prop;
         return true;
     }
 }
 
-if (!Object.prototype.bindablePropery) {
-    Object.defineProperty(Object.prototype, "bindablePropery", {
+if (!Object.prototype.bindableProperty) {
+    Object.defineProperty(Object.prototype, "bindableProperty", {
         enumerable: false
         , configurable: true
         , writable: false
-        , value: function (prop) {
+        , value: function (prop, callBack) {
             if(haveToExpandProperty(this, prop)){
                 var oldval = this[prop],
                     newval = oldval,
@@ -204,6 +224,8 @@ if (!Object.prototype.bindablePropery) {
                     });
                 }
             }
+            var callBackRef = createFunctionReference(callBack,this);
+            return callBackRef;
         }
     });
 }

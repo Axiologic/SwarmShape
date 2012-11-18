@@ -25,6 +25,7 @@ registerModel("todo",{
             chains:"active.onChange",
             code:function(){
                 console.log("Notified by active.onChange!");
+                this.todoCount = this.active.length;
                 return this.active.length;
             }
         },
@@ -38,11 +39,11 @@ registerModel("todo",{
                 }
             }
         },
-        xcompletedCount:{
-            chains:"xactive.onChange",
+        completedCount:{
+            chains:"completed.onChange",
             code:function(){
                 console.log("Notified by completed.onChange!!");
-                this.todoCount = this.active.length;
+                this.completedCount = this.completed.length;
                 return this.completed.length;
             }
         },
