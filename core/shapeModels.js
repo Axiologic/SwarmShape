@@ -25,7 +25,7 @@ function QSClassDescription(declaration, qsName){
     }
 
     this.attachClassDescription = function(model){
-        youAreBindable(model);
+        makeBindable(model);
         setMetaAttr(model,"className",this.className);
 
         var n;
@@ -50,9 +50,8 @@ function QSClassDescription(declaration, qsName){
               } else if(m.type == "boolean"){
                     model[n] = false;
                 }
-                else if(m.type == "array"){
-                model[n] = new Array();
-                youAreBindableArray(model[n]);
+                else if(m.type == "collection"){
+                model[n] = new Collection();
                 }
                 else {
                 model[n] = newObject(m.type);
@@ -64,18 +63,21 @@ function QSClassDescription(declaration, qsName){
             model.ctor();
         }
 
-        for(n in triggers){
-            var t = triggers[n];
-            var chains = t.chains.split(",");
-            for(var i=0; i<chains.length; i++){
-                addChangeWatcher(model,chains[i],function(){
-                    model[n] = t.code.call(model);
-                    //console.log("Calling chain " + chains[i] + " " + model[n]);
-                });
+        function getTriggerFunction(targetChain,myTrigger,myProperty){
+            return   function(){
+                model[myProperty] = myTrigger.code.call(model);
+                //console.log("Calling chain " + targetChain + " " + model[myProperty]+ " " + myProperty);
             }
         }
 
-
+        for(n in triggers){
+            var t = triggers[n];
+            //console.log("Preparing trigger " + n);
+            var chains = t.chains.split(",");
+            for(var i=0; i<chains.length; i++){
+                addChangeWatcher(model,chains[i],getTriggerFunction(chains[i],t,n));
+            }
+        }
     }
 
     this.update = function(objId, newValues){

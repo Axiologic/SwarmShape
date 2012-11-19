@@ -1,4 +1,39 @@
+/**
+ * Utilities for bindable object members, the shape way
+ * The main concept: properties chains
+ */
 
+//public (global) functions
+addChangeWatcher = function(model, chain, handler){
+    return new ChangeWatcher(model, chain, handler);
+}
+
+removeChangeWatcher = function(changeWatcher){
+    changeWatcher.release();
+}
+
+
+setMetaAttr = function(model,prop,value){
+    model.__meta[prop] = value;
+}
+
+getMetaAttr = function(model,prop,value){
+    return model.__meta[prop];
+}
+
+
+var localObjectsCount = 0;
+makeBindable = function (obj){
+    if(obj.__meta == undefined){
+        obj.__meta = {};
+        obj.__meta.watchers = {};
+        obj.__meta.__localId = localObjectsCount;
+        localObjectsCount = localObjectsCount + 1;
+        obj.__meta.bindableProperties = {};
+    }
+}
+
+//pretty print for bindable objects
 J = function(obj) {
     var tmpObj={};
     for(var v in obj) {
@@ -9,62 +44,13 @@ J = function(obj) {
     return JSON.stringify(tmpObj);
 }
 
-var localObjectsCount = 0;
 
-var defaultToString = Object.prototype.toString;
-Object.prototype.toString = function(){
-    if(this.__meta != undefined){
-        var typeName = this.__meta.className;
-        if(typeName == undefined){
-            if(typeof this == "string"){
-                 typeName = "string:";
-            }
-            else {
-                typeName = "obj:"
-            }
-        }
-        else{
-            typeName = typeName +":";
-        }
-       var retId = this.__meta.__globalId;
-
-        if(typeof this == "array"){
-            console.log("Array object");
-        }
-       if(retId != undefined){
-           return retId;
-       }
-        else {
-           retId = this.__meta.__localId;
-           if(retId != undefined){
-               retId = typeName + retId;
-               //console.log("toString for object "+ retId);
-           }
-           else {
-               retId = defaultToString.apply(this);
-           }
-       }
-        return retId;
-    }
-    return defaultToString.apply(this);
-}
-
-function youAreBindable(obj){
-    if(obj.__meta == undefined){
-        obj.__meta = {};
-        obj.__meta.watchers = {};
-        obj.__meta.__localId = localObjectsCount;
-        localObjectsCount = localObjectsCount + 1;
-        obj.__meta.bindableProperties = {};
-    }
-}
+//internal stuff
 
 
 function ChangeWatcher(model, chain, handler){
     try{
-
-        youAreBindable(this);
-        youAreBindable(model);
+        makeBindable(model);
         var model          = model;
         var chain          = chain;
         var handler        = handler;
@@ -81,7 +67,7 @@ function ChangeWatcher(model, chain, handler){
         }
         //console.log("Creating changeWatcher " + this + " for model " + model + " chain " + chain );
 
-        function getWatcherClosure (pos){
+        function getWatcherClosure (pos, isCollection){
 
             return function(changedModel, property, value, oldValue ){
 
@@ -91,7 +77,14 @@ function ChangeWatcher(model, chain, handler){
                 var newValue  = chainValues[endOfChain];
                 var newParent = chainValues[endOfChain-1];
 
-                if(myOldValue != newValue || newParent != oldParent){
+                if(isCollection || myOldValue != newValue || newParent != oldParent){
+
+                    if(myOldValue != newValue && isBindableCollection(newValue)){
+                        if(isBindableCollection(myOldValue)){
+                            myOldValue.removeWatcher(callBackRefs[endOfChain]);
+                        }
+                        callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
+                    }
                     handler(newParent,args[endOfChain-1],newValue);
                 }
             }
@@ -110,13 +103,14 @@ function ChangeWatcher(model, chain, handler){
                 oldModel    = chainValues[i];
                 ref         = callBackRefs[i];
 
-                if(newModel === oldModel){
+                if(newModel == oldModel){
                     break;
                 } else {
                     if(ref != null){
                         removeWatcher(parent,args[i-1],ref);
                     }
                     chainValues[i] = newModel;
+                    //console.log("****Adding watcher " + parent + " " + args[i-1]);
                     callBackRefs[i] = addWatcher(parent, args[i-1], getWatcherClosure(i));
                 }
             }
@@ -135,6 +129,9 @@ function ChangeWatcher(model, chain, handler){
         rebuildWatchers(0);
         var newValue  = chainValues[endOfChain];
         var newParent = chainValues[endOfChain-1];
+        if(isBindableCollection(newValue)){
+            callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
+        }
         handler(newParent,args[endOfChain-1],newValue);
     }
     catch(err){
@@ -142,22 +139,7 @@ function ChangeWatcher(model, chain, handler){
     }
 }
 
-addChangeWatcher = function(model, chain, handler){
-    return new ChangeWatcher(model, chain, handler);
-}
 
-removeChangeWatcher = function(changeWatcher){
-    changeWatcher.release();
-}
-
-
-setMetaAttr = function(model,prop,value){
-    model.__meta[prop] = value;
-}
-
-getMetaAttr = function(model,prop,value){
-    return model.__meta[prop];
-}
 
 function addWatcher(model,property, nw){
     //console.log("Adding watcher " + model + "." + property);
@@ -224,8 +206,46 @@ if (!Object.prototype.bindableProperty) {
                     });
                 }
             }
-            var callBackRef = createFunctionReference(callBack,this);
+            var callBackRef = new FunctionReference(callBack,this);
             return callBackRef;
         }
     });
+}
+
+var defaultToString = Object.prototype.toString;
+Object.prototype.toString = function(){
+    if(this.__meta != undefined){
+        var typeName = this.__meta.className;
+        if(typeName == undefined){
+            if(typeof this == "string"){
+                typeName = "string:";
+            }
+            else {
+                typeName = "obj:"
+            }
+        }
+        else{
+            typeName = typeName +":";
+        }
+        var retId = this.__meta.__globalId;
+
+        if(typeof this == "array"){
+            console.log("Array object");
+        }
+        if(retId != undefined){
+            return retId;
+        }
+        else {
+            retId = this.__meta.__localId;
+            if(retId != undefined){
+                retId = typeName + retId;
+                //console.log("toString for object "+ retId);
+            }
+            else {
+                retId = defaultToString.apply(this);
+            }
+        }
+        return retId;
+    }
+    return defaultToString.apply(this);
 }

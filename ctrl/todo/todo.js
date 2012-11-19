@@ -17,7 +17,7 @@ registerShapeController("todo/todo",{
             var newTask = newPersistentObject("task");
             newTask.description = this.model.newTitle;
             this.arrayPush(this.model.active,newTask);
-            this.model.recentTask = this.model.newTitle;
+            this.model.recentTask = newTask;
             this.model.newTitle = "";
         }
     },

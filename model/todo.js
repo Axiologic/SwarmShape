@@ -7,27 +7,23 @@ registerModel("todo",{
           this.current = this.active;
         },
         active:{
-            type:"array",
+            type:"collection",
             contains:"task"
         },
         completed:{
-            type:"array",
+            type:"collection",
             contains:"task"
         },
         current:{
-            type:"array",
+            type:"collection",
             value:"null"
         },
         newTitle:{
             type:"string"
         },
-        todoCount:{
-            chains:"active.onChange",
-            code:function(){
-                console.log("Notified by active.onChange!");
-                this.todoCount = this.active.length;
-                return this.active.length;
-            }
+        recentTask:{
+            type:"task",
+            value:"null"
         },
         pluralizer:{
             chains:"todoCount",
@@ -39,11 +35,15 @@ registerModel("todo",{
                 }
             }
         },
-        completedCount:{
-            chains:"completed.onChange",
+        todoCount:{
+            chains:"active",
             code:function(){
-                console.log("Notified by completed.onChange!!");
-                this.completedCount = this.completed.length;
+                return this.active.length;
+            }
+        },
+        completedCount:{
+            chains:"complete",
+            code:function(){
                 return this.completed.length;
             }
         },

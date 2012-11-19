@@ -75,9 +75,7 @@ BaseController.prototype.toView = function(){
 // UNDO/REDO and binding support is based on using those function when working with models
 
 BaseController.prototype.arrayPush = function(arr,value){
-    var ret = arr.push(value);
-    arr.__notifyChange();
-    return ret;
+    arr.push(value);
 }
 
 
@@ -86,7 +84,7 @@ BaseController.prototype.arrayAssign = function(arr,index,value){
 }
 
 BaseController.prototype.modelAssign = function(value){
-    console.log("Assigning property " + this.parentModelProperty + " in " + this.parentModel + " value " + value);
+    //console.log("Assigning property " + this.parentModelProperty + " in " + this.parentModel + " value " + value);
     this.parentModel[this.parentModelProperty]  = value;
 }
 

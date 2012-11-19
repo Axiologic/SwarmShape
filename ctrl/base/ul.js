@@ -8,8 +8,7 @@ registerShapeController("base/ul",{
 
     },
     toView:function(){
-
-        //console.log("Binding input text: " + JSON.stringify(this.model));
+        console.log("UL is building stuff");
     },
     onChange:function(){
 
