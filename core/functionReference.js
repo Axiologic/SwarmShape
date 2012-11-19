@@ -1,17 +1,18 @@
 
-function FunctionReference(funct,ctxt){
-    this.funct = funct.bind(ctxt);
-    youAreBindable(this);
+function FunctionReference(funct){
+    makeBindable(this);
+    this.funct = funct;
 }
 
 FunctionReference.prototype.call = function(){
-    this.funct(arguments);
+    var myThis =  arguments[0];
+    var args = []; // empty array
+    for(var i = 1; i < arguments.length; i++){
+        args.push(arguments[i]);
+    }
+    this.funct.call(myThis,args);
 }
 
-FunctionReference.prototype.apply = function(){
-    this.funct(arguments);
-}
-
-createFunctionReference = function(funct,ctxt){
- return new FunctionReference(funct,ctxt);
+FunctionReference.prototype.apply = function(myThis,args){
+    this.funct.apply(myThis,args);
 }
