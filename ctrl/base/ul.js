@@ -1,5 +1,5 @@
 /**
-    default button controller
+ default button controller
  */
 
 registerShapeController("base/ul",{
@@ -8,7 +8,13 @@ registerShapeController("base/ul",{
 
     },
     toView:function(){
-        console.log("UL is building stuff");
+        var view = $(this.view);
+        view.empty();
+        for(var i=0; i< this.model.length; i++){
+            var div = view.append("<div shape-view='shape/task'></div>");
+            console.log(div);
+            expandShape(div[0], this);
+        }
     },
     onChange:function(){
 

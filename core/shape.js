@@ -38,6 +38,10 @@ initialiseShape = function(domObj, model){
     ctrl.chain = null;
 }
 
+expandShapeWithModel = function(domObj, parentCtrl,model){
+    ctrl = expandShape(domObj,parentCtrl);
+    ctrl.changeModel(model);
+}
 
 function expandShape(domObj, parentCtrl){
     var modelChain = $(domObj).attr("shape-model");
@@ -66,14 +70,17 @@ function expandShape(domObj, parentCtrl){
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
 
         bindAttributes(domObj,parentCtrl);
-        var myChain = parentCtrl.getCompleteChain(modelChain.substring(1));
-        parentCtrl.ctxtCtrl.addChangeWatcher__absolute(myChain,
-            function(changedModel, modelProperty, value){
-                ctrl.parentModel = changedModel;
-                ctrl.parentModelProperty = modelProperty;
-                ctrl.changeModel(value);
-            }
-        );
+        ctrl.chain = modelChain.substring(1);
+        if(ctrl.chain != ""){
+            var myChain = parentCtrl.getCompleteChain(ctrl.chain);
+            parentCtrl.ctxtCtrl.addChangeWatcher__absolute(myChain,
+                function(changedModel, modelProperty, value){
+                    ctrl.parentModel = changedModel;
+                    ctrl.parentModelProperty = modelProperty;
+                    ctrl.changeModel(value);
+                }
+            );
+        }
     }
 
     if(expandView){
