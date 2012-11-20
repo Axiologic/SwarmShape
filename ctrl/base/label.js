@@ -11,9 +11,12 @@ registerShapeController("base/label",{
         this.toView();
     },
     toView:function(){
+
         if(this.model != undefined){
             this.label.innerText = this.model;
             //console.log("Label " +  this.model + this.domView);
+        } else{
+            console.log("Label " + this.model);
         }
     }
 });

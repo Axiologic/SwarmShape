@@ -1,11 +1,12 @@
 function BaseController(ctrlName){
     this.ctrlName = ctrlName;
     this.changeWatchers = [];
+    this.chain = "";
 }
 
 BaseController.prototype.getCompleteChain = function(partial) {
     var chain;
-    if( this.parentCtrl != this && this.parentCtrl.chain != null){
+    if( this.parentCtrl != this && this.parentCtrl.chain != ""){
         chain = this.parentCtrl.chain + "." + partial;
     } else{
         chain = partial;
@@ -14,7 +15,7 @@ BaseController.prototype.getCompleteChain = function(partial) {
 }
 
 BaseController.prototype.init = function(){
-    wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
+    console.log("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 BaseController.prototype.getCtxtCtrl = function(){
@@ -30,14 +31,14 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
 BaseController.prototype.addChangeWatcher__absolute = function(chain, handler){
     var watcher;
     if(this.model != null){
-        watcher = addChangeWatcher(this.ctxtCtrl.model,chain,handler);
+        watcher = addChangeWatcher(this.rootModel,chain,handler);
     }
     this.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
 }
 
 BaseController.prototype.changeModel = function(model){
     this.model = model;
-
+    /*
     //refresh all registered watchers
     if(this.ctxtCtrl == this){
         if(this.watchers != null){
@@ -46,13 +47,13 @@ BaseController.prototype.changeModel = function(model){
                     this.watchers[i].watcher.release();
                 }
                 this.watchers[i].watcher =
-                    addChangeWatcher(this.ctxtCtrl.model,
+                    addChangeWatcher(this.rootModel,
                         this.watchers[i].chain,
                         this.watchers[i].handler);
             }
         }
     }
-
+    */
     this.onModelChanged();
     this.toView();
 }
@@ -69,7 +70,7 @@ registerShapeController = function(name,functObj){
 
 
 BaseController.prototype.toView = function(){
-    wprint("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
+    console.log("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 // UNDO/REDO and binding support is based on using those function when working with models

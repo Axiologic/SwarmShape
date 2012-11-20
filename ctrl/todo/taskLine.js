@@ -7,11 +7,8 @@ registerShapeController("todo/taskLine",{
     init:function(){
 
     },
-    dispatch:function(model){
-
-    },
     toView:function(){
-
+        console.log("todo/taskLine" + this.model);
     }
 });
 
