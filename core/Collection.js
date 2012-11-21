@@ -52,7 +52,15 @@ Collection.prototype.size = function(){
 }
 
 var cp = Collection.prototype;
-cp.__defineGetter__("length", function() { return this.container.length; });
+try{
+    cp.__defineGetter__("length", function() { return this.container.length; });
+}catch(e)
+{
+    Object.defineProperty(cp, "length",{
+        get: function() { return this.container.length; }
+    });
+}
+
 
 
 Collection.prototype.shift = function(){

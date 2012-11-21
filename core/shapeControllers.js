@@ -2,11 +2,12 @@ function BaseController(ctrlName){
     this.ctrlName = ctrlName;
     this.changeWatchers = [];
     this.chain = "";
+    this.brakeChainCtrl = false;
 }
 
 BaseController.prototype.getCompleteChain = function(partial) {
     var chain;
-    if( this.parentCtrl != this && this.parentCtrl.chain != ""){
+    if( this.parentCtrl != this && !this.brakeChainCtrl && this.parentCtrl.chain != ""){
         chain = this.parentCtrl.chain + "." + partial;
     } else{
         chain = partial;

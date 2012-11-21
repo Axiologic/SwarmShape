@@ -92,6 +92,7 @@ function expandShape(domObj, parentCtrl, rootModel){
             ctrl.rootModel = rootModel;
             ctrl.model     = rootModel;
             ctrl.changeModel(rootModel);
+            ctrl.brakeChainCtrl = true;
         } else{
             ctrl.rootModel = parentCtrl.rootModel;
         }
@@ -101,7 +102,7 @@ function expandShape(domObj, parentCtrl, rootModel){
         if(ctrl.chain != ""){
             ctrl.chain = ctrl.getCompleteChain(ctrl.chain);
             //console.log("New chain " + ctrl.chain);
-            parentCtrl.ctxtCtrl.addChangeWatcher__absolute(ctrl.chain,
+            parentCtrl.addChangeWatcher__absolute(ctrl.chain,
                 function(changedModel, modelProperty, value){
                     if(ctrl.parentCtrl != ctrl){
                         ctrl.parentModel = changedModel;

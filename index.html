@@ -5,23 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-    <script type="text/javascript">
-        function shapeOnReady(){
-            /*var model = {
-                menu:["Inc","Dec","Alert"],
-                buttonText:"Click me!",
-                labelText:"No click yet!",
-                buttonModel:{
-                    text:"Click here!"
-                },
-                isBold:false,
-                labelStyle:"boldStyle",
-                addBtn:"Add"
-            }; */
-            var model = newTransientObject("todo");
-            initialiseShape(document.getElementById("main"), model);
-        }
-    </script>
     <script type="text/javascript" src="deps/jquery.min.js"></script>
     <script type="text/javascript" src="core/FunctionReference.js"> </script>
     <script type="text/javascript" src="core/shapeObjects.js"> </script>
@@ -44,10 +27,31 @@
     <script type="text/javascript" src="model/todo.js"> </script>
 
     <link rel="stylesheet" type="text/css"  href="view/todo.css" />
+    <script type="text/javascript">
+
+        function shapeOnReady(){
+            /*var model = {
+                menu:["Inc","Dec","Alert"],
+                buttonText:"Click me!",
+                labelText:"No click yet!",
+                buttonModel:{
+                    text:"Click here!"
+                },
+                isBold:false,
+                labelStyle:"boldStyle",
+                addBtn:"Add"
+            }; */
+            var model = newTransientObject("todo");
+            initialiseShape(document.getElementById("main"), model);
+        }
+
+        $(document).ready(shapeOnReady);
+    </script>
+
 
 </head>
-
-<body onload="shapeOnReady()">
+<!--onload="shapeOnReady()"-->
+<body >
     <div id="main" shape-view="todo/todo" > Not loaded!!! </div>
 </body>
 </html>
