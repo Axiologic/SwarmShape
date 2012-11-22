@@ -14,9 +14,11 @@ registerShapeController("base/label",{
 
         if(this.model != undefined){
             this.label.innerText = this.model;
+            //textContent for firefox ONLY!!!
+            this.label.textContent = this.model;
             //console.log("Label " +  this.model + this.domView);
         } else{
-            console.log("Label " + this.model);
+            dprint("Label " + this.model);
         }
     }
 });

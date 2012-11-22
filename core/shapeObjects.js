@@ -135,7 +135,7 @@ function ChangeWatcher(model, chain, handler){
         handler(newParent,args[endOfChain-1],newValue);
     }
     catch(err){
-        console.log("Unexpected error on chain " + chain + "\nError: " + err);
+        cprint("Unexpected error on chain " + chain + "\nError: " + err);
     }
 }
 
@@ -229,9 +229,6 @@ Object.prototype.toString = function(){
         }
         var retId = this.__meta.__globalId;
 
-        if(typeof this == "array"){
-            console.log("Array object");
-        }
         if(retId != undefined){
             return retId;
         }

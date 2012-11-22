@@ -53,12 +53,19 @@ Collection.prototype.size = function(){
 
 var cp = Collection.prototype;
 try{
-    cp.__defineGetter__("length", function() { return this.container.length; });
+    cp.__defineGetter__("length", function() {
+        dprint('length ' + this.container);
+        return this.container.length; });
 }catch(e)
 {
-    Object.defineProperty(cp, "length",{
-        get: function() { return this.container.length; }
-    });
+    try{
+        Object.defineProperty(cp, "length",{
+            get: function() { return this.container.length; }
+        });
+    }catch(ex)
+    {
+        cprint(ex.message);
+    }
 }
 
 

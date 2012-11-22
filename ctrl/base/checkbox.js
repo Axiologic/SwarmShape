@@ -17,7 +17,7 @@ registerShapeController("base/checkbox",{
     onChange:function(){
         var inp = $(this.view).find("input")[0];
         this.model = ! this.model;
-        console.log("Checkbox:" + this.model)
+        dprint("Checkbox:" + this.model)
         this.chainAssign(this.model);
     }
 });

@@ -13,7 +13,7 @@ registerShapeController("todo/todo",{
     },
     addNewTitle :function(){
         if( this.model.newTitle != ""){
-            console.log("New task added..." + this.model.newTitle);
+            dprint("New task added..." + this.model.newTitle);
             var newTask = newPersistentObject("task");
             newTask.description = this.model.newTitle;
             this.arrayPush(this.model.active,newTask);

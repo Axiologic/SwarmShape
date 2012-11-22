@@ -17,7 +17,7 @@ registerShapeController("home",{
         }
     },
     boldChecked :function(){
-        console.log("Bold Checked!!!");
+        wprint("Bold Checked!!!");
         if(this.model.isBold == true){
             this.model.labelStyle = "boldStyle";
         }

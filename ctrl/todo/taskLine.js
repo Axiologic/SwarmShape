@@ -8,7 +8,7 @@ registerShapeController("todo/taskLine",{
 
     },
     toView:function(){
-        console.log("todo/taskLine" + this.model);
+        dprint("todo/taskLine" + this.model);
     }
 });
 

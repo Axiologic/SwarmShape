@@ -1,22 +1,45 @@
-cprint = function(str){
-    console.log("Log:" + str);
-}
+var hasConsole = typeof console;
 
+cprint = function(str){
+    if(hasConsole=="undefined")
+    {
+        console = "Log:" + str;
+    }else{
+        console.log("Log:" + str);
+    }
+}
 
 dprint = function(str){
-    console.log("Debug:" + str);
+    if(hasConsole=="undefined")
+    {
+        console = "Debug:" + str;
+    }else{
+        console.log("Debug:" + str);
+    }
 }
 
+wprint = function(str){
+    if(hasConsole=="undefined")
+    {
+        console = "Debug:" + str;
+    }else{
+        console.log("Debug:" + str);
+    }
+}
 
 cprint("Loading shape...");
 
 $.ajaxSetup({ cache: false });
 
-shapeContext={
+var shapeContext = {
     controllers:[],
     views:[]
 };
 
+function registerShapeController(name,functObj){
+    //console.log("Registering controller " + name);
+    shapeContext.controllers[name] = functObj;
+}
 
 function loadShapeComponent(viewName, callBack){
     var fileName = "view/" + viewName + ".html";
@@ -65,7 +88,7 @@ function expandShape(domObj, parentCtrl, rootModel){
     }
 
     if(ctrlName == undefined){
-        console.log("No control hint..." + viewName);
+        cprint("No control hint..." + viewName);
     }
 
 
@@ -138,7 +161,8 @@ function bindAttributes(domObj, ctrl){
                          var myChain = ctrl.getCompleteChain(this.value.substring(1));
                          ctrl.ctxtCtrl.addChangeWatcher__absolute(myChain,
                              function(changedModel, modelProperty, value, oldValue ){
-                                     $(domElement).attr(attributeName,value);
+                                 // aici era erroarea cu domElement undefined!!
+                                 $(domObj).attr(attributeName,value);
                             });
                          //console.log("Binding " + attributeName);
                      }
@@ -183,7 +207,7 @@ function getController(viewName, ctrlName){
 
     if(!foundOne)
     {
-        console.log("No controller " + name);
+        wprint("No controller " + name);
     }
 
     for(var vn in newCtrl){

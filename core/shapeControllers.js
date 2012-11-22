@@ -16,7 +16,7 @@ BaseController.prototype.getCompleteChain = function(partial) {
 }
 
 BaseController.prototype.init = function(){
-    console.log("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
+    wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 BaseController.prototype.getCtxtCtrl = function(){
@@ -63,15 +63,8 @@ BaseController.prototype.onModelChanged = function(){
 
 }
 
-
-registerShapeController = function(name,functObj){
-    //console.log("Registering controller " + name);
-    shapeContext.controllers[name] = functObj;
-}
-
-
 BaseController.prototype.toView = function(){
-    console.log("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
+    wprint("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 // UNDO/REDO and binding support is based on using those function when working with models
