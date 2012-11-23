@@ -17,7 +17,7 @@ setMetaAttr = function(model,prop,value){
     model.__meta[prop] = value;
 }
 
-getMetaAttr = function(model,prop,value){
+getMetaAttr = function(model,prop){
     return model.__meta[prop];
 }
 
