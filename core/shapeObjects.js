@@ -135,7 +135,8 @@ function ChangeWatcher(model, chain, handler){
         handler(newParent,args[endOfChain-1],newValue);
     }
     catch(err){
-        cprint("Unexpected error on chain " + chain + "\nError: " + err);
+        console.log("Unexpected error on chain " + chain );
+        //cprint("Unexpected error on chain " + chain , err);
     }
 }
 

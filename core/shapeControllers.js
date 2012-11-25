@@ -3,6 +3,8 @@ function BaseController(ctrlName){
     this.changeWatchers = [];
     this.chain = "";
     this.brakeChainCtrl = false;
+    this.parentCtrl = null;
+    this.isController = true;
 }
 
 BaseController.prototype.getCompleteChain = function(partial) {
@@ -81,5 +83,13 @@ BaseController.prototype.arrayAssign = function(arr,index,value){
 BaseController.prototype.modelAssign = function(value){
     //console.log("Assigning property " + this.parentModelProperty + " in " + this.parentModel + " value " + value);
     this.parentModel[this.parentModelProperty]  = value;
+}
+
+BaseController.prototype.action = function(type, model){
+    if(this.parentCtrl != null && this.parentCtrl != this){
+        this.parentCtrl.action(type, model);
+    } else {
+        wprint("Nobody is handling action " + type + " for " +model);
+    }
 }
 

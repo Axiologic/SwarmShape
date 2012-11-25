@@ -7,6 +7,7 @@
     <div id="main" >
         <input id="toggle-all" type="checkbox">
         <label for="toggle-all">Mark all as complete</label>
+
         <ul id="todo-list" shape-ctrl="base/ul" shape-model="@current" >
         </ul>
     </div>
@@ -31,7 +32,9 @@
             </li>
         </ul>
 
-        <button id="clear-completed"> Completed (<span shape-ctrl="base/label" shape-model = "@completedCount"></span>)</button>
+        <button id="clear-completed" shape-ctrl="base/button" shape-action = "removeAllCompleted">
+            Remove all completed (<span shape-ctrl="base/label" shape-model = "@completedCount"></span>)
+        </button>
     </footer>
 </section>
 <footer id="info">

@@ -5,18 +5,15 @@
 registerShapeController("base/button",{
     model:null,
     init:function(){
-        this.toView();
-        var inp = $(this.view).find("input")[0];
-        $(inp).live("click", this.onClick);
-        //
+        $(this.view).live("click", this.onClick);
+        this.shape_action = $(this.view).attr("shape-action");
+        if(this.shape_action == undefined){
+            this.shape_action = "click";
+        }
     },
     toView:function(){
-        var inp = $(this.view).find("input")[0];
-        inp.value = this.model;
-        //console.log("Binding button text: " + JSON.stringify(this.model));
     },
     onClick:function(objectId){
-        this.getCtxtCtrl().dispatch(this.model);
-        //alert(this.model + " got clicked!")
+        this.action(this.shape_action, this.model);
     }
 });

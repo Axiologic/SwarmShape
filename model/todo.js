@@ -42,7 +42,7 @@ registerModel("todo",{
             }
         },
         completedCount:{
-            chains:"complete",
+            chains:"completed",
             code:function(){
                 return this.completed.length;
             }

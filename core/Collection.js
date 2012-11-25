@@ -42,6 +42,12 @@ Collection.prototype.getAt = function(index){
       return this.container[index];
 }
 
+Collection.prototype.removeAt = function(index){
+    //delete this.container[index];
+    this.container.splice(index,1);
+    this.announceChanges("removeAt");
+}
+
 Collection.prototype.insertAt = function(elem, index){
     this.container[index] = elem;
     this.announceChanges("insert", index);
@@ -54,7 +60,6 @@ Collection.prototype.size = function(){
 var cp = Collection.prototype;
 try{
     cp.__defineGetter__("length", function() {
-        dprint('length ' + this.container);
         return this.container.length; });
 }catch(e)
 {
@@ -64,10 +69,9 @@ try{
         });
     }catch(ex)
     {
-        cprint(ex.message);
+        cprint("Failing to define length property" + ex.message);
     }
 }
-
 
 
 Collection.prototype.shift = function(){

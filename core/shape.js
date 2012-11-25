@@ -1,33 +1,52 @@
 var hasConsole = typeof console;
 
-cprint = function(str){
-    if(hasConsole=="undefined")
-    {
-        console = "Log:" + str;
-    }else{
-        console.log("Log:" + str);
-    }
+
+function getBaseUrl(){
+    var l = window.location;
+    var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
+    return base_url;
 }
 
-dprint = function(str){
+function linePrint(prefix,text, fullStack){
+    var trace = printStackTrace();
+    var strTrace;
+    if(fullStack == undefined || fullStack == false){
+        for(var i=0;i<trace.length;i++){
+            if(trace[i].indexOf("linePrint") != -1){
+                strTrace =  trace[i+2];
+                strTrace = strTrace.replace(getBaseUrl(),"");
+            }
+        }
+    }
+    else{
+        strTrace = "\n\n" + trace.join("\n") + "\n";
+    }
+    text = strTrace + ">>\t"  + text;
+
     if(hasConsole=="undefined")
     {
-        console = "Debug:" + str;
+        console = prefix + text;
     }else{
-        console.log("Debug:" + str);
+        console.log(prefix + text);
     }
+
 }
 
-wprint = function(str){
-    if(hasConsole=="undefined")
-    {
-        console = "Debug:" + str;
-    }else{
-        console.log("Debug:" + str);
-    }
+function cprint(str, fullStack){
+    linePrint("",str, fullStack);
 }
 
 cprint("Loading shape...");
+
+
+function dprint(str, fullStack){
+    linePrint("Debug:",str,fullStack);
+}
+
+wprint = function(str,fullStack){
+    linePrint("Warning:",str, fullStack);
+}
+
 
 $.ajaxSetup({ cache: false });
 
@@ -62,19 +81,21 @@ initialiseShape = function(domObj, model){
 }
 
 
-expandShapeWithModel = function(domObj, parentCtrl,model){
+function expandShapeWithModel(domObj, parentCtrl,model){
     ctrl = expandShape(domObj,parentCtrl);
     ctrl.rootModel = model;
     ctrl.changeModel(model);
 }
 
+/*
 insertShapeChild = function(parent, viewName, model){
     loadShapeComponent(viewName,function(data){
         parent.children().last().append(data);
         bindAttributes(parent.children().last(),parentCtrl);
     });
-
 }
+*/
+
 
 function expandShape(domObj, parentCtrl, rootModel){
     var modelChain = $(domObj).attr("shape-model");
@@ -82,27 +103,29 @@ function expandShape(domObj, parentCtrl, rootModel){
     var viewName  = $(domObj).attr("shape-view");
     var expandView = true;
 
+    if(parentCtrl && parentCtrl.isController == undefined){
+        wprint("Wtf? Give me a proper controller!");
+    }
+
     if(viewName == undefined){
         viewName = "base/" + domObj.nodeName.toLowerCase();
         expandView = false;
     }
 
-    if(ctrlName == undefined){
-        cprint("No control hint..." + viewName);
-    }
-
-
     //console.log(" " + domObj +" Expanding " +  " viewCtrl: " + viewName +  " model chain: " + modelChain + " ctrl: " + ctrlName)
     var ctrl = getController(viewName, ctrlName);
+    //cprint("New controller " + ctrl.ctrlName);
+
     ctrl.view       = domObj;
     if(modelChain != undefined){
-        ctrl.chain = modelChain.substring(1);
+        if(modelChain == "#model"){
+            rootModel = parentCtrl.model;
+        } else{
+            ctrl.chain = modelChain.substring(1);
+        }
     }
 
     //ctrl.domView    = $(domObj);
-    if(expandView == false){
-        ctrl.init();
-    }
 
     if(parentCtrl == null || parentCtrl == undefined){
         ctrl.parentCtrl = ctrl;
@@ -111,6 +134,7 @@ function expandShape(domObj, parentCtrl, rootModel){
     } else{
         ctrl.parentCtrl = parentCtrl;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
+
         if(rootModel != undefined){
             ctrl.rootModel = rootModel;
             ctrl.model     = rootModel;
@@ -120,11 +144,14 @@ function expandShape(domObj, parentCtrl, rootModel){
             ctrl.rootModel = parentCtrl.rootModel;
         }
 
-        bindAttributes(domObj,parentCtrl);
+
+        if(expandView == false){
+            ctrl.init();
+        }
 
         if(ctrl.chain != ""){
             ctrl.chain = ctrl.getCompleteChain(ctrl.chain);
-            //console.log("New chain " + ctrl.chain);
+            //cprint("New chain " + ctrl.chain);
             parentCtrl.addChangeWatcher__absolute(ctrl.chain,
                 function(changedModel, modelProperty, value){
                     if(ctrl.parentCtrl != ctrl){
@@ -135,19 +162,28 @@ function expandShape(domObj, parentCtrl, rootModel){
                 }
             );
         }
+
     }
 
     if(expandView){
         loadInnerHtml(domObj,viewName,ctrl);
     }
+    else{
+        bindAttributes(domObj,ctrl);
+    }
+
     return ctrl;
 }
 
 function bindAttributes(domObj, ctrl){
     var forExpand = [];
+    if(ctrl.ctrlName == undefined){
+        wprint("Wrong controller ",true);
+    };
+
     $(domObj).find( "*").each(function(index){
         var element = this;
-        //console.log("Element " + this.nodeName);
+
              $(this.attributes).each (
                  function() {
                      var attributeName = this.name;
@@ -156,10 +192,14 @@ function bindAttributes(domObj, ctrl){
                          if(domObj != element){
                              forExpand.push(element);
                          }
+                     } else if( attributeName == "shape-ctrl") {
+                         if(domObj != element && !element.hasAttribute("shape-model")){
+                             console.log("Controller find " + element + " " + this.value);
+                             forExpand.push(element);
+                         }
                      }
                      else if(this.value[0] =="@"){
-                         var myChain = ctrl.getCompleteChain(this.value.substring(1));
-                         ctrl.ctxtCtrl.addChangeWatcher__absolute(myChain,
+                         ctrl.addChangeWatcher(this.value.substring(1),
                              function(changedModel, modelProperty, value, oldValue ){
                                  // aici era erroarea cu domElement undefined!!
                                  $(domObj).attr(attributeName,value);
@@ -192,15 +232,23 @@ function getController(viewName, ctrlName){
     var base =  shapeContext.controllers[viewName];
     if(base != undefined){
         for(var vn in base){
-            newCtrl[vn] = base[vn];
+            if(typeof base[vn] == 'function'){
+                newCtrl[vn] = base[vn].bind(newCtrl);
+            } else{
+                newCtrl[vn] = base[vn];
+            }
         }
         foundOne = true;
     }
 
     if(ctrlName != null && ctrlName != undefined){
-        var specific =  shapeContext.controllers[name];
+        var specific =  shapeContext.controllers[ctrlName];
         for(var vn in specific){
-            newCtrl[vn] = specific[vn];
+            if(typeof specific[vn] == 'function'){
+                newCtrl[vn] = specific[vn].bind(newCtrl);
+            } else{
+                newCtrl[vn] = specific[vn];
+            }
         }
         foundOne = true;
     }
