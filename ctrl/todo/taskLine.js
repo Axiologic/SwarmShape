@@ -14,6 +14,7 @@ registerShapeController("todo/taskLine",{
         if(this.oldValue != this.model.completed){
             $(this.view).toggleClass("completed", this.model.completed);
             this.action("completedToggle",this.model);
+            this.oldValue = this.model.completed;
         }
     }
 });

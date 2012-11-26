@@ -4,7 +4,11 @@ registerModel("todo",{
             persitence:"none"
         },
         ctor:function(){
-          this.current = this.active;
+          this.current = this.all;
+        },
+        all:{
+            type:"collection",
+            contains:"task"
         },
         active:{
             type:"collection",
@@ -46,6 +50,36 @@ registerModel("todo",{
             code:function(){
                 return this.completed.length;
             }
+        },
+        toggle:function(model){
+            if(model.completed == true){
+                for(var i = 0; i < this.active.length ; i++){
+                    if(this.active.getAt(i) == model){
+                        cprint("Moving from active to completed");
+                        this.active.removeAt(i);
+                        this.completed.push(model);
+                        break;
+                    }
+                }
+            } else{
+                for(var i = 0; i< this.completed.length ; i++){
+                    if(this.completed.getAt(i) == model){
+                        cprint("Moving from completed to active");
+                        this.completed.removeAt(i);
+                        this.active.push(model);
+                        break;
+                    }
+                }
+            }
+        },
+        remove:function(model){
+            this.all.remove(model);
+            this.active.remove(model);
+            this.completed.remove(model);
+        },
+        removeAllCompleted:function(model){
+            this.completed.removeAll();
+            this.all.copy(this.active);
         },
         query:{
             lang:"sql",

@@ -38,12 +38,17 @@ Collection.prototype.indexOf = function(item,startIndex){
      return this.container.indexOf(item,startIndex);
 }
 
+Collection.prototype.remove = function(item){
+    var index = this.container.indexOf(item,0);
+    this.container.splice(index,1);
+    this.announceChanges("remove");
+}
+
 Collection.prototype.getAt = function(index){
       return this.container[index];
 }
 
 Collection.prototype.removeAt = function(index){
-    //delete this.container[index];
     this.container.splice(index,1);
     this.announceChanges("removeAt");
 }
@@ -96,6 +101,19 @@ Collection.prototype.shuffle = function(){
     this.container.shuffle();
     this.announceChanges("shuffle");
 }
+
+Collection.prototype.clone = function(){
+    var clone = new Collection();
+    clone.container = this.container.slice(0);
+    //this.announceChanges("clone");
+    return clone;
+}
+
+Collection.prototype.copy = function(from){
+    this.container = from.container.slice(0);
+    this.announceChanges("copy");
+}
+
 
 Collection.prototype.addWatcher = function(callback){
     var fctRef = new FunctionReference(callback);

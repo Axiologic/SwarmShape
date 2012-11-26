@@ -135,12 +135,10 @@ function ChangeWatcher(model, chain, handler){
         handler(newParent,args[endOfChain-1],newValue);
     }
     catch(err){
-        console.log("Unexpected error on chain " + chain );
+        cprint("Unexpected error catch when processing chain " + chain );
         //cprint("Unexpected error on chain " + chain , err);
     }
 }
-
-
 
 function addWatcher(model,property, nw){
     //console.log("Adding watcher " + model + "." + property);

@@ -14,7 +14,11 @@ function linePrint(prefix,text, fullStack){
         for(var i=0;i<trace.length;i++){
             if(trace[i].indexOf("linePrint") != -1){
                 strTrace =  trace[i+2];
-                strTrace = strTrace.replace(getBaseUrl(),"");
+                if(strTrace != null){
+                    strTrace = strTrace.replace(getBaseUrl(),"");
+                } else{
+                    strTrace = trace[trace.length -1];
+                }
             }
         }
     }
@@ -175,6 +179,13 @@ function expandShape(domObj, parentCtrl, rootModel){
     return ctrl;
 }
 
+function shouldBeShapeExpanded(element){
+    return element.hasAttribute("shape-model") ||
+        element.hasAttribute("shape-view") ||
+        element.hasAttribute("shape-ctrl") ||
+        element.hasAttribute("shape-action");
+}
+
 function bindAttributes(domObj, ctrl){
     var forExpand = [];
     if(ctrl.ctrlName == undefined){
@@ -183,22 +194,15 @@ function bindAttributes(domObj, ctrl){
 
     $(domObj).find( "*").each(function(index){
         var element = this;
-
+                if(shouldBeShapeExpanded(element)){
+                    if(domObj != element){
+                        forExpand.push(element);
+                    }
+                }
              $(this.attributes).each (
                  function() {
                      var attributeName = this.name;
-                     if( attributeName == "shape-model") {
-                         //console.log("Element " + element + " has " +  this.value);
-                         if(domObj != element){
-                             forExpand.push(element);
-                         }
-                     } else if( attributeName == "shape-ctrl") {
-                         if(domObj != element && !element.hasAttribute("shape-model")){
-                             console.log("Controller find " + element + " " + this.value);
-                             forExpand.push(element);
-                         }
-                     }
-                     else if(this.value[0] =="@"){
+                     if(this.value[0] =="@"){
                          ctrl.addChangeWatcher(this.value.substring(1),
                              function(changedModel, modelProperty, value, oldValue ){
                                  // aici era erroarea cu domElement undefined!!
@@ -224,8 +228,8 @@ function getController(viewName, ctrlName){
         } else {
             name = ctrlName;
         }
-
     }
+
     //dprint("Creating controller " + name);
     var newCtrl         = new BaseController(name);
 
@@ -253,9 +257,8 @@ function getController(viewName, ctrlName){
         foundOne = true;
     }
 
-    if(!foundOne)
-    {
-        wprint("No controller " + name);
+    if(!foundOne){
+        wprint("No controller definition " + name);
     }
 
     for(var vn in newCtrl){
