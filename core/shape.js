@@ -192,7 +192,7 @@ function bindAttributes(domObj, ctrl){
         wprint("Wrong controller ",true);
     };
 
-    $(domObj).find( "*").each(function(index){
+    $(domObj).find("*").each(function(index){
         var element = this;
                 if(shouldBeShapeExpanded(element)){
                     if(domObj != element){
@@ -205,10 +205,11 @@ function bindAttributes(domObj, ctrl){
                      if(this.value[0] =="@"){
                          ctrl.addChangeWatcher(this.value.substring(1),
                              function(changedModel, modelProperty, value, oldValue ){
-                                 // aici era erroarea cu domElement undefined!!
                                  $(domObj).attr(attributeName,value);
                             });
                          //console.log("Binding " + attributeName);
+                     } else if(this.value[0] =="$"){
+                         wprint("Binding for " + attributeName + " as "+ this.value +" not yet implemented");
                      }
                  });
     });
@@ -270,3 +271,18 @@ function getController(viewName, ctrlName){
     return newCtrl;
 }
 
+
+function watchHashEvent(ctrl){
+    $(window).bind('hashchange', function(e) {
+        var action = window.location.hash;
+        var index = action.indexOf("#");
+        if(index == -1) {
+            action = "homePage";
+        } else{
+            action = action.substr(index+1);
+        }
+        ctrl.action(action);
+    });
+ // Trigger the event (useful on page load).
+    //$(window).hashchange();
+}

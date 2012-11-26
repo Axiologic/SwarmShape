@@ -7,6 +7,7 @@ registerShapeController("todo/todo",{
     count:0,
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);
+        watchHashEvent(this);
     },
     addNewTitle :function(){
         if( this.model.newTitle != ""){
@@ -27,6 +28,12 @@ registerShapeController("todo/todo",{
             this.model.remove(model);
         }else if(type == "removeAllCompleted"){
             this.model.removeAllCompleted();
+        }else if(type == "showCompletedTasks"){
+            this.model.current = this.model.completed;
+        }else if(type == "showActiveTasks"){
+            this.model.current = this.model.active;
+        }else if(type == "allTasks"){
+            this.model.current = this.model.all;
         }
         else{
           wprint("Unknown action " + type);
