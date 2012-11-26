@@ -66,14 +66,12 @@ var cp = Collection.prototype;
 try{
     cp.__defineGetter__("length", function() {
         return this.container.length; });
-}catch(e)
-{
+}catch(e){
     try{
         Object.defineProperty(cp, "length",{
             get: function() { return this.container.length; }
         });
-    }catch(ex)
-    {
+    }catch(ex){
         cprint("Failing to define length property" + ex.message);
     }
 }
@@ -130,13 +128,5 @@ Collection.prototype.announceChanges = function(type,start, end){
         i++;
         this.__meta.watcherList[f].call(null, type, start, end);
     }
-    //console.log("Announcing " + i);
 }
-
-/*
- Collection.prototype.insetArray = function(array, pos){
-
- }*/
-
-
 
