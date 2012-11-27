@@ -1,10 +1,13 @@
 var hasConsole = typeof console;
 
 
+
 function getBaseUrl(){
-    var l = window.location;
-    var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
-    return base_url;
+    if(Config.prototype.globalCfg_BaseURL  == undefined){
+        var l = window.location;
+        Config.prototype.globalCfg_BaseURL = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
+    }
+    return Config.prototype.globalCfg_BaseURL;
 }
 
 function linePrint(prefix,text, fullStack){
@@ -54,20 +57,40 @@ wprint = function(str,fullStack){
 
 $.ajaxSetup({ cache: false });
 
-var shapeContext = {
+
+
+function registerShapeController(name,functObj){
+    //console.log("Registering controller " + name);
+    registerShapeController.prototype.shapeContext.controllers[name] = functObj;
+}
+
+registerShapeController.prototype.shapeContext = {
     controllers:[],
     views:[]
 };
 
-function registerShapeController(name,functObj){
-    //console.log("Registering controller " + name);
-    shapeContext.controllers[name] = functObj;
+
+Config.prototype.cacheOfViews = {};
+
+Config.prototype.registerView = function(name,url){
+    var fileName = getBaseUrl + url;
+    $.get(fileName, function(content){
+        Config.prototype.cacheOfViews[name] = content;
+    });
 }
 
+
 function loadShapeComponent(viewName, callBack){
-    var fileName = "view/" + viewName + ".html";
-    $.get(fileName,callBack );
+    var res = Config.prototype.cacheOfViews[viewName];
+    if(res != undefined){
+        callBack(res);
+    } else{
+        wprint("Component " + viewName + " doesn't exist");
+    }
 }
+
+
+
 function loadInnerHtml(domObj,viewName, ctrl){
     loadShapeComponent(viewName, function(data) {
         domObj.innerHTML = data;
@@ -77,7 +100,7 @@ function loadInnerHtml(domObj,viewName, ctrl){
     });
 }
 
-initialiseShape = function(domObj, model){
+function initialiseShape(domObj, model){
     ctrl = expandShape(domObj,null);
     ctrl.rootModel = model;
     ctrl.changeModel(model);
@@ -224,7 +247,7 @@ function getController(viewName, ctrlName){
     var name = viewName;
     var foundOne = false;
     if(ctrlName != undefined && ctrlName != null    ){
-        if(shapeContext.controllers[viewName] != undefined){
+        if(registerShapeController.prototype.shapeContext.controllers[viewName] != undefined){
             name = ctrlName + "["+ viewName +"]";
         } else {
             name = ctrlName;
@@ -234,7 +257,7 @@ function getController(viewName, ctrlName){
     //dprint("Creating controller " + name);
     var newCtrl         = new BaseController(name);
 
-    var base =  shapeContext.controllers[viewName];
+    var base =  registerShapeController.prototype.shapeContext.controllers[viewName];
     if(base != undefined){
         for(var vn in base){
             if(typeof base[vn] == 'function'){
@@ -247,7 +270,7 @@ function getController(viewName, ctrlName){
     }
 
     if(ctrlName != null && ctrlName != undefined){
-        var specific =  shapeContext.controllers[ctrlName];
+        var specific =  registerShapeController.prototype.shapeContext.controllers[ctrlName];
         for(var vn in specific){
             if(typeof specific[vn] == 'function'){
                 newCtrl[vn] = specific[vn].bind(newCtrl);
