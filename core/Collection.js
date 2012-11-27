@@ -108,7 +108,7 @@ Collection.prototype.clone = function(){
 }
 
 Collection.prototype.copy = function(from){
-    this.container = from.container.slice(0);
+    this.container = from.container.concat();
     this.announceChanges("copy");
 }
 

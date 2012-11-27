@@ -53,23 +53,11 @@ registerModel("todo",{
         },
         toggle:function(model){
             if(model.completed == true){
-                for(var i = 0; i < this.active.length ; i++){
-                    if(this.active.getAt(i) == model){
-                        cprint("Moving from active to completed");
-                        this.active.removeAt(i);
-                        this.completed.push(model);
-                        break;
-                    }
-                }
+                this.active.remove(model);
+                this.completed.push(model);
             } else{
-                for(var i = 0; i< this.completed.length ; i++){
-                    if(this.completed.getAt(i) == model){
-                        cprint("Moving from completed to active");
-                        this.completed.removeAt(i);
-                        this.active.push(model);
-                        break;
-                    }
-                }
+                this.completed.remove(model);
+                this.active.push(model);
             }
         },
         remove:function(model){
