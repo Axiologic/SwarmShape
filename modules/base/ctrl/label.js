@@ -2,7 +2,7 @@
     default button controller
  */
 
-registerShapeController("base/label",{
+shape.registerCtrl("base/label",{
     init:function(){
         this.label = this.view;
         /*if(this.view.attr("shape-view") == "label"){

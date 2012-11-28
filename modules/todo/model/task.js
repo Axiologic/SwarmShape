@@ -1,5 +1,5 @@
 
-registerModel("task",{
+shape.registerModel("task",{
         meta:{
             table:"Task",
             pk:"id"

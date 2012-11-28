@@ -2,7 +2,7 @@
     default checkBox controller
  */
 
-registerShapeController("base/checkbox",{
+shape.registerCtrl("base/checkbox",{
     model:null,
     init:function(){
         this.checkBox = this.view;

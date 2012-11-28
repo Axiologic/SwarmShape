@@ -3,7 +3,7 @@
  */
 
 //controller for viewModel: todo.js
-registerShapeController("todo/todo",{
+shape.registerCtrl("todo/todo",{
     count:0,
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);

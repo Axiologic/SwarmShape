@@ -18,6 +18,9 @@ setMetaAttr = function(model,prop,value){
 }
 
 getMetaAttr = function(model,prop){
+    if(model.__meta == undefined){
+        return undefined;
+    }
     return model.__meta[prop];
 }
 

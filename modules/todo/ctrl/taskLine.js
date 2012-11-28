@@ -1,6 +1,6 @@
 
 //controller for viewModel: todo.js
-registerShapeController("todo/taskLine",{
+shape.registerCtrl("todo/taskLine",{
     count:0,
     init:function(){
         this.addChangeWatcher("completed", this.completedChanged);

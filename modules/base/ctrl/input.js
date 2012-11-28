@@ -2,7 +2,7 @@
     default button controller
  */
 
-registerShapeController("base/input",{
+shape.registerCtrl("base/input",{
     model:null,
     init:function(){
         if(this.view.tagName.toLowerCase() == "input"){

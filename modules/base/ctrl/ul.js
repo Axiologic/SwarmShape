@@ -2,7 +2,7 @@
  default button controller
  */
 
-registerShapeController("base/ul",{
+shape.registerCtrl("base/ul",{
     model:null,
     init:function(){
 

@@ -1,15 +1,6 @@
 var hasConsole = typeof console;
 
 
-
-function getBaseUrl(){
-    if(Config.prototype.globalCfg_BaseURL  == undefined){
-        var l = window.location;
-        Config.prototype.globalCfg_BaseURL = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
-    }
-    return Config.prototype.globalCfg_BaseURL;
-}
-
 function linePrint(prefix,text, fullStack){
     var trace = printStackTrace();
     var strTrace;
@@ -43,7 +34,7 @@ function cprint(str, fullStack){
     linePrint("",str, fullStack);
 }
 
-cprint("Loading shape...");
+
 
 
 function dprint(str, fullStack){
@@ -58,41 +49,167 @@ wprint = function(str,fullStack){
 $.ajaxSetup({ cache: false });
 
 
+function Shape(){
+    var shapeContext = {
+        controllers:[],
+        views:[]
+    };
 
-function registerShapeController(name,functObj){
-    //console.log("Registering controller " + name);
-    registerShapeController.prototype.shapeContext.controllers[name] = functObj;
-}
+    var classRegistry = {};
 
-registerShapeController.prototype.shapeContext = {
-    controllers:[],
-    views:[]
-};
-
-
-Config.prototype.cacheOfViews = {};
-
-Config.prototype.registerView = function(name,url){
-    var fileName = getBaseUrl + url;
-    $.get(fileName, function(content){
-        Config.prototype.cacheOfViews[name] = content;
-    });
-}
+    var dataRegistries = {};
+    var shapeUrlRegistry = {};
+    var shapeRegistry = {};
 
 
-function loadShapeComponent(viewName, callBack){
-    var res = Config.prototype.cacheOfViews[viewName];
-    if(res != undefined){
-        callBack(res);
-    } else{
-        wprint("Component " + viewName + " doesn't exist");
+    this.registerCtrl = function (name,functObj){
+        //console.log("Registering controller " + name);
+        shapeContext.controllers[name] = functObj;
+    }
+
+    this.registerModel = function(modelName,declaration){
+        classRegistry[modelName] = new QSClassDescription(declaration,modelName);
+    }
+
+    this.registerShapeURL = function(viewName,url){
+        shapeUrlRegistry[viewName] = url;
+    }
+
+    this.getController = function (viewName, ctrlName){
+        var name = viewName;
+        var foundOne = false;
+        if(ctrlName != undefined && ctrlName != null    ){
+            if(shapeContext.controllers[viewName] != undefined){
+                name = ctrlName + "["+ viewName +"]";
+            } else {
+                name = ctrlName;
+            }
+        }
+
+        //dprint("Creating controller " + name);
+        var newCtrl         = new BaseController(name);
+
+        var base =  shapeContext.controllers[viewName];
+        if(base != undefined){
+            for(var vn in base){
+                if(typeof base[vn] == 'function'){
+                    newCtrl[vn] = base[vn].bind(newCtrl);
+                } else{
+                    newCtrl[vn] = base[vn];
+                }
+            }
+            foundOne = true;
+        }
+
+        if(ctrlName != null && ctrlName != undefined){
+            var specific =  shapeContext.controllers[ctrlName];
+            for(var vn in specific){
+                if(typeof specific[vn] == 'function'){
+                    newCtrl[vn] = specific[vn].bind(newCtrl);
+                } else{
+                    newCtrl[vn] = specific[vn];
+                }
+            }
+            foundOne = true;
+        }
+
+        if(!foundOne){
+            wprint("No controller definition " + name);
+        }
+
+        for(var vn in newCtrl){
+            var val = newCtrl[vn];
+            if(typeof val == "function"){
+                newCtrl[vn] = val.bind(newCtrl);
+            }
+        }
+        return newCtrl;
+    }
+
+
+    this.newObject = function(className){
+        var res = {};
+        var qsClass = classRegistry[className];
+        if(qsClass != undefined){
+            qsClass.attachClassDescription(res);
+        }
+        else{
+            wprint("Undefined class " + className);
+        }
+        return res;
+    }
+
+    this.newTransientObject = function(className){
+        var res = this.newObject(className);
+        setMetaAttr(res,"persistence", "transient");
+        return res;
+    }
+
+    this.newPersistentObject = function(className){
+        var res = this.newObject(className);
+        //TODO: add in dataRegistries
+        setMetaAttr(res,"persistence", "global");
+        return res;
+    }
+
+
+    this.getShapeContent = function(shapeName, callBack){
+        var content = shapeRegistry[shapeName];
+        if( content == undefined){
+            var fileName = shapeUrlRegistry[shapeName]
+            if(fileName == undefined){
+                wprint("Unknown shape "+ shapeName);
+            } else{
+                $.get(fileName, function(newContent){
+                    shapeRegistry[shapeName] = newContent;
+                    callBack(newContent);
+                });
+            }
+        } else {
+            callBack(content);
+        }
+    }
+
+
+    this.getPerfectShape = function(viewModel, usecase, callBack){
+        var name = getMetaAttr(viewModel, "className");
+        if(usecase == undefined || usecase == null){
+            usecase = "default";
+        }
+
+        if(name != undefined) {
+            name = name + "." + usecase;
+            if(shapeUrlRegistry[name] != undefined){
+                this.getShapeContent(name,callBack);
+                return true;
+            }
+            name = name + ".default";
+            if(shapeUrlRegistry[name] != undefined){
+                this.getShapeContent(name,callBack);
+                return true;
+            }
+        }
+        wprint("Unable to automatically detect a shape for " + viewModel);
+        return false;
     }
 }
 
 
 
+window.shape = new Shape();
+shape = window.shape;
+
+function getBaseUrl(){
+    if(shape.baseUrl  == undefined){
+        var l = window.location;
+        shape.baseUrl = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
+    }
+    return shape.baseUrl;
+}
+
+
 function loadInnerHtml(domObj,viewName, ctrl){
-    loadShapeComponent(viewName, function(data) {
+    shape.getShapeContent(viewName, function(data) {
         domObj.innerHTML = data;
         bindAttributes(domObj, ctrl);
         //shapeExpand(domObj, ctrl);
@@ -140,12 +257,12 @@ function expandShape(domObj, parentCtrl, rootModel){
     }
 
     //console.log(" " + domObj +" Expanding " +  " viewCtrl: " + viewName +  " model chain: " + modelChain + " ctrl: " + ctrlName)
-    var ctrl = getController(viewName, ctrlName);
+    var ctrl = shape.getController(viewName, ctrlName);
     //cprint("New controller " + ctrl.ctrlName);
 
     ctrl.view       = domObj;
     if(modelChain != undefined){
-        if(modelChain == "#model"){
+        if(modelChain == "@"){
             rootModel = parentCtrl.model;
         } else{
             ctrl.chain = modelChain.substring(1);
@@ -242,57 +359,7 @@ function bindAttributes(domObj, ctrl){
    }
 }
 
-function getController(viewName, ctrlName){
-
-    var name = viewName;
-    var foundOne = false;
-    if(ctrlName != undefined && ctrlName != null    ){
-        if(registerShapeController.prototype.shapeContext.controllers[viewName] != undefined){
-            name = ctrlName + "["+ viewName +"]";
-        } else {
-            name = ctrlName;
-        }
-    }
-
-    //dprint("Creating controller " + name);
-    var newCtrl         = new BaseController(name);
-
-    var base =  registerShapeController.prototype.shapeContext.controllers[viewName];
-    if(base != undefined){
-        for(var vn in base){
-            if(typeof base[vn] == 'function'){
-                newCtrl[vn] = base[vn].bind(newCtrl);
-            } else{
-                newCtrl[vn] = base[vn];
-            }
-        }
-        foundOne = true;
-    }
-
-    if(ctrlName != null && ctrlName != undefined){
-        var specific =  registerShapeController.prototype.shapeContext.controllers[ctrlName];
-        for(var vn in specific){
-            if(typeof specific[vn] == 'function'){
-                newCtrl[vn] = specific[vn].bind(newCtrl);
-            } else{
-                newCtrl[vn] = specific[vn];
-            }
-        }
-        foundOne = true;
-    }
-
-    if(!foundOne){
-        wprint("No controller definition " + name);
-    }
-
-    for(var vn in newCtrl){
-        var val = newCtrl[vn];
-        if(typeof val == "function"){
-            newCtrl[vn] = val.bind(newCtrl);
-        }
-    }
-    return newCtrl;
-}
+cprint("Loading shape...");
 
 
 function watchHashEvent(ctrl){
@@ -309,3 +376,5 @@ function watchHashEvent(ctrl){
  // Trigger the event (useful on page load).
     //$(window).hashchange();
 }
+
+

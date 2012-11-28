@@ -1,6 +1,6 @@
 
 
-var classRegistry = {};
+
 function QSClassDescription(declaration, qsName){
     var members = {};
     var triggers = {};
@@ -89,11 +89,7 @@ function changeCallBack(){
     //do nothing until adding persistence
 }
 
-registerModel = function(modelName,declaration){
-    classRegistry[modelName] = new QSClassDescription(declaration,modelName);
-}
 
-var dataRegistries = {};
 
 function DataRegistry(name){
     this.name       = name;
@@ -107,27 +103,3 @@ function DataRegistry(name){
     }
 }
 
-newObject = function(className){
-    var res = {};
-    var qsClass = classRegistry[className];
-    if(qsClass != undefined){
-    qsClass.attachClassDescription(res);
-    }
-    else{
-        wprint("Undefined class " + className);
-    }
-    return res;
-}
-
-newTransientObject = function(className){
-    var res = newObject(className);
-    setMetaAttr(res,"persistence", "transient");
-    return res;
-}
-
-newPersistentObject = function(className){
-    var res = newObject(className);
-    //TODO: add in dataRegistries
-    setMetaAttr(res,"persistence", "global");
-    return res;
-}

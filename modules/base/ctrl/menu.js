@@ -2,7 +2,7 @@
     default button controller
  */
 
-registerShapeController("base/menu",{
+shape.registerCtrl("base/menu",{
     model:null,
     init:function(){
         this.toView();

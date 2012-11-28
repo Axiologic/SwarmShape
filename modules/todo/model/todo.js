@@ -1,5 +1,5 @@
 
-registerModel("todo",{
+shape.registerModel("todo",{
         meta:{
             persitence:"none"
         },
