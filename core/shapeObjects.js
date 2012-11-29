@@ -86,7 +86,6 @@ function ChangeWatcher(model, chain, handler){
                         if(isBindableCollection(myOldValue)){
                             myOldValue.removeWatcher(callBackRefs[endOfChain]);
                         }
-                        dprint("aham"+myOldValue+" "+newValue);
                         callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
                     }
                     handler(newParent,args[endOfChain-1],newValue);
@@ -146,7 +145,6 @@ function ChangeWatcher(model, chain, handler){
         var newValue  = chainValues[endOfChain];
         var newParent = chainValues[endOfChain-1];
         if(isBindableCollection(newValue)){
-           dprint("alt aham"+" "+newValue+" "+args);
             callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
         }
         handler(newParent,args[endOfChain-1],newValue);

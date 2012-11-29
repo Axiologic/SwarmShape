@@ -24,8 +24,7 @@
         <?php include("shapes.js"); ?>
         shape.baseUrl = "http://localhost";
         var model = shape.newTransientObject("todo");
-        initialiseShape(document.getElementById("main"), model);
-
+        expandShapeComponent(document.getElementById("main"),null, model);
     }
 
     if(!$.isReady){

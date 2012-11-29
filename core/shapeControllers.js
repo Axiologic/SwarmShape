@@ -18,7 +18,7 @@ BaseController.prototype.getCompleteChain = function(partial) {
 }
 
 BaseController.prototype.init = function(){
-    wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
+   // wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 BaseController.prototype.getCtxtCtrl = function(){
