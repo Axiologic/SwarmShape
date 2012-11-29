@@ -52,7 +52,7 @@ J = function(obj) {
 
 
 function ChangeWatcher(model, chain, handler){
-    try{
+
         makeBindable(model);
         var model          = model;
         var chain          = chain;
@@ -86,6 +86,7 @@ function ChangeWatcher(model, chain, handler){
                         if(isBindableCollection(myOldValue)){
                             myOldValue.removeWatcher(callBackRefs[endOfChain]);
                         }
+                        dprint("aham"+myOldValue+" "+newValue);
                         callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
                     }
                     handler(newParent,args[endOfChain-1],newValue);
@@ -94,30 +95,42 @@ function ChangeWatcher(model, chain, handler){
         }
 
         function rebuildWatchers(startFrom){
-            var newModel,oldModel, ref, parent;
-            var i = startFrom;
-            if(i == 0){
-                //callBackRefs[0] = addWatcher(model, args[0], getWatcherClosure(1));
-                i = 1;
-            }
-            for(; i<=args.length; i++){
-                parent      = chainValues[i-1];
-                newModel    = chainValues[i-1][args[i-1]];
-                oldModel    = chainValues[i];
-                ref         = callBackRefs[i-1];
+           /* try{*/
+                var newModel,oldModel, ref, parent;
+                var i = startFrom;
+                if(i == 0){
+                    callBackRefs[0] = addWatcher(model, args[0], getWatcherClosure(1));
+                    i = 1;
+                }
+                for(; i<=endOfChain; i++){
 
-                if(newModel == oldModel){
-                    break;
-                } else {
-                    if(ref != null){
-                        removeWatcher(parent,args[i-1],ref);
+                    parent      = chainValues[i-1];
+                    newModel    = parent[args[i-1]];
+                    oldModel    = chainValues[i];
+                    ref         = callBackRefs[i];
+                    if(i!=endOfChain)
+                    {
+                        if(newModel == oldModel){
+                            break;
+                        } else {
+                            if(ref != null){
+                                removeWatcher(oldModel,args[i-1],ref);
+                                callBackRefs[i] = null;
+                            }
+
+                            if(newModel){
+                                callBackRefs[i] = addWatcher(newModel, args[i-1], getWatcherClosure(i+1));
+                            }
+                        }
                     }
                     chainValues[i] = newModel;
-                    //console.log("****Adding watcher " + parent + " " + args[i-1]);
-                    callBackRefs[i-1] = addWatcher(parent, args[i-1], getWatcherClosure(i));
                 }
             }
-        }
+        /*catch(err){
+                cprint("Unexpected error catch when processing chain " + chain + err,true);
+                //cprint("Unexpected error on chain " + chain , err);
+            }
+        }*/
 
         this.release  = function(){
             for(var i=0; i < callBackRefs.length; i++) {
@@ -133,14 +146,11 @@ function ChangeWatcher(model, chain, handler){
         var newValue  = chainValues[endOfChain];
         var newParent = chainValues[endOfChain-1];
         if(isBindableCollection(newValue)){
+           dprint("alt aham"+" "+newValue+" "+args);
             callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
         }
         handler(newParent,args[endOfChain-1],newValue);
-    }
-    catch(err){
-        cprint("Unexpected error catch when processing chain " + chain );
-        //cprint("Unexpected error on chain " + chain , err);
-    }
+
 }
 
 function addWatcher(model,property, nw){

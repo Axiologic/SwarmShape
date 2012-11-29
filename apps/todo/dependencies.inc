@@ -1,12 +1,13 @@
 
 <script type="text/javascript" src="../../deps/jquery.min.js"></script>
 <script type="text/javascript" src="../../deps/stacktrace.js"></script>
+<script type="text/javascript" src="../../core/shape.js"> </script>
 <script type="text/javascript" src="../../core/FunctionReference.js"> </script>
 <script type="text/javascript" src="../../core/shapeObjects.js"> </script>
 <script type="text/javascript" src="../../core/shapeModels.js"> </script>
 <script type="text/javascript" src="../../core/Collection.js"> </script>
 <script type="text/javascript" src="../../core/shapeControllers.js"> </script>
-<script type="text/javascript" src="../../core/shape.js"> </script>
+
 <script type="text/javascript" src="../../modules/base/ctrl/button.js"> </script>
 <script type="text/javascript" src="../../modules/base/ctrl/label.js"> </script>
 

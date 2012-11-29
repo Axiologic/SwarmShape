@@ -343,20 +343,21 @@ function bindAttributes(domObj, ctrl){
                     if(domObj != element){
                         forExpand.push(element);
                     }
+                }else{
+                    $(this.attributes).each (
+                        function() {
+                            var attributeName = this.name;
+                            if(this.value[0] =="@"){
+                                ctrl.addChangeWatcher(this.value.substring(1),
+                                    function(changedModel, modelProperty, value, oldValue ){
+                                        $(domObj).attr(attributeName,value);
+                                    });
+                                //console.log("Binding " + attributeName);
+                            } else if(this.value[0] =="$"){
+                                wprint("Binding for " + attributeName + " as "+ this.value +" not yet implemented");
+                            }
+                        });
                 }
-             $(this.attributes).each (
-                 function() {
-                     var attributeName = this.name;
-                     if(this.value[0] =="@"){
-                         ctrl.addChangeWatcher(this.value.substring(1),
-                             function(changedModel, modelProperty, value, oldValue ){
-                                 $(domObj).attr(attributeName,value);
-                            });
-                         //console.log("Binding " + attributeName);
-                     } else if(this.value[0] =="$"){
-                         wprint("Binding for " + attributeName + " as "+ this.value +" not yet implemented");
-                     }
-                 });
     });
    for (var i=0; i< forExpand.length; i++){
        //console.log("Element " + forExpand[i] + " get expanded" );
