@@ -56,7 +56,7 @@ function QSClassDescription(declaration, qsName){
                 else {
                 model[n] = newObject(m.type);
                 }
-            addChangeWatcher(model,n,changeCallBack)
+            //addChangeWatcher(model,n,changeCallBack)
         }
 
         if(model.ctor != undefined && typeof model.ctor == "function"){
