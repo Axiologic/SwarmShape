@@ -24,9 +24,7 @@ shape.registerCtrl("base/ul",{
             if(m == undefined){
                 wprint("Wtf!");
             }
-            var modelName = getMetaAttr(m,"className");
-            var viewName = "shapes/"+modelName+"/"+modelName;
-            loadShapeComponent(viewName,getComponentBinder(m));
+            shape.getPerfectShape(m,null,getComponentBinder(m));
         }
     },
     onChange:function(){

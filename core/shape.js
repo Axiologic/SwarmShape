@@ -158,12 +158,17 @@ function Shape(){
         if( content == undefined){
             var fileName = shapeUrlRegistry[shapeName]
             if(fileName == undefined){
-                wprint("Unknown shape "+ shapeName);
-            } else{
+                shapeName =  shapeName + ".default";
+                fileName = shapeUrlRegistry[shapeName]
+            }
+
+            if(fileName != undefined) {
                 $.get(fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
                     callBack(newContent);
                 });
+            } else{
+                wprint("Could not find html view:" + shapeName);
             }
         } else {
             callBack(content);

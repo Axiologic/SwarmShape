@@ -97,14 +97,14 @@ function ChangeWatcher(model, chain, handler){
             var newModel,oldModel, ref, parent;
             var i = startFrom;
             if(i == 0){
-                callBackRefs[0] = addWatcher(model, args[0], getWatcherClosure(1));
+                //callBackRefs[0] = addWatcher(model, args[0], getWatcherClosure(1));
                 i = 1;
             }
             for(; i<=args.length; i++){
                 parent      = chainValues[i-1];
                 newModel    = chainValues[i-1][args[i-1]];
                 oldModel    = chainValues[i];
-                ref         = callBackRefs[i];
+                ref         = callBackRefs[i-1];
 
                 if(newModel == oldModel){
                     break;
@@ -114,7 +114,7 @@ function ChangeWatcher(model, chain, handler){
                     }
                     chainValues[i] = newModel;
                     //console.log("****Adding watcher " + parent + " " + args[i-1]);
-                    callBackRefs[i] = addWatcher(parent, args[i-1], getWatcherClosure(i));
+                    callBackRefs[i-1] = addWatcher(parent, args[i-1], getWatcherClosure(i));
                 }
             }
         }

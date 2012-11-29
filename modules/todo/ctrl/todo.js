@@ -3,7 +3,7 @@
  */
 
 //controller for viewModel: todo.js
-shape.registerCtrl("todo/todo",{
+shape.registerCtrl("todo",{
     count:0,
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);
@@ -12,7 +12,7 @@ shape.registerCtrl("todo/todo",{
     addNewTitle :function(){
         if( this.model.newTitle != ""){
             dprint("New task added..." + this.model.newTitle);
-            var newTask = newPersistentObject("task");
+            var newTask = shape.newPersistentObject("task");
             newTask.description = this.model.newTitle;
             this.model.active.push(newTask);
             this.model.all.push(newTask);

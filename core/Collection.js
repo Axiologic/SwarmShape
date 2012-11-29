@@ -116,6 +116,7 @@ Collection.prototype.copy = function(from){
 Collection.prototype.addWatcher = function(callback){
     var fctRef = new FunctionReference(callback);
     this.__meta.watcherList[fctRef] = fctRef;
+    return fctRef;
 }
 
 Collection.prototype.removeWatcher = function(fctRef){
