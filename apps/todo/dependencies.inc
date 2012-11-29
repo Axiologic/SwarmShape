@@ -2,6 +2,7 @@
 <script type="text/javascript" src="../../deps/jquery.min.js"></script>
 <script type="text/javascript" src="../../deps/stacktrace.js"></script>
 <script type="text/javascript" src="../../core/shape.js"> </script>
+<script type="text/javascript" src="../../core/DOMCache.js"> </script>
 <script type="text/javascript" src="../../core/FunctionReference.js"> </script>
 <script type="text/javascript" src="../../core/shapeObjects.js"> </script>
 <script type="text/javascript" src="../../core/shapeModels.js"> </script>

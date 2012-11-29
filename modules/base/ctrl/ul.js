@@ -5,29 +5,22 @@
 shape.registerCtrl("base/ul",{
     model:null,
     init:function(){
-
+    this.domCache = new DOMCache();
     },
     toView:function(){
         var view = $(this.view);
-        view.empty();
         var selfCtrl = this;
-        function getComponentBinder(model){
-            return function(content){
-                view.append(content);
-                var li = view.children().last();
-                //  dprint("Inserting Task in list: " + model.description);
-                expandShape(li[0], selfCtrl, model);
+        this.domCache.doRefresh( this.model, this,
+            function(){
+                view.empty();
+            },
+            function(newElement){
+                view.append(newElement);
+            },
+            function(){
+                cprint("End ul refresh");
+            //do nothing, end of
             }
-        }
-        for(var i=0; i < this.model.size(); i++){
-            var m = this.model.getAt(i);
-            if(m == undefined){
-                wprint("Wtf!");
-            }
-            shape.getPerfectShape(m,null,getComponentBinder(m));
-        }
-    },
-    onChange:function(){
-
+        );
     }
 });
