@@ -4,29 +4,21 @@
 
 shape.registerCtrl("base/input",{
     model:null,
+    isCheckbox:false,
     init:function(){
-        if(this.view.tagName.toLowerCase() == "input"){
-            this.input = this.view;
-        } else{
-            this.input = $(this.view).find("input")[0];
-        }
-        this.toView();
-        $(this.input).change(this.onChange);
-    },
-    getDOMInput:function(){
-
+        this.isCheckbox = ($(this.view).attr("type") == "checkbox");
+        $(this.view).on("change",this.onChange);
     },
     toView:function(){
         if(this.model != undefined && this.model != null){
-            this.input.value = this.model;
+            this.view.value = this.model;
         }
-        //console.log("Binding input text: " + JSON.stringify(this.model));
     },
     onChange:function(){
-        if($(this.view).attr("type") == "checkbox"){
+        if(this.isCheckbox){
             this.model = ! this.model;
         } else{
-            this.model = this.input.value;
+            this.model = this.view.value;
         }
         this.modelAssign(this.model);
     }

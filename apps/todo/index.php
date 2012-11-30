@@ -20,7 +20,7 @@
 <script type="text/javascript">
 
     function initShape(){
-
+        $.ajaxSetup({ cache: false });
         <?php include("shapes.js"); ?>
         shape.baseUrl = "http://localhost";
         var model = shape.newTransientObject("todo");

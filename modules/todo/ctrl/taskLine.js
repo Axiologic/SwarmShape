@@ -3,8 +3,8 @@
 shape.registerCtrl("todo/taskLine",{
     count:0,
     init:function(){
-        this.addChangeWatcher("completed", this.completedChanged);
         this.oldValue = this.model.completed;
+        this.addChangeWatcher("completed", this.completedChanged);
     },
     toView:function(){
         $(this.view).toggleClass("completed", this.model.completed);

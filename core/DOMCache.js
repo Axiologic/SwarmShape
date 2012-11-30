@@ -1,13 +1,16 @@
 function DOMCache(){
     var cache = {};
 
+    /*
     this.addElement = function(model,dom){
-        cache[model] = dom;
-    }
+     cache[model] = dom;
+     }
 
-    this.getElement = function(model){
-        return cache[model];
-    }
+     this.getElement = function(model){
+     return cache[model];
+     }
+     */
+
 
     function getComponentBinder(model, parentCtrl, callBack){
         return function(content){
@@ -18,7 +21,7 @@ function DOMCache(){
         }
     }
 
-    this.createDOMForModel = function(model, parentCtrl, callBack){
+    function createDOMForModel(model, parentCtrl, callBack){
         if(cache[model] != undefined){
             callBack(cache[model]);
             return;
@@ -43,14 +46,17 @@ function DOMCache(){
         }
 
         var endCounter = coll.length;
+        startF();
         if(endCounter != 0){
             duringRefresh = true;
-            startF();
+        } else{
+            endF();
+            return;
         }
 
         for(var i = 0; i < coll.length; i++){
             var m = coll.getAt(i);
-            self.createDOMForModel(m,parentCtrl, function (newDom){
+            createDOMForModel(m,parentCtrl, function (newDom){
              itemF(newDom);
 
              endCounter--;

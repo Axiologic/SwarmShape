@@ -12,14 +12,13 @@ shape.registerCtrl("base/ul",{
         var selfCtrl = this;
         this.domCache.doRefresh( this.model, this,
             function(){
-                view.empty();
+                view.children().each(function(){$(this).detach()});
             },
             function(newElement){
                 view.append(newElement);
             },
             function(){
-                //cprint("End ul refresh");
-            //do nothing, end of
+            //do nothing, be happy :)
             }
         );
     }

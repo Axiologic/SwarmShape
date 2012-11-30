@@ -7,6 +7,8 @@ function BaseController(ctrlName){
     this.parentCtrl = null;
     this.isController = true;
     this.initialised = false;
+    this.model = undefined;
+    this.view  = undefined;
 }
 
 
@@ -18,15 +20,6 @@ BaseController.prototype.getCtxtCtrl = function(){
     return this.ctxtCtrl;
 }
 
-BaseController.prototype.getCompleteChain = function(partial) {
-    var chain;
-    if( this.parentCtrl != this && !this.brakeChainCtrl && this.parentCtrl.chain != ""){
-        chain = this.parentCtrl.chain + "." + partial;
-    } else{
-        chain = partial;
-    }
-    return chain;
-}
 /*
  hasTransparentModel - doesn't have his own model,inherits the same wih he first non transparentModel
     isCWRoot = all change watchers will be relative to this ctrl, breaks the whole chain from context controller
@@ -36,6 +29,7 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
     function createCW(ctrl, currChain){
         if(ctrl == ctrl.parentCtrl || ctrl.isCWRoot){
             var watcher;
+            //dprint("Chain " + ctrl.model + "->"+currChain);
             watcher = addChangeWatcher(ctrl.model,currChain,handler);
             self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
             return;
@@ -53,21 +47,48 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
     createCW(this, chain);
 }
 
-BaseController.prototype.changeModel = function(model){
-    if(this.isCWRoot && model == undefined){
-        dprint("What happens here?");
-    }
-    this.model = model;
+function try2InitCtrl(ctrl){
     if(!this.initialised){
-        this.initialised = true;
-        this.init();
+        if(ctrl.model != undefined && ctrl.view != undefined){
+            ctrl.initialised = true;
+            ctrl.init();
+            ctrl.onModelChanged();
+            ctrl.onViewChanged();
+            ctrl.toView();
+        }
     }
-    this.onModelChanged();
-    this.toView();
+
 }
 
 BaseController.prototype.onModelChanged = function(){
 
+}
+
+BaseController.prototype.onViewChanged = function(){
+
+}
+
+BaseController.prototype.changeModel = function(model){
+    if(this.isCWRoot && model == undefined){
+        dprint("This is wrong, not possible...");
+    }
+    this.model = model;
+    if(this.initialised){
+        this.onModelChanged();
+        this.toView();
+    } else{
+        try2InitCtrl(this);
+    }
+}
+
+BaseController.prototype.changeView = function(view){
+    this.view = view;
+    if(this.initialised){
+        this.toView();
+        this.onViewChanged();
+    } else {
+        try2InitCtrl(this);
+    }
 }
 
 BaseController.prototype.toView = function(){
