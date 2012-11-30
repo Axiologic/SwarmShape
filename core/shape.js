@@ -221,11 +221,78 @@ function loadInnerHtml(domObj,viewName, ctrl){
     });
 }
 
-/*
-function initialiseShape(domObj, model,model){
-    ctrl = expandShapeComponent(domObj,null);
-    //ctrl.changeModel(model);
-} */
+function expandShapeComponent(domObj, parentCtrl, rootModel){
+    var ctrl;
+    var viewName  = $(domObj).attr("shape-view");
+    var modelChain = $(domObj).attr("shape-model");
+    var ctrlName  = $(domObj).attr("shape-ctrl");
+
+
+    if(parentCtrl && parentCtrl.isController == undefined){
+        wprint("Wtf? Give me a proper controller!");
+    }
+
+
+    var transparentModel = false;
+    if(modelChain != undefined){
+        if(modelChain != "@"){
+            modelChain = modelChain.substring(1);
+            transparentModel = true;
+        }
+    } else {
+        transparentModel = true;
+    }
+
+    if(rootModel){
+        transparentModel = false;
+    }
+
+    if(transparentModel && ctrlName == undefined){
+        // we just expand but don't create any controller
+        loadInnerHtml(domObj,viewName,parentCtrl);
+        ctrl = null;
+    } else {
+        ctrl = shape.getController(viewName, ctrlName);
+        ctrl.hasTransparentModel = transparentModel;
+        ctrl.view       = domObj;
+        if(modelChain != undefined){
+            if(modelChain != "@"){
+                ctrl.chain = modelChain;
+            } else{
+                ctrl.changeModel(parentCtrl.model);
+            }
+        }
+
+        if(parentCtrl == null || parentCtrl == undefined){
+            ctrl.parentCtrl = ctrl;
+            ctrl.ctxtCtrl = ctrl;
+            ctrl.changeModel(rootModel);
+        } else{
+            ctrl.parentCtrl = parentCtrl;
+            ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
+
+            if(rootModel != undefined){
+                ctrl.isCWRoot = true;
+                ctrl.changeModel(rootModel);
+            } else{
+                cprint("New chain " + ctrl.chain);
+                ctrl.addChangeWatcher("",
+                    function(changedModel, modelProperty, value){
+                        if(ctrl.parentCtrl != ctrl){
+                            ctrl.parentModel = changedModel;
+                            ctrl.parentModelProperty = modelProperty;
+                        }
+                        ctrl.changeModel(value);
+                    }
+                );
+            }
+        }
+
+        loadInnerHtml(domObj,viewName,ctrl);
+    }
+    return ctrl;
+}
+
 
 function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
     var modelChain = $(domObj).attr("shape-model");
@@ -256,219 +323,49 @@ function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
     //cprint("New controller " + ctrl.ctrlName);
 
     ctrl.view               = domObj;
-    ctrl.transparentModel   = transparentModel;
+    ctrl.hasTransparentModel   = transparentModel;
 
 
     ctrl.parentCtrl = parentCtrl;
     ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
 
-    if(rootModel != undefined){
-            ctrl.rootModel = rootModel;
-            ctrl.model     = rootModel;
-            ctrl.changeModel(rootModel);
-            ctrl.brakeChainCtrl = true;
-    } else{
-            ctrl.rootModel = parentCtrl.rootModel;
-    }
-
     if(modelChain == "@"){
-        ctrl.model =  parentCtrl.model;
+        ctrl.changeModel(parentCtrl.model);
+    } else{
+        if(modelChain != undefined){
+            ctrl.chain = modelChain;
+        }
     }
-    ctrl.init();
 
+    if(rootModel != undefined){
+            ctrl.isCWRoot = true;
+            ctrl.changeModel(rootModel);
+    } else {
+         dprint("New chain " + ctrl.chain + " ");
+         ctrl.addChangeWatcher("",
+             function(changedModel, modelProperty, value){
+                 if(ctrl.parentCtrl != ctrl){
+                     ctrl.parentModel = changedModel;
+                     ctrl.parentModelProperty = modelProperty;
+                 }
 
-    if(!ctrl.transparentModel){
-        ctrl.chain = ctrl.getCompleteChain(modelChain);
-        cprint("New chain " + ctrl.chain);
-        parentCtrl.addChangeWatcher__absolute(ctrl.chain,
-            function(changedModel, modelProperty, value){
-                if(ctrl.parentCtrl != ctrl){
-                    ctrl.parentModel = changedModel;
-                    ctrl.parentModelProperty = modelProperty;
-                }
-                ctrl.changeModel(value);
-            }
-        );
-    }
+                 ctrl.changeModel(value);
+             }
+         );
+     }
 
     if(expandChilds == true){
-        bindAttributes(domObj,parentCtrl);
+        bindAttributes(domObj,ctrl);
     } else{
         bindDirectAttributes(domObj,parentCtrl);
     }
-    return ctrl;
-}
 
-function expandShapeComponent(domObj, parentCtrl, rootModel){
-    var ctrl;
-    var viewName  = $(domObj).attr("shape-view");
-
-    var modelChain = $(domObj).attr("shape-model");
-    var ctrlName  = $(domObj).attr("shape-ctrl");
-
-
-    if(parentCtrl && parentCtrl.isController == undefined){
-        wprint("Wtf? Give me a proper controller!");
-    }
-
-
-    var transparentModel = false;
-
-    if(modelChain != undefined){
-        if(modelChain != "@"){
-            modelChain = modelChain.substring(1);
-            transparentModel = true;
-        }
-    } else {
-        transparentModel = true;
-    }
-
-    if(rootModel){
-        transparentModel = false;
-    }
-
-    if(transparentModel && ctrlName == undefined){
-        // we just expand but don't create any controller
-        loadInnerHtml(domObj,viewName,parentCtrl);
-        ctrl = null;
-    } else {
-        ctrl = shape.getController(viewName, ctrlName);
-        ctrl.transparentModel = transparentModel;
-        ctrl.view       = domObj;
-        if(modelChain != undefined){
-            if(modelChain == "@"){
-                rootModel = parentCtrl.model;
-            } else{
-                ctrl.chain = modelChain;
-            }
-        }
-
-        if(parentCtrl == null || parentCtrl == undefined){
-            ctrl.parentCtrl = ctrl;
-            ctrl.ctxtCtrl = ctrl;
-            ctrl.rootModel = rootModel;
-            ctrl.model     = rootModel;
-        } else{
-            ctrl.parentCtrl = parentCtrl;
-            ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
-
-            if(rootModel != undefined){
-                ctrl.rootModel = rootModel;
-                ctrl.model     = rootModel;
-                ctrl.changeModel(rootModel);
-                ctrl.brakeChainCtrl = true;
-            } else{
-                ctrl.rootModel = parentCtrl.rootModel;
-            }
-
-            if(!transparentModel){
-                ctrl.chain = ctrl.getCompleteChain(modelChain);
-                cprint("New chain " + ctrl.chain);
-                parentCtrl.addChangeWatcher__absolute(ctrl.chain,
-                    function(changedModel, modelProperty, value){
-                        if(ctrl.parentCtrl != ctrl){
-                            ctrl.parentModel = changedModel;
-                            ctrl.parentModelProperty = modelProperty;
-                        }
-                        ctrl.changeModel(value);
-                    }
-                );
-            }
-        }
-
-        loadInnerHtml(domObj,viewName,ctrl);
-        ctrl.init();
-    }
     return ctrl;
 }
 
 function expandExistingDOM(domElem,parent,rootModel){
     return expandHTMLElement(domElem,parent,rootModel,true);
 }
-
-function expandShapeComponent(domObj, parentCtrl, rootModel){
-    var ctrl;
-    var viewName  = $(domObj).attr("shape-view");
-
-    var modelChain = $(domObj).attr("shape-model");
-    var ctrlName  = $(domObj).attr("shape-ctrl");
-
-
-    if(parentCtrl && parentCtrl.isController == undefined){
-        wprint("Wtf? Give me a proper controller!");
-    }
-
-
-    var transparentModel = false;
-
-    if(modelChain != undefined){
-        if(modelChain != "@"){
-            modelChain = modelChain.substring(1);
-            transparentModel = true;
-        }
-    } else {
-        transparentModel = true;
-    }
-
-    if(rootModel){
-        transparentModel = false;
-    }
-
-    if(transparentModel && ctrlName == undefined){
-        // we just expand but don't create any controller
-        loadInnerHtml(domObj,viewName,parentCtrl);
-        ctrl = null;
-    } else {
-        ctrl = shape.getController(viewName, ctrlName);
-        ctrl.transparentModel = transparentModel;
-        ctrl.view       = domObj;
-        if(modelChain != undefined){
-            if(modelChain == "@"){
-                rootModel = parentCtrl.model;
-            } else{
-                ctrl.chain = modelChain;
-            }
-        }
-
-        if(parentCtrl == null || parentCtrl == undefined){
-            ctrl.parentCtrl = ctrl;
-            ctrl.ctxtCtrl = ctrl;
-            ctrl.rootModel = rootModel;
-            ctrl.model     = rootModel;
-        } else{
-            ctrl.parentCtrl = parentCtrl;
-            ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
-
-            if(rootModel != undefined){
-                ctrl.rootModel = rootModel;
-                ctrl.model     = rootModel;
-                ctrl.changeModel(rootModel);
-                ctrl.brakeChainCtrl = true;
-            } else{
-                ctrl.rootModel = parentCtrl.rootModel;
-            }
-
-            if(!transparentModel){
-                ctrl.chain = ctrl.getCompleteChain(modelChain);
-                cprint("New chain " + ctrl.chain);
-                parentCtrl.addChangeWatcher__absolute(ctrl.chain,
-                    function(changedModel, modelProperty, value){
-                        if(ctrl.parentCtrl != ctrl){
-                            ctrl.parentModel = changedModel;
-                            ctrl.parentModelProperty = modelProperty;
-                        }
-                        ctrl.changeModel(value);
-                    }
-                );
-            }
-        }
-
-        loadInnerHtml(domObj,viewName,ctrl);
-        ctrl.init();
-    }
-    return ctrl;
-}
-
 
 function bindDirectAttributes(element,ctrl){
     $(element.attributes).each (

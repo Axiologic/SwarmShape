@@ -18,7 +18,7 @@ shape.registerCtrl("base/ul",{
                 view.append(newElement);
             },
             function(){
-                cprint("End ul refresh");
+                //cprint("End ul refresh");
             //do nothing, end of
             }
         );

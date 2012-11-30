@@ -28,9 +28,9 @@ shape.registerCtrl("todo",{
             this.model.remove(model);
         }else if(type == "removeAllCompleted"){
             this.model.removeAllCompleted();
-        }else if(type == "showCompletedTasks"){
+        }else if(type == "completedTasks"){
             this.model.current = this.model.completed;
-        }else if(type == "showActiveTasks"){
+        }else if(type == "activeTasks"){
             this.model.current = this.model.active;
         }else if(type == "allTasks"){
             this.model.current = this.model.all;

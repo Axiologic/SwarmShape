@@ -2,9 +2,20 @@ function BaseController(ctrlName){
     this.ctrlName = ctrlName;
     this.changeWatchers = [];
     this.chain = "";
-    this.brakeChainCtrl = false;
+    this.isCWRoot = false;
+    this.hasTransparentModel = false;
     this.parentCtrl = null;
     this.isController = true;
+    this.initialised = false;
+}
+
+
+BaseController.prototype.init = function(){
+   // wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
+}
+
+BaseController.prototype.getCtxtCtrl = function(){
+    return this.ctxtCtrl;
 }
 
 BaseController.prototype.getCompleteChain = function(partial) {
@@ -16,47 +27,41 @@ BaseController.prototype.getCompleteChain = function(partial) {
     }
     return chain;
 }
-
-BaseController.prototype.init = function(){
-   // wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
-}
-
-BaseController.prototype.getCtxtCtrl = function(){
-    return this.ctxtCtrl;
-}
-
+/*
+ hasTransparentModel - doesn't have his own model,inherits the same wih he first non transparentModel
+    isCWRoot = all change watchers will be relative to this ctrl, breaks the whole chain from context controller
+*/
 BaseController.prototype.addChangeWatcher = function(chain,handler){
-    chain = this.getCompleteChain(chain);
-    this.addChangeWatcher__absolute(chain,handler);
-}
-
-//add change watcher on an absolute chain (direct from context root model)
-BaseController.prototype.addChangeWatcher__absolute = function(chain, handler){
-    var watcher;
-    if(this.model != null){
-        watcher = addChangeWatcher(this.rootModel,chain,handler);
+    var self = this;
+    function createCW(ctrl, currChain){
+        if(ctrl == ctrl.parentCtrl || ctrl.isCWRoot){
+            var watcher;
+            watcher = addChangeWatcher(ctrl.model,currChain,handler);
+            self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
+            return;
+        }
+        if(ctrl.hasTransparentModel) {
+            return createCW(ctrl.parentCtrl, currChain);
+        } else{
+            var newChain = ctrl.chain;
+            if(currChain != ""){
+                newChain = ctrl.chain + "." + currChain;
+            }
+            return createCW(ctrl.parentCtrl, newChain);
+        }
     }
-    this.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
+    createCW(this, chain);
 }
 
 BaseController.prototype.changeModel = function(model){
-    this.model = model;
-    /*
-    //refresh all registered watchers
-    if(this.ctxtCtrl == this){
-        if(this.watchers != null){
-            for(var i=0;i<this.watchers.length;i++){
-                if(null != this.watchers[i].watcher){
-                    this.watchers[i].watcher.release();
-                }
-                this.watchers[i].watcher =
-                    addChangeWatcher(this.rootModel,
-                        this.watchers[i].chain,
-                        this.watchers[i].handler);
-            }
-        }
+    if(this.isCWRoot && model == undefined){
+        dprint("What happens here?");
     }
-    */
+    this.model = model;
+    if(!this.initialised){
+        this.initialised = true;
+        this.init();
+    }
     this.onModelChanged();
     this.toView();
 }

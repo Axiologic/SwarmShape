@@ -21,12 +21,14 @@ function DOMCache(){
     this.createDOMForModel = function(model, parentCtrl, callBack){
         if(cache[model] != undefined){
             callBack(cache[model]);
+            return;
         }
         shape.getPerfectShape(model,null,getComponentBinder(model, parentCtrl, callBack));
     }
 
     var refreshQueue = [];
     var duringRefresh = false;
+    var self  = this;
 
     this.doRefresh = function(coll, parentCtrl, startF, itemF, endF ){
         if(duringRefresh){
@@ -45,20 +47,20 @@ function DOMCache(){
             duringRefresh = true;
             startF();
         }
-        cprint("Start refreshing " + endCounter);
+
         for(var i = 0; i < coll.length; i++){
             var m = coll.getAt(i);
-            this.createDOMForModel(m,parentCtrl, function (newDom){
+            self.createDOMForModel(m,parentCtrl, function (newDom){
              itemF(newDom);
 
              endCounter--;
-             cprint("endCounter " + endCounter);
+
              if(endCounter == 0){
                  endF();
                  duringRefresh = false;
                  var x = refreshQueue.pop();
                  if(x != undefined){
-                     this.doRefresh(x.coll, x.parentCtrl, x.startF, x.itemF, x.endF );
+                     self.doRefresh(x.coll, x.parentCtrl, x.startF, x.itemF, x.endF );
                  }
              }
             });
