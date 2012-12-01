@@ -1,6 +1,10 @@
 /**
+ *  Collection class, used by shape models in place of standard arrays
  *
- * @constructor
+ *  What:
+ *    - bindable (integrated in the pub/sub mechanism)
+ *    - helper functions to work with collections in shape's models. Similar API cu JS arrays
+ *    - length property is bindable
  */
 
 isBindableCollection = function (obj){
@@ -10,6 +14,7 @@ isBindableCollection = function (obj){
     return false;
 }
 
+
 function Collection(){
     makeBindable(this);
     this.__meta.watcherList = {};
@@ -17,21 +22,25 @@ function Collection(){
     this.container = [];
 }
 
+Collection.prototype.announceChange = function(changeType){
+    shapePubSub.pub(this, new CollectionChangeEvent(changeType));
+}
+
 Collection.prototype.pop = function(){
     var val = this.container.pop();
-    this.announceChanges("pop");
+    this.announceChange("pop");
     return val;
 }
 
 Collection.prototype.push = function(elem){
     var val = this.container.push(elem);
-    this.announceChanges("push");
+    this.announceChange("push");
     return val;
 }
 
 Collection.prototype.removeAll = function(){
     this.container = [];
-    this.announceChanges("removeAll");
+    this.announceChange("removeAll");
 }
 
 Collection.prototype.indexOf = function(item,startIndex){
@@ -41,7 +50,7 @@ Collection.prototype.indexOf = function(item,startIndex){
 Collection.prototype.remove = function(item){
     var index = this.container.indexOf(item,0);
     this.container.splice(index,1);
-    this.announceChanges("remove");
+    this.announceChange("remove");
 }
 
 Collection.prototype.getAt = function(index){
@@ -50,12 +59,12 @@ Collection.prototype.getAt = function(index){
 
 Collection.prototype.removeAt = function(index){
     this.container.splice(index,1);
-    this.announceChanges("removeAt");
+    this.announceChange("removeAt");
 }
 
 Collection.prototype.insertAt = function(elem, index){
     this.container[index] = elem;
-    this.announceChanges("insert", index);
+    this.announceChange("insert", index);
 }
 
 Collection.prototype.size = function(){
@@ -79,55 +88,44 @@ try{
 
 Collection.prototype.shift = function(){
    var first = this.container.shift();
-   this.announceChanges("shift");
+   this.announceChange("shift");
    return first;
 }
 
 
 Collection.prototype.unshift = function(value){
     var first = this.container.unshift(value);
-    this.announceChanges("unshift");
+    this.announceChange("unshift");
     return first;
 }
 
 Collection.prototype.reverse = function(){
     this.container.reverse();
-    this.announceChanges("reverse");
+    this.announceChange("reverse");
 }
 
 Collection.prototype.shuffle = function(){
     this.container.shuffle();
-    this.announceChanges("shuffle");
+    this.announceChange("shuffle");
 }
 
 Collection.prototype.clone = function(){
     var clone = new Collection();
     clone.container = this.container.slice(0);
-    //this.announceChanges("clone");
+    //this.announceChange("clone");
     return clone;
 }
 
 Collection.prototype.copy = function(from){
     this.container = from.container.concat();
-    this.announceChanges("copy");
+    this.announceChange("copy");
 }
 
-
-Collection.prototype.addWatcher = function(callback){
-    var fctRef = new FunctionReference(callback);
-    this.__meta.watcherList[fctRef] = fctRef;
-    return fctRef;
+Collection.prototype.addWatcher = function(callBack, filter){
+    shapePubSub.sub(this,callBack, filter);
+    return callBack;
 }
 
-Collection.prototype.removeWatcher = function(fctRef){
-    delete this.__meta.watcherList[fctRef];
+Collection.prototype.removeWatcher = function(fctRef,callBack,filter){
+    shapePubSub.unsub(this,callBack,filter);
 }
-
-Collection.prototype.announceChanges = function(type,start, end){
-    var i = 0 ;
-    for(var f in this.__meta.watcherList){
-        i++;
-        this.__meta.watcherList[f].call(null, type, start, end);
-    }
-}
-

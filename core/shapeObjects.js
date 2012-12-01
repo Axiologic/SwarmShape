@@ -1,6 +1,22 @@
 /**
- * Utilities for bindable object members, the shape way
- * The main concept: properties chains
+ * Utilities for bindable objects
+
+
+  The main concept introduces:
+    - ChangeWatcher : a method to observe changes in properties chains
+    - properties chains ( ex:  person.parent.name is a chain of properties)
+
+
+ Functions:
+    makeBindable: make objects have unique local identity that will be returned at toString so objects can be used
+    as keys in objects (you can use bindable objects as key in "maps" made from objects)
+
+    setMetaAttr: add a meta attribute to a bindable objects
+    getMetaAttr: ...
+
+     addChangeWatcher(model, chain, handler): observe any changes that happens on a chain of properties starting from model
+     removeChangeWatcher - clean a ChangeWatcher
+
  */
 
 //public (global) functions
@@ -35,18 +51,6 @@ makeBindable = function (obj){
         obj.__meta.bindableProperties = {};
     }
 }
-
-//pretty print for bindable objects
-J = function(obj) {
-    var tmpObj={};
-    for(var v in obj) {
-        if(v != "__meta"){
-            tmpObj[v] = obj[v];
-        }
-    }
-    return JSON.stringify(tmpObj);
-}
-
 
 //internal stuff
 
@@ -153,27 +157,20 @@ function ChangeWatcher(model, chain, handler){
 
 function addWatcher(model,property, nw){
     //console.log("Adding watcher " + model + "." + property);
-    if(model.__meta.watchers[property] == undefined){
-        model.__meta.watchers[property] = {};
-    }
-    var w = model.__meta.watchers[property];
-    var fctRef = model.bindableProperty(property, nw);
-    w[fctRef] = fctRef;
-    return fctRef;
+    model.bindableProperty(property);
+    shapePubSub.sub(model,nw, function(event){
+        if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
+            if(event.property == property) return true;
+        } else{
+            wprint("Why is not a property change!?");
+        }
+        return false;
+    });
+    return nw;
 }
 
-function removeWatcher(model,property,nwRef){
-    var w = model.__meta.watchers[property];
-    w[nwRef] = null;
-    delete w[nwRef];
-}
-
-function callWatchers(model, prop, val, oldVal){
-    var w = model.__meta.watchers[prop];
-    for(var vn in w){
-        w[vn].call(model, prop, val, oldVal);
-    }
-    //console.log("Calling "+ length + " watchers for " + model + "::" + prop);
+function removeWatcher(model,property,fctRef){
+    shapePubSub.unsub(model,fctRef);
 }
 
 function haveToExpandProperty(obj, prop){
@@ -186,12 +183,16 @@ function haveToExpandProperty(obj, prop){
     }
 }
 
+function announcePropertyChange(model, property, newValue, oldValue){
+    shapePubSub.pub(model, new PropertyChangeEvent(model, property, newValue, oldValue));
+}
+
 if (!Object.prototype.bindableProperty) {
     Object.defineProperty(Object.prototype, "bindableProperty", {
         enumerable: false
         , configurable: true
         , writable: false
-        , value: function (prop, callBack) {
+        , value: function (prop) {
             if(haveToExpandProperty(this, prop)){
                 var oldval = this[prop],
                     newval = oldval,
@@ -202,7 +203,7 @@ if (!Object.prototype.bindableProperty) {
                         oldval = newval;
                         newval = val;
                         if(oldval !== val) {
-                            callWatchers(this, prop, val, oldval);
+                            announcePropertyChange(this, prop, val, oldval);
                         }
                         return newval;
                     };
@@ -216,12 +217,12 @@ if (!Object.prototype.bindableProperty) {
                     });
                 }
             }
-            var callBackRef = new FunctionReference(callBack,this);
-            return callBackRef;
         }
     });
 }
 
+
+// when possible returns the "local id" instead of useless [Object]
 var defaultToString = Object.prototype.toString;
 Object.prototype.toString = function(){
     if(this.__meta != undefined){

@@ -8,7 +8,7 @@
         <input id="toggle-all" type="checkbox">
         <label for="toggle-all">Mark all as complete</label>
 
-        <ul id="todo-list" shape-ctrl="base/ul" shape-model="@current" >
+        <ul id="todo-list"  shape-model="@current" >
         </ul>
     </div>
 
@@ -32,15 +32,15 @@
             </li>
         </ul>
 
-        <button id="clear-completed" shape-action = "removeAllCompleted">
+        <button id="clear-completed" visible = "@completedCount" shape-action = "removeAllCompleted">
             Remove all completed (<span shape-ctrl="base/label" shape-model = "@completedCount"></span>)
         </button>
     </footer>
 </section>
 <footer id="info">
     <p>Double-click to edit a todo</p>
-    <p>Created to show <b>shape js</b>'s capabilities for <a href="http://github.com/tshm/todomvc/">TODOMVC project </a> by Alboaie Sînică</p>
+    <p>Created to show <b>shape js</b>'s capabilities for <a href="http://github.com/tshm/todomvc/">TODOMVC project </a> by Sînică Alboaie </p>
 
-    <p>Recently created task: <span shape-view="task.render" shape-model="@recentTask"></span></p>
+    <p><b>Recently created task:</b> <span shape-view="task.render" ></span></p>
 </footer>
 

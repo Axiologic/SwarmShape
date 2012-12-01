@@ -5,6 +5,7 @@ shape.registerCtrl("todo/taskLine",{
     init:function(){
         this.oldValue = this.model.completed;
         this.addChangeWatcher("completed", this.completedChanged);
+        $(this.view).on("dblclick", this.switchToEdit)
     },
     toView:function(){
         $(this.view).toggleClass("completed", this.model.completed);
@@ -16,5 +17,10 @@ shape.registerCtrl("todo/taskLine",{
             this.action("completedToggle",this.model);
             this.oldValue = this.model.completed;
         }
+    },
+    switchToEdit:function(){
+        $(this.view).toggleClass("editing");
+        $(this.view).query("");
+        wprint("Eedit!!!");
     }
 });

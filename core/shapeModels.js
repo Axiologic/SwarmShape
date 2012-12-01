@@ -1,4 +1,8 @@
-
+/*
+    Code to handle shape models
+    Each model will have a "className" found in __meta member (setMetaAttr, getMetaAttr)
+    When a model is created, it get initialised and auto-computed members get prepared
+ */
 
 
 function QSClassDescription(declaration, qsName){
