@@ -7,27 +7,32 @@ Right now: Experimental web interface framework for creating complex RIA applica
 
 Our simple rules: 
   - clean separation of models, views, controllers
-  - have fat models, feature to describe self contained models (computed properties)
-  - explicitly put as much as possible in models (data) and not in behaviors/controllers,views, helper classes
-  - everything else get reusable (components, views, controllers, helpers)
+  - have fat models
+  - use computed properties (expression computed from properties chains) to describe self contained models
+  - explicitly put as much as possible from your specific logic in models (code and data) and not in behaviors/controllers,views, helper classes
+  - everything else get reusable (components, views, controllers, helpers, style, layouts)
   - models can be persistent (you can save on server) or transient (exist only once)
-  - html tags can become components if you put shape-ctrl or shape-view attributes 
+  - html tags will magically become components if you put shape-ctrl or shape-view attributes
   - have magic (like bindings, ChangeWatchers for chains, componentisation) but have as few APIs ad concepts as possible
   - when possible, let conventions discover a proper controller or a model for a HTML tags
+  - add your custom attributes to any html tag to enhance code readability and do more magic
 
 Main features (in progress):
 - MVC (MVVM) with clean and simple architecture
-- component oriented (yes, create reusable components with HTML!)
+- bindable/observable chains and collections
+- ui component oriented (yes,you can create reusable components with HTML!)
 - client side Pub/Sub channels (safe and sound against asynchronous weirdness in computed values/expressions from  models or in callbacks for other messages/events)
+- views are build by direct DOM element manipulation and not with templates (string manipulation)
 - reusable layouts (wip)
-- works with Ajax and swarms (SwarmESB) for backend
+- works with Ajax and swarms (SwarmESB) for backend (wip)
+
 
 Quick Example:
-=======
+===============
 
    Model:
 
-      //declaration of task class definition
+      //declaration of a task class definition
       shape.registerModel("task",{
               meta:{
                   table:"Task", //where to save

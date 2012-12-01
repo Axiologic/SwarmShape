@@ -25,3 +25,18 @@ shape.registerAttribute("shape-event",{
     "applyAttribute" : null,
     "expandHTMLTag"  : true
 });
+
+shape.registerAttribute("shape-ctrl",{
+    "applyAttribute" : null,
+    "expandHTMLTag"  : true
+});
+
+shape.registerAttribute("shape-view",{
+    "applyAttribute" : null,
+    "expandHTMLTag"  : true
+});
+
+shape.registerAttribute("shape-model",{
+    "applyAttribute" : null,
+    "expandHTMLTag"  : true
+});

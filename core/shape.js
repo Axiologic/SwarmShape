@@ -309,18 +309,33 @@ function Shape(){
                 var value = this.value;
                 if(shapeKnowsAttribute(attributeName)){
                     //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
-                    ctrl.addChangeWatcher(this.value.substring(1),
-                        function(changedModel, modelProperty, value, oldValue ){
-                            //dprint("applyAttribute:" + attributeName);
-                            applyAttribute(attributeName,element,value,ctrl);
-                        });
+                    if(value[0] == "@"){
+                        value = value.substring(1);
+                        if(value!=""){
+                            ctrl.addChangeWatcher(this.value.substring(1),
+                                function(changedModel, modelProperty, value, oldValue ){
+                                    //dprint("applyAttribute:" + attributeName);
+                                    applyAttribute(attributeName,element,value,ctrl);
+                                });
+                        } else{
+                            //TODO: we can detect model changes !?
+                            applyAttribute(attributeName, element, ctrl.model ,ctrl);
+                        }
+                    } else{
+                        applyAttribute(attributeName, element, value, ctrl);
+                    }
                 } else {
-                    if(attributeName != "shape-model" && value[0] == "@"){
-                        //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
-                        ctrl.addChangeWatcher(this.value.substring(1),
-                            function(changedModel, modelProperty, value, oldValue ){
-                                $(element).attr(attributeName,value);
-                            });
+                    if(value[0] == "@"){
+                        value = value.substring(1);
+                        if(value!=""){
+                            ctrl.addChangeWatcher(this.value,
+                                function(changedModel, modelProperty, value, oldValue ){
+                                    $(element).attr(attributeName,value);
+                                });
+                        } else{
+                            //TODO: we can detect model changes !?
+                            $(element).attr(attributeName,ctrl.model);
+                        }
                     }
                 }
             });
