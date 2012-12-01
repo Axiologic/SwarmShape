@@ -21,10 +21,9 @@
 <script type="text/javascript" src="../../modules/base/ctrl/checkbox.js"> </script>
 <script type="text/javascript" src="../../modules/base/ctrl/menu.js"> </script>
 
-<script type="text/javascript" src="../../modules/todo/ctrl/todo.js"> </script>
-<script type="text/javascript" src="../../modules/todo/ctrl/taskLine.js"> </script>
 
-<script type="text/javascript" src="../../modules/todo/model/task.js"> </script>
-<script type="text/javascript" src="../../modules/todo/model/todo.js"> </script>
+<script type="text/javascript" src="../../modules/echo/ctrl/echo.js"> </script>
 
-<script type="text/javascript" src="../../modules/base/ctrl/component.js"> </script>
+<script type="text/javascript" src="../../modules/echo/model/echo.js"> </script>
+
+

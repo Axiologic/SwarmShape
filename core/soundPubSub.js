@@ -1,12 +1,13 @@
 /**
  *  Pub/Sub system that provides intuitive results regarding to asynchronous calls of callbacks and computed values/expressions
- * PubSub channels are available in browser (or node.js) with a twist:
- *   we guarantee that any sub callback got executed on level 0 of callbacks executions
+ * PubSub channels are available in browser (or node.js):
+ *   we guarantee that any callback got executed on level 0 of callbacks executions
  *   Usually a callback will cause execution of other callbacks (level 1 if cause by a level 0 call back and so on)
- *   but we prevent immediate execution to ensure intuitive final results guaranteed by level 0 execution
- *   We guarantee that any callback function is "re-entrant"
  *
- *   We are also trying to reduce the number of callback execution by looking in queues at new messages published and
+ *   we prevent immediate execution to ensure intuitive final results guaranteed by level 0 execution
+ *   we guarantee that any callback function is "re-entrant"
+ *
+ *   we are also trying to reduce the number of callback execution by looking in queues at new messages published and
  *   trying to compact those messages (removing duplicate messages, modifying messages, or adding in the history of another event ,etc)
 
  *
@@ -44,7 +45,7 @@
 
 // TODO: optimisation!? use an efficient queue instead of arrays with push and shift
 // TODO: see how big those queues can be in real applications
-    // for a few hundreds items, queues made from array should be enough
+// for a few hundreds items, queues made from array should be enough
 
 // TODO: detect infinite loops (or very deep propagation) It is possible!?
 

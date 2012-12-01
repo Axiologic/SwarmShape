@@ -5,15 +5,20 @@ Goals: simplicity, programming discipline, reusable components, component layout
 
 Right now: Experimental web interface framework for creating complex RIA applications using Java Script
 
-Our simple rules: 
+Our simple rules:
+  - inversion of control
+  - html tags will magically become components if you put shape-ctrl or shape-view attributes
   - clean separation of models, views, controllers
-  - have fat models
+  - fat models
   - use computed properties (expression computed from properties chains) to describe self contained models
   - explicitly put as much as possible from your specific logic in models (code and data) and not in behaviors/controllers,views, helper classes
   - everything else get reusable (components, views, controllers, helpers, style, layouts)
-  - models can be persistent (you can save on server) or transient (exist only once)
-  - html tags will magically become components if you put shape-ctrl or shape-view attributes
-  - have magic (like bindings, ChangeWatchers for chains, componentisation) but have as few APIs ad concepts as possible
+  - model objects can be
+      - "global" (persistent objects, saved on server, have a global identity)
+      - transient (exist only once, don't have an identity)
+      - embedded  (embedded in a global object that can be seen as an (JSON) "document", hae only local identity)
+
+  - have magic (like bindings, ChangeWatchers for chains, componentisation) but have as few APIs and concepts as possible
   - when possible, let conventions discover a proper controller or a model for a HTML tags
   - add your custom attributes to any html tag to enhance code readability and do more magic
 
@@ -87,7 +92,6 @@ Quick Example:
 
       <!-- instantiate a component named "task.render" -->
      <span id="myTask" shape-view="task.render" ></span>
-
       ...
       // create a model (a task), expand that component and bind to the model
       model = shape.newObject("task")

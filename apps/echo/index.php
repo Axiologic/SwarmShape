@@ -10,31 +10,34 @@
     <meta content="01 Jan 1970 00:00:00 GMT, -1" http-equiv="Expires">
     <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
     <meta content="no-cache" http-equiv="Pragma">
-    <script type="text/javascript" src="../../deps/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css"  href="../../themes/default/todo/todo.css" />
+
+    <!-- <?php include("theme.cfg"); ?> -->
+
+    <?php include("dependencies.inc"); ?>
 
 </head>
 
 <script type="text/javascript">
 
-    (function(){
-        var global = 123;
-        function onReady(){
-            alert(global);
-        }
-        window.onReady = onReady;
-    })();
-
-    if(!$.isReady){
-        $(document).ready(window.onReady);
-        jQuery(window.onReady);
-    }else{
-        window.onReady();
+    function initShape(){
+        $.ajaxSetup({ cache: false });
+        <?php include("shapes.js"); ?>
+        shape.baseUrl = "http://localhost";
+        var model = shape.newTransientObject("echo");
+        shape.expandShapeComponent(document.getElementById("main"),null, model);
     }
 
+    if(!$.isReady){
+        //$(document).ready(initShape);
+        jQuery(initShape);
+    }else{
+        initShape();
+    }
+
+    //alert(getBaseUrl());
 </script>
 
 <body >
-<div id="main" shape-view="todo/todo" > Not loaded!!! </div>
+    <div id="main" shape-view="mainViewEcho" shape-ctrl="echo" > Not loaded!!! </div>
 </body>
 </html>

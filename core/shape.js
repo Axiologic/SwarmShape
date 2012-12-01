@@ -69,12 +69,14 @@ function Shape(){
 
 
     this.newObject = function(className){
-        var res = {};
+        var res;
         var qsClass = classRegistry[className];
         if(qsClass != undefined){
+            res = {};
             qsClass.attachClassDescription(res);
         }
         else{
+            res = undefined;
             wprint("Undefined class " + className);
         }
         return res;
@@ -82,7 +84,9 @@ function Shape(){
 
     this.newTransientObject = function(className){
         var res = this.newObject(className);
-        setMetaAttr(res,"persistence", "transient");
+        if(res){
+            setMetaAttr(res,"persistence", "transient");
+        }
         return res;
     }
 
