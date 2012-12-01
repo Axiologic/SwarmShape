@@ -11,11 +11,7 @@
 
  */
 function Shape(){
-    var shapeContext = {
-        controllers:[],
-        views:[]
-    };
-
+    var shapeControllers = [];
     var shape = this;
     var classRegistry = {};
 
@@ -23,10 +19,25 @@ function Shape(){
     var shapeUrlRegistry = {};
     var shapeRegistry = {};
 
+    var shapeAttributes = {};
 
     this.registerCtrl = function (name,functObj){
         //console.log("Registering controller " + name);
-        shapeContext.controllers[name] = functObj;
+        shapeControllers[name] = functObj;
+    }
+
+    this.registerAttribute = function (name,functObj){
+        //console.log("Registering controller " + name);
+        shapeAttributes[name] = new ShapeAttribute(name,functObj);
+    }
+
+    function shapeKnowsAttribute(name){
+        return shapeAttributes[name] != undefined;
+    }
+
+    function applyAttribute(name, dom,value,ctrl){
+        var attr = shapeAttributes[name];
+        if(attr) attr.applyAttribute(dom,value,ctrl);
     }
 
     this.registerModel = function(modelName,declaration){
@@ -40,7 +51,7 @@ function Shape(){
     this.getController = function (ctrlName){
         //dprint("Creating controller " + ctrlName);
         var newCtrl         = new BaseController(ctrlName);
-        var base =  shapeContext.controllers[ctrlName];
+        var base =  shapeControllers[ctrlName];
         if(base != undefined){
             for(var vn in base){
                 if(typeof base[vn] == 'function'){
@@ -295,12 +306,22 @@ function Shape(){
         $(element.attributes).each (
             function() {
                 var attributeName = this.name;
-                if(attributeName != "shape-model" && this.value[0] =="@"){
-                    dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
+                var value = this.value;
+                if(shapeKnowsAttribute(attributeName)){
+                    //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
                     ctrl.addChangeWatcher(this.value.substring(1),
                         function(changedModel, modelProperty, value, oldValue ){
-                            $(element).attr(attributeName,value);
+                            //dprint("applyAttribute:" + attributeName);
+                            applyAttribute(attributeName,element,value,ctrl);
                         });
+                } else {
+                    if(attributeName != "shape-model" && value[0] == "@"){
+                        //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
+                        ctrl.addChangeWatcher(this.value.substring(1),
+                            function(changedModel, modelProperty, value, oldValue ){
+                                $(element).attr(attributeName,value);
+                            });
+                    }
                 }
             });
     }
@@ -314,7 +335,7 @@ function Shape(){
     function elementIsShapedHtmlElement(element){
         return element.hasAttribute("shape-model") ||
             element.hasAttribute("shape-ctrl") ||
-            element.hasAttribute("shape-action");
+            element.hasAttribute("shape-event");
     }
 
     function bindAttributes(domObj, ctrl){

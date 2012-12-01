@@ -32,7 +32,7 @@
             </li>
         </ul>
 
-        <button id="clear-completed" visible = "@completedCount" shape-action = "removeAllCompleted">
+        <button id="clear-completed" shape-visible = "@completedCount" shape-event = "removeAllCompleted">
             Remove all completed (<span shape-ctrl="base/label" shape-model = "@completedCount"></span>)
         </button>
     </footer>

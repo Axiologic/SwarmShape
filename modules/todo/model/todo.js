@@ -40,13 +40,13 @@ shape.registerModel("todo",{
             }
         },
         todoCount:{
-            chains:"active",
+            chains:"active.length",
             code:function(){
                 return this.active.length;
             }
         },
         completedCount:{
-            chains:"completed",
+            chains:"completed.length",
             code:function(){
                 return this.completed.length;
             }

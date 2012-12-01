@@ -45,7 +45,6 @@ var localObjectsCount = 0;
 makeBindable = function (obj){
     if(obj.__meta == undefined){
         obj.__meta = {};
-        obj.__meta.watchers = {};
         obj.__meta.__localId = localObjectsCount;
         localObjectsCount = localObjectsCount + 1;
         obj.__meta.bindableProperties = {};
@@ -153,24 +152,30 @@ function ChangeWatcher(model, chain, handler){
         }
         handler(newParent,args[endOfChain-1],newValue);
 
-}
 
-function addWatcher(model,property, nw){
-    //console.log("Adding watcher " + model + "." + property);
-    model.bindableProperty(property);
-    shapePubSub.sub(model,nw, function(event){
-        if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
-            if(event.property == property) return true;
-        } else{
-            wprint("Why is not a property change!?");
-        }
-        return false;
-    });
-    return nw;
-}
+    function addWatcher(model,property, nw){
+        //console.log("Adding watcher " + model + "." + property);
+        model.bindableProperty(property);
+        shapePubSub.sub(model,nw, function(event){
+            if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
+                if(event.property != property) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            } else if(event.type == COLLECTION_CHANGE_EVENT_TYPE){
+                return true;
+            }
+         return false;
+        });
+        return nw;
+    }
 
-function removeWatcher(model,property,fctRef){
-    shapePubSub.unsub(model,fctRef);
+    function removeWatcher(model,property,fctRef){
+        shapePubSub.unsub(model,fctRef);
+    }
+
 }
 
 function haveToExpandProperty(obj, prop){
@@ -183,9 +188,6 @@ function haveToExpandProperty(obj, prop){
     }
 }
 
-function announcePropertyChange(model, property, newValue, oldValue){
-    shapePubSub.pub(model, new PropertyChangeEvent(model, property, newValue, oldValue));
-}
 
 if (!Object.prototype.bindableProperty) {
     Object.defineProperty(Object.prototype, "bindableProperty", {
@@ -203,7 +205,7 @@ if (!Object.prototype.bindableProperty) {
                         oldval = newval;
                         newval = val;
                         if(oldval !== val) {
-                            announcePropertyChange(this, prop, val, oldval);
+                           shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
                         }
                         return newval;
                     };
@@ -257,3 +259,4 @@ Object.prototype.toString = function(){
     }
     return defaultToString.apply(this);
 }
+

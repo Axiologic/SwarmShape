@@ -46,6 +46,7 @@
 // TODO: see how big those queues can be in real applications
     // for a few hundreds items, queues made from array should be enough
 
+// TODO: detect infinite loops (or very deep propagation) It is possible!?
 
 var COLLECTION_CHANGE_EVENT_TYPE = "CollectionChange";
 var PROPERTY_CHANGE_EVENT_TYPE   = "PropertyChange";
@@ -62,6 +63,7 @@ function PropertyChangeEvent(model,property,newValue, oldValue){
     this.newValue = newValue;
     this.oldValue = oldValue;
 }
+
 
 function SoundPubSub(){
     // map channelName (object local id) -> array with subscribers

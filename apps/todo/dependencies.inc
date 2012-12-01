@@ -4,6 +4,7 @@
 <script type="text/javascript" src="../../core/shapeUtil.js"> </script>
 <script type="text/javascript" src="../../core/soundPubSub.js"> </script>
 <script type="text/javascript" src="../../core/shape.js"> </script>
+<script type="text/javascript" src="../../core/shapeAttributes.js"> </script>
 <script type="text/javascript" src="../../core/DOMCache.js"> </script>
 <script type="text/javascript" src="../../core/FunctionReference.js"> </script>
 <script type="text/javascript" src="../../core/shapeObjects.js"> </script>

@@ -17,7 +17,6 @@ isBindableCollection = function (obj){
 
 function Collection(){
     makeBindable(this);
-    this.__meta.watcherList = {};
     this.__meta.bindableCollection = true;
     this.container = [];
 }
