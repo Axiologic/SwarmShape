@@ -123,19 +123,21 @@ function SoundPubSub(){
             arr = [];
             channelsStorage[target] = arr;
         }
-        var typeCompactorCallBack = typeCompactor[message.type];
-        if(typeCompactorCallBack != undefined){
-
-            for(var i = 0; i < arr.length; i++ ){
-                if(typeCompactorCallBack(message,arr[i]) == arr[i]){
-                    // got compacted, bye bye message  but prevent loosing callbacks notifications
-                    if(arr[i].__transmisionIndex == undefined) {
-                        gotCompacted = true;
-                        break;
+        if(message.type != undefined){
+            var typeCompactorCallBack = typeCompactor[message.type];
+            if(typeCompactorCallBack != undefined){
+                for(var i = 0; i < arr.length; i++ ){
+                    if(typeCompactorCallBack(message,arr[i]) == arr[i]){
+                        // got compacted, bye bye message  but prevent loosing callbacks notifications
+                        if(arr[i].__transmisionIndex == undefined) {
+                            gotCompacted = true;
+                            break;
+                        }
                     }
                 }
             }
         }
+
         if(!gotCompacted){
             arr.push(message);
             executionQueue.push(target);

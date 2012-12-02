@@ -67,6 +67,9 @@ function Shape(){
         return newCtrl;
     }
 
+    this.newEvent = function(className){
+
+    }
 
     this.newObject = function(className){
         var res;
@@ -78,7 +81,21 @@ function Shape(){
         else{
             res = undefined;
             wprint("Undefined class " + className);
+            return res;
         }
+        var args = []; // empty array
+        // copy all other arguments we want to "pass through"
+        for(var i = 1; i < arguments.length; i++){
+            args.push(arguments[i]);
+        }
+        shapePubSub.blockCallBacks();
+        try{
+            res.init.call(res,args);
+        }
+        catch(err){
+            wprint("Ctor failed");
+        }
+        shapePubSub.releaseCallBacks();
         return res;
     }
 

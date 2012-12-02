@@ -1,3 +1,8 @@
+/**
+ *
+ * Class created to allow putting of functions as keys in maps
+ * @param: a function
+ */
 
 function FunctionReference(funct){
     makeBindable(this);
@@ -6,7 +11,7 @@ function FunctionReference(funct){
 
 FunctionReference.prototype.call = function(){
     var myThis =  arguments[0];
-    var args = []; // empty array
+    var args = [];
     for(var i = 1; i < arguments.length; i++){
         args.push(arguments[i]);
     }

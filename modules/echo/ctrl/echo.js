@@ -7,8 +7,13 @@ shape.registerCtrl("echo",{
 
     },
     action:function(){
+        var self = this;
         dprint("Login clicked");
-        this.model.loggedIn = true;
+        var serverUrl= 'http://localhost:81';
+        this.swclient = new SwarmClient(serverUrl, this.model.user, this.model.pass, this.model.tenantId);
+        this.swclient.on("authenticated", function(){
+         self.model.loggedIn = true;
+        });
     },
     sendEcho :function(){
         if( this.model.input != ""){

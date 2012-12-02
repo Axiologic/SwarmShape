@@ -26,4 +26,4 @@
 
 <script type="text/javascript" src="../../modules/echo/model/echo.js"> </script>
 
-
+<script src="../../deps/socket.io/socket.io.js"></script>
