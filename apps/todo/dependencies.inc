@@ -12,19 +12,18 @@
 <script type="text/javascript" src="../../core/Collection.js"> </script>
 <script type="text/javascript" src="../../core/shapeControllers.js"> </script>
 
-<script type="text/javascript" src="../../modules/base/ctrl/button.js"> </script>
-<script type="text/javascript" src="../../modules/base/ctrl/label.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/button.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/label.js"> </script>
 
-<script type="text/javascript" src="../../modules/base/ctrl/input.js"> </script>
-<script type="text/javascript" src="../../modules/base/ctrl/ul.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/input.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/ul.js"> </script>
 
-<script type="text/javascript" src="../../modules/base/ctrl/checkbox.js"> </script>
-<script type="text/javascript" src="../../modules/base/ctrl/menu.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/checkbox.js"> </script>
+<script type="text/javascript" src="../../core/base/ctrl/menu.js"> </script>
 
-<script type="text/javascript" src="../../modules/todo/ctrl/todo.js"> </script>
-<script type="text/javascript" src="../../modules/todo/ctrl/taskLine.js"> </script>
+<script type="text/javascript" src="../../apps/todo/ctrl/todo.js"> </script>
+<script type="text/javascript" src="../../apps/todo/ctrl/taskLine.js"> </script>
 
-<script type="text/javascript" src="../../modules/todo/model/task.js"> </script>
-<script type="text/javascript" src="../../modules/todo/model/todo.js"> </script>
+<script type="text/javascript" src="../../apps/todo/model/task.js"> </script>
+<script type="text/javascript" src="../../apps/todo/model/todo.js"> </script>
 
-<script type="text/javascript" src="../../modules/base/ctrl/component.js"> </script>

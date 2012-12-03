@@ -20,7 +20,7 @@ shape.registerCtrl("todo/taskLine",{
     },
     switchToEdit:function(){
         $(this.view).toggleClass("editing");
-        $(this.view).query("");
+        //$(this.view).query("");
         wprint("Eedit!!!");
     }
 });

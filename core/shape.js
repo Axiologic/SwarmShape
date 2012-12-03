@@ -90,7 +90,7 @@ function Shape(){
         }
         shapePubSub.blockCallBacks();
         try{
-            res.init.call(res,args);
+           // res.init.call(res,args);
         }
         catch(err){
             wprint("Ctor failed");
