@@ -30,10 +30,13 @@ shape.registerCtrl("todo",{
             this.model.removeAllCompleted();
         }else if(type == "completedTasks"){
             this.model.current = this.model.completed;
+            this.setLinkSelection(type);
         }else if(type == "activeTasks"){
             this.model.current = this.model.active;
+            this.setLinkSelection(type);
         }else if(type == "allTasks"){
             this.model.current = this.model.all;
+            this.setLinkSelection(type);
         }
         else{
           wprint("Unknown action " + type);
@@ -41,6 +44,10 @@ shape.registerCtrl("todo",{
     },
     toView:function(){
 
+    },
+    setLinkSelection:function(href){
+        $(shape.localFilter(this.view, "a[class='selected']")).toggleClass("selected");
+        $(shape.localFilter(this.view, "a[href='#"+href+"']")).toggleClass("selected");
     }
 });
 

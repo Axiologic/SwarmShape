@@ -51,6 +51,25 @@ shape.registerModel("todo",{
                 return this.completed.length;
             }
         },
+        selectAll:{
+            type:"Boolean",
+            value:"false"
+        },
+        checkSelection:{
+           chains:"completed",
+           code:function(){
+               var check = true;
+               dprint("trigger");
+               for(var i = 0; i<this.current.length; i++){
+                   if(!this.current.getAt(i).completed)
+                   {
+                       check = false;
+                       break;
+                   }
+               }
+               this.selectAll = this.current.length > 0 ? check : false;
+           }
+        },
         toggle:function(model){
             if(model.completed == true){
                 this.active.remove(model);

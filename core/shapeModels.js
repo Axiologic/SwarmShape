@@ -58,7 +58,7 @@ function QSClassDescription(declaration, qsName){
                 model[n] = new Collection();
                 }
                 else {
-                model[n] = newObject(m.type);
+                model[n] = shape.newObject(m.type);
                 }
             //addChangeWatcher(model,n,changeCallBack)
         }

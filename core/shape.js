@@ -162,11 +162,16 @@ function Shape(){
 
 
 
-    function loadInnerHtml(domObj,viewName, ctrl){
+    function loadInnerHtml(domObj, viewName, ctrl, parentCtrl){
         shape.getShapeContent(viewName, function(data) {
             domObj.innerHTML = data;
-            bindAttributes(domObj, ctrl);
-            ctrl.changeView(domObj);
+            if(ctrl)
+            {
+                bindAttributes(domObj, ctrl);
+                ctrl.changeView(domObj);
+            }else{
+                bindAttributes(domObj, parentCtrl);
+            }
         });
     }
 
@@ -200,8 +205,9 @@ function Shape(){
         //do not create useless controllers if the element is used just to expand a component
         if(parentCtrl!= null && ctrlName == undefined && transparentModel){
             // we just expand but don't create any controller
-            loadInnerHtml(domObj,viewName,parentCtrl);
             ctrl = null;
+            loadInnerHtml(domObj, viewName, ctrl, parentCtrl);
+
         } else {
             if(ctrlName == undefined){
                 ctrlName = viewName;
@@ -244,7 +250,7 @@ function Shape(){
                 }
             }
 
-            loadInnerHtml(domObj,viewName,ctrl);
+            loadInnerHtml(domObj,viewName,ctrl, parentCtrl);
         }
         return ctrl;
     }
@@ -398,10 +404,29 @@ function Shape(){
             shape.expandShapeComponent(forExpand[i], ctrl);
         }
     }
+    /**
+     * Extension of jQuery filter method that search recursively in DOM but stops when it finds expanded
+     * shapes(shape-view in attributes). It uses same parameters as jQuery filter method.
+     * */
+    this.localFilter = function(node, filter){
+        var result = [];
+        function innerFilter(innerNode, skip){
+            //node = $(node);
+            try{
+                if(!innerNode.attr('shape-view')||skip){
+                    //result = result.concat(node.children().filter(filter));
+                    $.merge(result, innerNode.children().filter(filter));
+                    innerNode.children().each(function(idx){innerFilter($(this))});
+                }
+            }catch(e){
+                dprint(e.message);
+            }
 
+        }
+        innerFilter($(node), true);
+        return result;
+    }
 }
-
-
 
 window.shape = new Shape();
 shape = window.shape;
@@ -432,5 +457,3 @@ function watchHashEvent(ctrl){
  // Trigger the event (useful on page load).
     //$(window).hashchange();
 }
-
-

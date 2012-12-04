@@ -5,7 +5,9 @@ shape.registerCtrl("todo/taskLine",{
     init:function(){
         this.oldValue = this.model.completed;
         this.addChangeWatcher("completed", this.completedChanged);
-        $(this.view).on("dblclick", this.switchToEdit)
+        $(this.view).on("dblclick", this.switchToEdit);
+        $(this.view).keypress(this.keyHandler);
+
     },
     toView:function(){
         $(this.view).toggleClass("completed", this.model.completed);
@@ -20,7 +22,19 @@ shape.registerCtrl("todo/taskLine",{
     },
     switchToEdit:function(){
         $(this.view).toggleClass("editing");
-        //$(this.view).query("");
-        wprint("Eedit!!!");
+        if($(this.view).hasClass("editing"))
+        {
+            $(this.view).find(".edit").focus();
+            $(this.view).find(".edit").bind('blur',this.switchToEdit);
+        }else{
+            $(this.view).find(".edit").unbind("blur");
+        }
+    },
+    keyHandler:function(event){
+        console.log(event.keyCode);
+        if(event.keyCode==13||event.keyCode==27)
+        {
+            this.switchToEdit();
+        }
     }
 });

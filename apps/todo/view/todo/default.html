@@ -5,7 +5,7 @@
     </header>
 
     <div id="main" >
-        <input id="toggle-all" type="checkbox">
+        <input id="toggle-all" type="checkbox" shape-model="@selectAll" shape-ctrl="base/checkbox">
         <label for="toggle-all">Mark all as complete</label>
 
         <ul id="todo-list"  shape-model="@current" >
@@ -41,6 +41,6 @@
     <p>Double-click to edit a todo</p>
     <p>Created to show <b>shape js</b>'s capabilities for <a href="http://github.com/tshm/todomvc/">TODOMVC project </a> by Sînică Alboaie </p>
 
-    <p><b>Recently created task:</b> <span shape-view="task.render" ></span></p>
+    <p><b>Recently created task:</b> <span shape-view="task.render"></span></p>
 </footer>
 
