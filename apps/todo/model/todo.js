@@ -55,18 +55,26 @@ shape.registerModel("todo",{
             type:"Boolean",
             value:"false"
         },
+        selectAllChecked:{
+            chains:"selectAll",
+            code:function(){
+                dprint("Select all clicked");
+                for(var i = 0; i < this.current.length; i++){
+                    this.current.getAt(i).completed = this.selectAll;
+                }
+            }
+        },
         checkSelection:{
            chains:"completed",
            code:function(){
                var check = true;
-               dprint("trigger");
-               for(var i = 0; i<this.current.length; i++){
-                   if(!this.current.getAt(i).completed)
-                   {
+               for(var i = 0; i < this.current.length; i++){
+                   if(!this.current.getAt(i).completed){
                        check = false;
                        break;
                    }
                }
+               dprint("checking selection" + check );
                this.selectAll = this.current.length > 0 ? check : false;
            }
         },

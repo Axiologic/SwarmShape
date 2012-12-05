@@ -5,7 +5,7 @@
  */
 
 /*
- Utilities class for connecting from browser to SwarmESB uing websocket
+ Utilities class for connecting from browser to SwarmESB using web-sockets
  */
 
 /**

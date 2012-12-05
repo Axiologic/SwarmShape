@@ -87,9 +87,14 @@ function SoundPubSub(){
         typeCompactor[type] = callBack;
     }
 
-    function dispatchNext(){
+    /**
+     *
+     * @param fromReleaseCallBacks: hack to prevent too many recursive calls on releaseCallBacks
+     * @return {Boolean}
+     */
+    function dispatchNext(fromReleaseCallBacks){
         if(level >0) {
-            return;
+            return false;
         }
         var channelName = executionQueue[0];
         if(channelName != undefined){
@@ -112,7 +117,15 @@ function SoundPubSub(){
                     }
                 }
             }
-            self.releaseCallBacks();
+            //
+            if(fromReleaseCallBacks){
+                level--;
+            } else{
+                self.releaseCallBacks();
+            }
+            return true;
+        } else{
+            return false;
         }
     }
 
@@ -189,8 +202,9 @@ function SoundPubSub(){
 
     this.releaseCallBacks = function(){
         level--;
-        if(level == 0){
-            dispatchNext();
+        //hack/optimisation to not fill the stack in extreme cases (many events caused by loops in collections,etc)
+        while(level == 0 && dispatchNext(true) ){
+            // nothing,feed the best for a greater good :)
         }
     }
 
@@ -205,7 +219,7 @@ function SoundPubSub(){
     this.registerCompactor(COLLECTION_CHANGE_EVENT_TYPE,function(newEvent, oldEvent){
         if(newEvent.type ==  oldEvent.type){
             for(var i = 0; i< newEvent.history.length; i++){
-                oldEvent.causes.push(newEvent.history[i]);
+                oldEvent.history.push(newEvent.history[i]);
             }
         return oldEvent; // succes compacting
         }
