@@ -28,7 +28,7 @@ function QSClassDescription(declaration, qsName){
             }
     }
 
-    this.attachClassDescription = function(model){
+    this.attachClassDescription = function(model, ctorArgs){
         makeBindable(model);
         setMetaAttr(model,"className",this.className);
 
@@ -40,7 +40,7 @@ function QSClassDescription(declaration, qsName){
         for(n in members){
             var m = members[n];
             if(m.value != undefined){
-                if(m.value == "null"){
+                if(m.value == "null" || m.value == null){
                     model[n] = null;
                 }
                 else {
@@ -58,13 +58,17 @@ function QSClassDescription(declaration, qsName){
                 model[n] = new Collection();
                 }
                 else {
-                model[n] = shape.newObject(m.type);
+                  if(m.type != undefined){
+                      model[n] = shape.newObject(m.type);
+                  } else{
+                      wprint("Wrong model syntax in describing model: " + this.className);
+                  }
                 }
             //addChangeWatcher(model,n,changeCallBack)
         }
 
         if(model.ctor != undefined && typeof model.ctor == "function"){
-            model.ctor();
+            model.ctor.apply (model,ctorArgs);
         }
 
         function getTriggerFunction(targetChain,myTrigger,myProperty){

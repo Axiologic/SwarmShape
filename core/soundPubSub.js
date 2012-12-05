@@ -99,23 +99,29 @@ function SoundPubSub(){
         var channelName = executionQueue[0];
         if(channelName != undefined){
             self.blockCallBacks();
-            var message = channelsStorage[channelName][0];
-            if(message == undefined){
-                executionQueue.shift();
-            } else {
-                if(message.__transmisionIndex == undefined){
-                    message.__transmisionIndex = 0;
-                } else{
-                    message.__transmisionIndex++;
-                }
-                var subscriber = channelSubscribers[channelName][message.__transmisionIndex];
-                if(subscriber == undefined){
-                    channelsStorage[channelName].shift();
-                } else{
-                    if(subscriber.filter == undefined || subscriber.filter(message)){
-                        subscriber.callBack(message);
+            try{
+                var message = channelsStorage[channelName][0];
+                if(message == undefined){
+                    executionQueue.shift();
+                } else {
+                    if(message.__transmisionIndex == undefined){
+                        message.__transmisionIndex = 0;
+                    } else{
+                        message.__transmisionIndex++;
+                    }
+                    var subscriber = channelSubscribers[channelName][message.__transmisionIndex];
+                    if(subscriber == undefined){
+                        channelsStorage[channelName].shift();
+                    } else{
+                        if(subscriber.filter == undefined || subscriber.filter(message)){
+
+                                subscriber.callBack(message);
+
+                        }
                     }
                 }
+            } catch(err){
+                wprint("Event callback failed: "+ subscriber.callBack);
             }
             //
             if(fromReleaseCallBacks){

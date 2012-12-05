@@ -67,22 +67,30 @@ function Shape(){
         return newCtrl;
     }
 
-    this.newEvent = function(className){
+    /**
+     * First argument should be the event type
+     */
 
+    this.newEvent = function(){
+        var args = []; // empty array
+        // copy all other arguments we want to "pass through"
+        for(var i = 0; i < arguments.length; i++){
+            args.push(arguments[i]);
+        }
+        var className = arguments[0];
+        if(className == undefined || classRegistry[className] == undefined){
+            wprint("First argument of newEvent should be a class name!");
+            return null;
+        }
+        var o = this.newObject.apply(this, args);
+        if(o.type == undefined){
+            o.type = className;
+        }
+        return o;
     }
 
     this.newObject = function(className){
         var res;
-        var qsClass = classRegistry[className];
-        if(qsClass != undefined){
-            res = {};
-            qsClass.attachClassDescription(res);
-        }
-        else{
-            res = undefined;
-            wprint("Undefined class " + className);
-            return res;
-        }
         var args = []; // empty array
         // copy all other arguments we want to "pass through"
         for(var i = 1; i < arguments.length; i++){
@@ -90,17 +98,31 @@ function Shape(){
         }
         shapePubSub.blockCallBacks();
         try{
-           // res.init.call(res,args);
+            var qsClass = classRegistry[className];
+            if(qsClass != undefined){
+                res = {};
+                qsClass.attachClassDescription(res,args);
+            }
+            else{
+                res = undefined;
+                wprint("Undefined class " + className);
+                return res;
+            }
         }
         catch(err){
-            wprint("Ctor failed");
+            wprint("Creating object (or Ctor code) failed for " + className);
         }
         shapePubSub.releaseCallBacks();
         return res;
     }
 
     this.newTransientObject = function(className){
-        var res = this.newObject(className);
+        var args = []; // empty array
+        // copy all other arguments we want to "pass through"
+        for(var i = 0; i < arguments.length; i++){
+            args.push(arguments[i]);
+        }
+        var res = this.newObject.apply(this, args);
         if(res){
             setMetaAttr(res,"persistence", "transient");
         }
@@ -108,7 +130,12 @@ function Shape(){
     }
 
     this.newPersistentObject = function(className){
-        var res = this.newObject(className);
+        var args = []; // empty array
+        // copy all other arguments we want to "pass through"
+        for(var i = 0; i < arguments.length; i++){
+            args.push(arguments[i]);
+        }
+        var res = this.newObject.apply(this, args);
         //TODO: add in dataRegistries
         setMetaAttr(res,"persistence", "global");
         return res;

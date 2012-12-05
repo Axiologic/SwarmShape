@@ -11,7 +11,7 @@ shape.registerCtrl("base/checkbox",{
     },
     toView:function(){
         this.checkBox.value = this.model;
-        console.log("Binding input text: " + JSON.stringify(this.model));
+        //console.log("Binding input text: " + JSON.stringify(this.model));
     },
     onChange:function(){
         this.model = ! this.model;

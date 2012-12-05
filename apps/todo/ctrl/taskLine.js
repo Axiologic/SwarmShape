@@ -5,9 +5,9 @@ shape.registerCtrl("todo/taskLine",{
     init:function(){
         this.oldValue = this.model.completed;
         this.addChangeWatcher("completed", this.completedChanged);
-        $(this.view).on("dblclick", this.switchToEdit);
+        var myLabel = shape.localFilter(this.view,"label[id^='myLabel']");
+        $(myLabel).on("dblclick", this.switchToEdit);
         $(this.view).keypress(this.keyHandler);
-
     },
     toView:function(){
         $(this.view).toggleClass("completed", this.model.completed);
@@ -22,8 +22,7 @@ shape.registerCtrl("todo/taskLine",{
     },
     switchToEdit:function(){
         $(this.view).toggleClass("editing");
-        if($(this.view).hasClass("editing"))
-        {
+        if($(this.view).hasClass("editing")){
             $(this.view).find(".edit").focus();
             $(this.view).find(".edit").bind('blur',this.switchToEdit);
         }else{

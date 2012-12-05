@@ -5,6 +5,7 @@ shape.registerModel("todo",{
         },
         ctor:function(){
           this.current = this.all;
+          this.autoSelection = false;
         },
         all:{
             type:"collection",
@@ -58,10 +59,12 @@ shape.registerModel("todo",{
         selectAllChecked:{
             chains:"selectAll",
             code:function(){
-                dprint("Select all clicked");
-                for(var i = 0; i < this.current.length; i++){
-                    this.current.getAt(i).completed = this.selectAll;
+                if(!this.autoSelection){
+                    for(var i = 0; i < this.current.length; i++){
+                        this.current.getAt(i).completed = this.selectAll;
+                    }
                 }
+                this.autoSelection = false;
             }
         },
         checkSelection:{
@@ -74,7 +77,8 @@ shape.registerModel("todo",{
                        break;
                    }
                }
-               dprint("checking selection" + check );
+               //TODO: adjust style for checkbox
+               this.autoSelection = true;
                this.selectAll = this.current.length > 0 ? check : false;
            }
         },
