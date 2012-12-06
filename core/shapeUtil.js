@@ -4,7 +4,7 @@
 
     cprint // print messages in the java script console
     wprint // print warnings (log!?)
-    dprint  // a print debug messages (remove thos in release)
+    dprint  // a print debug messages (remove those in release)
  */
 
 

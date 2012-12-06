@@ -169,7 +169,7 @@ function SoundPubSub(){
             dispatchNext();
             return channelSubscribers[target].length;
         } else{
-            wprint("No one is subscribed to "+ target);
+            wprint("No one is subscribed to "+ J(target));
             return 0;
         }
     }

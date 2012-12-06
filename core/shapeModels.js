@@ -7,7 +7,7 @@
 
 function QSClassDescription(declaration, qsName){
     var members = {};
-    var triggers = {};
+    var expressions = {};
     var queries = {};
     var functions = {};
     this.className = qsName;
@@ -21,7 +21,7 @@ function QSClassDescription(declaration, qsName){
         }
         else
             if(declaration[a].chains != undefined ){
-                triggers[a] = declaration[a];
+                expressions[a] = declaration[a];
             }
          else if(declaration[a].lang != undefined ){
                 queries[a] = declaration[a];
@@ -30,7 +30,7 @@ function QSClassDescription(declaration, qsName){
 
     this.attachClassDescription = function(model, ctorArgs){
         makeBindable(model);
-        setMetaAttr(model,"className",this.className);
+        setMetaAttr(model,SHAPE.CLASS_NAME,this.className);
 
         var n;
         for(n in functions){
@@ -78,8 +78,8 @@ function QSClassDescription(declaration, qsName){
             }
         }
 
-        for(n in triggers){
-            var t = triggers[n];
+        for(n in expressions){
+            var t = expressions[n];
             //console.log("Preparing trigger " + n);
             var chains = t.chains.split(",");
             for(var i=0; i<chains.length; i++){
@@ -91,13 +91,26 @@ function QSClassDescription(declaration, qsName){
     this.update = function(objId, newValues){
     //TODO: update from external sources
     }
+
+    this.getFields = function(){
+        /*$.merge(ret, members);
+        $.merge(ret, expressions);*/
+        var ret = {};
+        for(var item in members)
+        {
+            ret[item]=members[item];
+        }
+        for(var item in expressions)
+        {
+            ret[item]=expressions[item];
+        }
+        return ret;
+    }
 }
 
 function changeCallBack(){
     //do nothing until adding persistence
 }
-
-
 
 function DataRegistry(name){
     this.name       = name;

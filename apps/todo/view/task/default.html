@@ -1,6 +1,6 @@
 <li shape-ctrl='todo/taskLine'>
     <div class="view">
-        <input  class="toggle" type="checkbox" shape-model = "@completed" >
+        <input  class="toggle" type="checkbox" shape-model = "@completed" checked="@completed" value="@completed">
         <label id="myLabel" shape-model="@description" ></label>
         <button class="destroy" shape-model="@" shape-event = "remove"></button>
     </div>

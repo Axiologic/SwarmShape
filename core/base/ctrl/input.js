@@ -8,6 +8,7 @@ shape.registerCtrl("base/input",{
     init:function(){
         this.isCheckbox = ($(this.view).attr("type") == "checkbox");
         $(this.view).on("change",this.onChange);
+        //$(this.view).keyup(this.onChange);
     },
     toView:function(){
         if(this.model != undefined && this.model != null){

@@ -17,11 +17,14 @@ isBindableCollection = function (obj){
 
 function Collection(){
     makeBindable(this);
+    setMetaAttr(this, SHAPE.CLASS_NAME, SHAPE.COLLECTION);
     this.__meta.bindableCollection = true;
     this.container = [];
+    this.length = this.container.length;
 }
 
 Collection.prototype.announceChange = function(changeType){
+    this.length = this.container.length;
     shapePubSub.pub(this, new CollectionChangeEvent(changeType));
 }
 
@@ -70,7 +73,7 @@ Collection.prototype.size = function(){
      return this.container.length;
 }
 
-var cp = Collection.prototype;
+/*var cp = Collection.prototype;
 try{
     cp.__defineGetter__("length", function() {
         return this.container.length; });
@@ -82,7 +85,7 @@ try{
     }catch(ex){
         cprint("Failing to define length property" + ex.message);
     }
-}
+}*/
 
 
 Collection.prototype.shift = function(){
@@ -128,3 +131,9 @@ Collection.prototype.addWatcher = function(callBack, filter){
 Collection.prototype.removeWatcher = function(fctRef,callBack,filter){
     shapePubSub.unsub(this,callBack,filter);
 }
+
+shape.registerModel(SHAPE.COLLECTION, {
+    length : {
+        type : "int"
+    }
+});

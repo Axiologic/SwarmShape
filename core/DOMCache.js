@@ -9,7 +9,7 @@
   Main function: doRefresh = function(coll, parentCtrl, startF, itemF, endF )
     - coll is a shape Collection
     - parentCtrl is the controller of the component
-    - startF - callback that will be called when refresh will start. usually disconnecting view childs from parent
+    - startF - callback that will be called when refresh will start. usually disconnecting view children from parent
     - itemF - callback called for each item in the collection, add new DOM in parent component
     - endF - called at the end of a refresh
  */
@@ -20,6 +20,13 @@ function DOMCache(){
     function getComponentBinder(model, parentCtrl, callBack){
         return function(content){
             var newElem = $(content);
+            switch(newElem.length){
+                case 1:
+                    newElem = newElem[0];
+                    break;
+                default:
+                    wprint("Something is wrong... component should have only one root!!! "+content);
+            }
             shape.expandExistingDOM(newElem, parentCtrl, model);
             cache[model] = newElem;
             callBack(newElem);

@@ -59,12 +59,11 @@ shape.registerModel("todo",{
         selectAllChecked:{
             chains:"selectAll",
             code:function(){
-                if(!this.autoSelection){
+                if(this.autoSelection!=this.selectAll){
                     for(var i = 0; i < this.current.length; i++){
                         this.current.getAt(i).completed = this.selectAll;
                     }
                 }
-                this.autoSelection = false;
             }
         },
         checkSelection:{
@@ -77,9 +76,8 @@ shape.registerModel("todo",{
                        break;
                    }
                }
-               //TODO: adjust style for checkbox
-               this.autoSelection = true;
                this.selectAll = this.current.length > 0 ? check : false;
+               this.autoSelection = this.selectAll;
            }
         },
         toggle:function(model){

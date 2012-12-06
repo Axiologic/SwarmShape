@@ -21,7 +21,12 @@
 
 //public (global) functions
 addChangeWatcher = function(model, chain, handler){
-    return new ChangeWatcher(model, chain, handler);
+    var wrongLink = shape.checkChain(model, chain);
+    if(!wrongLink){
+        return new ChangeWatcher(model, chain, handler);
+    }else{
+        wprint("Found wrong link "+wrongLink);
+    }
 }
 
 removeChangeWatcher = function(changeWatcher){
@@ -121,7 +126,7 @@ function ChangeWatcher(model, chain, handler){
                             }
 
                             if(newModel){
-                                callBackRefs[i] = addWatcher(newModel, args[i-1], getWatcherClosure(i+1));
+                                callBackRefs[i] = addWatcher(newModel, args[i], getWatcherClosure(i+1));
                             }
                         }
                     }
@@ -155,20 +160,26 @@ function ChangeWatcher(model, chain, handler){
 
     function addWatcher(model,property, nw){
         //console.log("Adding watcher " + model + "." + property);
-        model.bindableProperty(property);
-        shapePubSub.sub(model,nw, function(event){
-            if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
-                if(event.property != property) {
-                    return false;
-                }
-                else {
+        var chainLink = shape.checkChain(model, property);
+        if(chainLink)
+        {
+            wprint("Unknown property "+property+" in model "+J(model));
+        }else{
+            model.bindableProperty(property);
+            shapePubSub.sub(model,nw, function(event){
+                if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
+                    if(event.property != property) {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                } else if(event.type == COLLECTION_CHANGE_EVENT_TYPE){
                     return true;
                 }
-            } else if(event.type == COLLECTION_CHANGE_EVENT_TYPE){
-                return true;
-            }
-         return false;
-        });
+                return false;
+            });
+        }
         return nw;
     }
 

@@ -2,20 +2,20 @@
      BaseController is a very important class for shape, controllers are the backbone of the framework
 
     Rules:
-      - each controller have a a view and a model
-      - after model and view initialisation init() function got called
+      - each controller has a view and a model
+      - after model and view initialisation init() function are called
       - at changes in models, toView() function get called (onModelChanged and onViewChanged are called also)
 
     Other:
           - addChangeWatcher(chain,handler) -
           - event () : send an event for parents of this controller to handle
-          - modelAssign: any change to this.model itslef will not cause changes in parent model so if have to use this to
+          - modelAssign: any change to this.model itself will not cause changes in parent model so if have to use this to
           really change something outside of current controller
 
     Type of controllers:
-      - context controller: Controllers will form a very tree of controllers starting from a context controller.
+      - context controller: Controllers will form a tree of controllers starting from a context controller.
             Parent and context of such controllers is the controller itself.
-      - parent controller: almoust all controllers have a parent (parentCtrl)
+      - parent controller: almost all controllers have a parent (parentCtrl)
       - Chain Root controller (isCWRoot property): chains in child will be relative to this one. The context controller
         is like a Chain root controller but isCWRoot is false)
       - transparent controllers (hasTransparentModels): those controllers that inherit their models from a parent
@@ -133,6 +133,10 @@ BaseController.prototype.arrayAssign = function(arr,index,value){
 
 BaseController.prototype.modelAssign = function(value){
     //console.log("Assigning property " + this.parentModelProperty + " in " + this.parentModel + " value " + value);
+    var wrongLink = shape.checkChain(this.parentModel, this.parentModelProperty);
+    if(wrongLink){
+      wprint("You can't assign property "+this.parentModelProperty+" on "+getMetaAttr(this.parentModel,SHAPE.CLASS_NAME));
+    }
     this.parentModel[this.parentModelProperty]  = value;
 }
 

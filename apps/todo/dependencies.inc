@@ -1,4 +1,4 @@
-
+<script type="text/javascript" src="../../core/shapeConstants.js"> </script>
 <script type="text/javascript" src="../../deps/jquery.min.js"></script>
 <script type="text/javascript" src="../../deps/stacktrace.js"></script>
 <script type="text/javascript" src="../../core/shapeUtil.js"> </script>

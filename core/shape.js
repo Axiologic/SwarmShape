@@ -44,6 +44,10 @@ function Shape(){
         classRegistry[modelName] = new QSClassDescription(declaration,modelName);
     }
 
+    this.getClassDescription = function(modelName){
+        return classRegistry[modelName];
+    }
+
     this.registerShapeURL = function(viewName,url){
         shapeUrlRegistry[viewName] = url;
     }
@@ -166,7 +170,7 @@ function Shape(){
 
 
     this.getPerfectShape = function(viewModel, usecase, callBack){
-        var name = getMetaAttr(viewModel, "className");
+        var name = getMetaAttr(viewModel, SHAPE.CLASS_NAME);
         if(usecase == undefined || usecase == null){
             usecase = "default";
         }
@@ -366,7 +370,7 @@ function Shape(){
                     if(value[0] == "@"){
                         value = value.substring(1);
                         if(value!=""){
-                            ctrl.addChangeWatcher(this.value.substring(1),
+                            ctrl.addChangeWatcher(value,
                                 function(changedModel, modelProperty, value, oldValue ){
                                     //dprint("applyAttribute:" + attributeName);
                                     applyAttribute(attributeName,element,value,ctrl);
@@ -382,7 +386,7 @@ function Shape(){
                     if(value[0] == "@"){
                         value = value.substring(1);
                         if(value!=""){
-                            ctrl.addChangeWatcher(this.value,
+                            ctrl.addChangeWatcher(value,
                                 function(changedModel, modelProperty, value, oldValue ){
                                     $(element).attr(attributeName,value);
                                 });
@@ -452,6 +456,30 @@ function Shape(){
         }
         innerFilter($(node), true);
         return result;
+    }
+
+    /**
+     *
+     * Method used to check if chain members ar described in shape's models description.
+     * Returns misspelled chain link or null if the chain is ok.
+     *
+     * */
+    this.checkChain = function(model, chain){
+        var chainItems = chain.split(".");
+        var classDesc = shape.getClassDescription(getMetaAttr(model, SHAPE.CLASS_NAME));
+        for(var i=0; i<chainItems.length; i++){
+            if(classDesc){
+                var m = classDesc.getFields()[chainItems[i]];
+                if(!m){
+                    return chainItems[i];
+                }else{
+                    classDesc = shape.getClassDescription(m.type);
+                }
+            }else{
+                return chainItems[i];
+            }
+        }
+        return null;
     }
 }
 
