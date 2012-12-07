@@ -109,6 +109,9 @@ function SoundPubSub(){
                     } else{
                         message.__transmisionIndex++;
                     }
+                    if(message.__transmisionIndex = undefined){
+                        wprint("Can't use as message in a pub/sub channel this object: " + message);
+                    }
                     var subscriber = channelSubscribers[channelName][message.__transmisionIndex];
                     if(subscriber == undefined){
                         channelsStorage[channelName].shift();

@@ -150,20 +150,20 @@ function Shape(){
         {
             var subCall = function(response){
                                 shapePubSub.unsub(url, subCall);
-                                callBack(response);
+                                callBack(response.response);
                             };
             shapePubSub.sub(url, subCall);
         }else{
             shapePubSub.addChannel(url);
-            wprint(url);
             $.get(url, function(response){
                 callBack(response);
-                shapePubSub.pub(url, response);
+                shapePubSub.pub(url, {"response":response});
             });
         }
     }
 
     this.getShapeContent = function(shapeName, callBack){
+        var requestedShapeName = shapeName;
         var content = shapeRegistry[shapeName];
         if( content == undefined){
             var fileName = shapeUrlRegistry[shapeName]
@@ -177,14 +177,10 @@ function Shape(){
                     return;
                 }
             }
-
             if(fileName != undefined) {
-               /* $.get(fileName, function(newContent){
-                    shapeRegistry[shapeName] = newContent;
-                    callBack(newContent);
-                });*/
                 ajaxCall(fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
+                    shapeRegistry[requestedShapeName] = newContent;
                     callBack(newContent);
                 });
             } else{

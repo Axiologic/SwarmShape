@@ -98,6 +98,13 @@ shape.registerModel("todo",{
             this.completed.removeAll();
             this.all.copy(this.active);
         },
+        addNewTask:function(description){
+            var newTask = shape.newPersistentObject("task");
+            newTask.description = description;
+            this.active.push(newTask);
+            this.all.push(newTask);
+            return newTask;
+        },
         query:{
             lang:"sql",
             params:"personId",

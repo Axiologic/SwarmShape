@@ -24,6 +24,8 @@
         <?php include("shapes.js"); ?>
         shape.baseUrl = "http://localhost";
         var model = shape.newTransientObject("todo");
+        model.addNewTask("Task number 1");
+        model.addNewTask("Task number 2");
         shape.expandShapeComponent(document.getElementById("main"),null, model);
     }
 

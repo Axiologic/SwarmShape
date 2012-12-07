@@ -12,11 +12,7 @@ shape.registerCtrl("todo",{
     addNewTitle :function(){
         if( this.model.newTitle != ""){
             dprint("New task added..." + this.model.newTitle);
-            var newTask = shape.newPersistentObject("task");
-            newTask.description = this.model.newTitle;
-            this.model.active.push(newTask);
-            this.model.all.push(newTask);
-            this.model.recentTask = newTask;
+            this.model.recentTask = this.model.addNewTask(this.model.newTitle);
             this.model.newTitle = "";
         }
     },
