@@ -91,8 +91,11 @@ shape.registerModel("todo",{
         },
         remove:function(model){
             this.all.remove(model);
-            this.active.remove(model);
-            this.completed.remove(model);
+            if(model.completed){
+                this.completed.remove(model);
+            } else {
+                this.active.remove(model);
+            }
         },
         removeAllCompleted:function(model){
             this.completed.removeAll();
