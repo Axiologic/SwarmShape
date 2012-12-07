@@ -51,7 +51,8 @@ Collection.prototype.indexOf = function(item,startIndex){
 
 Collection.prototype.remove = function(item){
     var index = this.container.indexOf(item,0);
-    if(this.container.splice(index,1) != -1){
+    if(index != -1){
+        this.container.splice(index,1);
         this.announceChange("remove");
     }
 }
