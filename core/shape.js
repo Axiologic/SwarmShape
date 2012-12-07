@@ -145,6 +145,23 @@ function Shape(){
         return res;
     }
 
+    function ajaxCall(url, callBack){
+        if(shapePubSub.hasChannel(url))
+        {
+            var subCall = function(response){
+                                shapePubSub.unsub(url, subCall);
+                                callBack(response);
+                            };
+            shapePubSub.sub(url, subCall);
+        }else{
+            shapePubSub.addChannel(url);
+            wprint(url);
+            $.get(url, function(response){
+                callBack(response);
+                shapePubSub.pub(url, response);
+            });
+        }
+    }
 
     this.getShapeContent = function(shapeName, callBack){
         var content = shapeRegistry[shapeName];
@@ -152,11 +169,21 @@ function Shape(){
             var fileName = shapeUrlRegistry[shapeName]
             if(fileName == undefined){
                 shapeName =  shapeName + ".default";
-                fileName = shapeUrlRegistry[shapeName]
+                content = shapeRegistry[shapeName];
+                if(!content){
+                    fileName = shapeUrlRegistry[shapeName];
+                }else{
+                    callBack(content);
+                    return;
+                }
             }
 
             if(fileName != undefined) {
-                $.get(fileName, function(newContent){
+               /* $.get(fileName, function(newContent){
+                    shapeRegistry[shapeName] = newContent;
+                    callBack(newContent);
+                });*/
+                ajaxCall(fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
                     callBack(newContent);
                 });
@@ -435,9 +462,12 @@ function Shape(){
             shape.expandShapeComponent(forExpand[i], ctrl);
         }
     }
+
     /**
      * Extension of jQuery filter method that search recursively in DOM but stops when it finds expanded
      * shapes(shape-view in attributes). It uses same parameters as jQuery filter method.
+     *
+     * Returns an array of DOM objects that pass filter condition or if array has only one items return the DOM object.
      * */
     this.localFilter = function(node, filter){
         var result = [];
@@ -452,7 +482,6 @@ function Shape(){
             }catch(e){
                 dprint(e.message);
             }
-
         }
         innerFilter($(node), true);
         return result;

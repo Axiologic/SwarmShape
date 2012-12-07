@@ -231,6 +231,19 @@ function SoundPubSub(){
         }
         return newEvent; // not this time
     });
+
+    this.hasChannel = function(channel){
+        if(channelSubscribers[channel]!=undefined){
+            return true;
+        }
+        return false;
+    }
+
+    this.addChannel = function(channel){
+        if(!this.hasChannel(channel)){
+            channelSubscribers[channel] = [];
+        }
+    }
 }
 
 shapePubSub = new SoundPubSub();

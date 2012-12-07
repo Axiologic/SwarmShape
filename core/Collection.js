@@ -132,6 +132,10 @@ Collection.prototype.removeWatcher = function(fctRef,callBack,filter){
     shapePubSub.unsub(this,callBack,filter);
 }
 
+/**
+ * because now chains are checked before watchers are created we need to register a fake model that has length property
+ * so when "collection.length" chain it's checked every thing it's allright
+ */
 shape.registerModel(SHAPE.COLLECTION, {
     length : {
         type : "int"
