@@ -109,7 +109,8 @@ function SoundPubSub(){
                     } else{
                         message.__transmisionIndex++;
                     }
-                    if(message.__transmisionIndex = undefined){
+                    //TODO: for immutable objects it will not work also, fix for shape models
+                    if(message.__transmisionIndex == undefined){
                         wprint("Can't use as message in a pub/sub channel this object: " + message);
                     }
                     var subscriber = channelSubscribers[channelName][message.__transmisionIndex];
