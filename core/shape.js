@@ -149,9 +149,9 @@ function Shape(){
         if(shapePubSub.hasChannel(url))
         {
             var subCall = function(response){
-                                shapePubSub.unsub(url, subCall);
-                                callBack(response.response);
-                            };
+                            shapePubSub.unsub(url, subCall);
+                            callBack(response.response);
+                          };
             shapePubSub.sub(url, subCall);
         }else{
             shapePubSub.addChannel(url);

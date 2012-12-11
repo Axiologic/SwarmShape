@@ -106,6 +106,12 @@ function SoundPubSub(){
                 } else {
                     if(message.__transmisionIndex == undefined){
                         message.__transmisionIndex = 0;
+                        for(var i = channelSubscribers[channelName].length-1; i >= 0 ; i--){
+                            var subscriber =  channelSubscribers[channelName][i];
+                            if(subscriber.forDelete == true){
+                                channelSubscribers[channelName].splice(i,1);
+                            }
+                        }
                     } else{
                         message.__transmisionIndex++;
                     }
@@ -118,9 +124,9 @@ function SoundPubSub(){
                         channelsStorage[channelName].shift();
                     } else{
                         if(subscriber.filter == undefined || subscriber.filter(message)){
-
+                            if(!subscriber.forDelete){
                                 subscriber.callBack(message);
-
+                            }
                         }
                     }
                 }
@@ -194,13 +200,6 @@ function SoundPubSub(){
             var subscriber =  channelSubscribers[target][i];
             if(subscriber.callBack == callBack && (filter == undefined || subscriber.filter == filter )){
                 subscriber.forDelete = true;
-            }
-        }
-
-        for(var i = channelSubscribers[target].length-1; i >= 0 ; i--){
-            var subscriber =  channelSubscribers[target][i];
-            if(subscriber.forDelete == true){
-                channelSubscribers[target].splice(i,1);
             }
         }
       }
