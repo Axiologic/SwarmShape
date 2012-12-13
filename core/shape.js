@@ -14,6 +14,8 @@ function Shape(){
     var shapeControllers = [];
     var shape = this;
     var classRegistry = {};
+    var interfaceRegistry = {};
+    var typeBuilderRegistry = {};
 
     var dataRegistries = {};
     var shapeUrlRegistry = {};
@@ -40,12 +42,63 @@ function Shape(){
         if(attr) attr.applyAttribute(dom,value,ctrl);
     }
 
-    this.registerModel = function(modelName,declaration){
-        classRegistry[modelName] = new QSClassDescription(declaration,modelName);
+    this.registerModel = function(modelName,declaration,ignoreOnBuild){
+        var desc = new QSClassDescription(declaration,modelName);
+        classRegistry[modelName] = desc;
+        if(!ignoreOnBuild){
+            this.registerBuildFunction(modelName, function(memberDescription, args){
+                var result;
+                if(memberDescription != undefined){
+                    var desc = memberDescription;
+                    if(memberDescription.type){
+                        if(memberDescription.value==null||memberDescription.value=="null"){
+                            return null;
+                        }
+                        desc = shape.getClassDescription(memberDescription.type);
+                    }
+                    result = {};
+                    try{
+                        desc.attachClassDescription(result, args);
+                    }catch(err){
+                        dprint(err.message);
+                    }
+                }
+                return result;
+            });
+        }
+    }
+
+    this.registerInterface = function(interfaceName, declaration){
+        interfaceRegistry[interfaceName] = new InterfaceDescription(declaration,interfaceName);
+        /* Because interfaces shouldn't be instantiated we return null every time from build function. */
+        this.registerBuildFunction(interfaceName, function(){ return null});
+    }
+
+    this.registerBuildFunction = function(typeName, buildFunction){
+        if(typeBuilderRegistry[typeName]){
+            wprint("Shouldn't have more than one entry for "+typeName+" !");
+        }
+        typeBuilderRegistry[typeName] = buildFunction;
     }
 
     this.getClassDescription = function(modelName){
         return classRegistry[modelName];
+    }
+
+    this.getInterfaceDescription = function(modelName){
+        return interfaceRegistry[modelName];
+    }
+
+    this.verifyObjectAgainstInterface = function (object, propertyName, newValue){
+        var modelFields = this.getClassDescription(getMetaAttr(object,SHAPE.CLASS_NAME)).getFields();
+        var newValueDesc = modelFields[propertyName];
+        if(this.getInterfaceDescription(newValueDesc['type'])){
+            if(!this.getInterfaceDescription(newValueDesc['type']).implementsYou(newValue)){
+                dprint("You are trying to assign wrong type of object! Should implement interface "+newValueDesc['type']);
+                return false;
+            }
+        }
+        return true;
     }
 
     this.registerShapeURL = function(viewName,url){
@@ -93,6 +146,17 @@ function Shape(){
         return o;
     }
 
+    this.newMember = function(memberDesc){
+        var res;
+        var callFunc = typeBuilderRegistry[memberDesc.type];
+        if(callFunc){
+            res = callFunc(memberDesc);
+        }else{
+            wprint("Can't create object with type "+memberDesc.type);
+        }
+        return res;
+    }
+
     this.newObject = function(className){
         var res;
         var args = []; // empty array
@@ -100,22 +164,22 @@ function Shape(){
         for(var i = 1; i < arguments.length; i++){
             args.push(arguments[i]);
         }
+
         shapePubSub.blockCallBacks();
+
         try{
-            var qsClass = classRegistry[className];
-            if(qsClass != undefined){
-                res = {};
-                qsClass.attachClassDescription(res,args);
+            var desc = shape.getClassDescription(className);
+            var callFunc = typeBuilderRegistry[className];
+            if(callFunc){
+                res = callFunc(desc, args);
+            }else{
+                wprint("Can't create object with type "+className);
             }
-            else{
-                res = undefined;
-                wprint("Undefined class " + className);
-                return res;
-            }
-        }
-        catch(err){
+        }catch(err){
+            dprint(err);
             wprint("Creating object (or Ctor code) failed for " + className);
         }
+
         shapePubSub.releaseCallBacks();
         return res;
     }

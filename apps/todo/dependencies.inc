@@ -4,6 +4,11 @@
 <script type="text/javascript" src="../../core/shapeUtil.js"> </script>
 <script type="text/javascript" src="../../core/soundPubSub.js"> </script>
 <script type="text/javascript" src="../../core/shape.js"> </script>
+<script type="text/javascript" src="../../core/base/objectTypes/int.js"></script>
+<script type="text/javascript" src="../../core/base/objectTypes/boolean.js"></script>
+<script type="text/javascript" src="../../core/base/objectTypes/collection.js"></script>
+<script type="text/javascript" src="../../core/base/objectTypes/string.js"></script>
+<script type="text/javascript" src="../../core/base/objectTypes/date.js"></script>
 <script type="text/javascript" src="../../core/shapeAttributes.js"> </script>
 <script type="text/javascript" src="../../core/DOMCache.js"> </script>
 <script type="text/javascript" src="../../core/FunctionReference.js"> </script>

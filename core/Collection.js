@@ -142,4 +142,4 @@ shape.registerModel(SHAPE.COLLECTION, {
     length : {
         type : "int"
     }
-});
+},true);

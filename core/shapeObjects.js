@@ -25,7 +25,7 @@ addChangeWatcher = function(model, chain, handler){
     if(!wrongLink){
         return new ChangeWatcher(model, chain, handler);
     }else{
-        wprint("Found wrong link "+wrongLink);
+        wprint("Found wrong link '"+wrongLink+"' from chain '"+chain+"' in model with type '"+getMetaAttr(model, SHAPE.CLASS_NAME)+"'!");
     }
 }
 
@@ -209,19 +209,25 @@ if (!Object.prototype.bindableProperty) {
             if(haveToExpandProperty(this, prop)){
                 var oldval = this[prop],
                     newval = oldval,
-                    getter = function () {
+                    getter = function (){
                         return newval;
                     },
-                    setter = function (val) {
+                    setter = function (val){
                         oldval = newval;
                         newval = val;
-                        if(oldval !== val) {
-                           shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
+                        if(oldval !== val){
+
+                            /*  we take a small test to see if the newVal that will be set on this.prop should
+                                implement any interface. This test will not prevent any other operation(s).
+                            */
+                            shape.verifyObjectAgainstInterface(this, prop, newval);
+
+                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
                         }
                         return newval;
                     };
 
-                if (delete this[prop]) { // can't watch constants
+                if (delete this[prop]){ // can't watch constants
                     Object.defineProperty(this, prop, {
                         get: getter
                         , set: setter
@@ -270,4 +276,3 @@ Object.prototype.toString = function(){
     }
     return defaultToString.apply(this);
 }
-

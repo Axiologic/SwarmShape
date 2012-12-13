@@ -53,7 +53,7 @@ shape.registerModel("todo",{
             }
         },
         selectAll:{
-            type:"Boolean",
+            type:"boolean",
             value:"false"
         },
         selectAllChecked:{

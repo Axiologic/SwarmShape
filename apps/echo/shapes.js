@@ -1,2 +1,2 @@
 
-shape.registerShapeURL("mainViewEcho","../../modules/echo/view/main.html");
+shape.registerShapeURL("mainViewEcho","../../apps/echo/view/main.html");

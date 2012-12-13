@@ -11,13 +11,15 @@ function QSClassDescription(declaration, qsName){
     var queries = {};
     var functions = {};
     this.className = qsName;
+
     for(var a in declaration){
        if(typeof declaration[a] === 'function'){
            functions[a] = declaration[a];
         }
         else
         if(declaration[a].type != undefined ){
-            members[a] = declaration[a];
+            var m = declaration[a];
+            members[a] = m;
         }
         else
             if(declaration[a].chains != undefined ){
@@ -39,31 +41,12 @@ function QSClassDescription(declaration, qsName){
 
         for(n in members){
             var m = members[n];
-            if(m.value != undefined){
-                if(m.value == "null" || m.value == null){
-                    model[n] = null;
-                }
-                else {
-                    model[n] = m.value;
-                }
-            } else
-              if(m.type == "int"){
-                  model[n] = 0;
-              } else  if(m.type == "string"){
-                  model[n] = "";
-              } else if(m.type == "boolean"){
-                    model[n] = false;
-                }
-                else if(m.type == "collection"){
-                model[n] = new Collection();
-                }
-                else {
-                  if(m.type != undefined){
-                      model[n] = shape.newObject(m.type);
-                  } else{
-                      wprint("Wrong model syntax in describing model: " + this.className);
-                  }
-                }
+            try{
+                model[n] = shape.newMember(m);
+            }catch(err){
+                wprint(err.message);
+            }
+
             //addChangeWatcher(model,n,changeCallBack)
         }
 
@@ -93,15 +76,11 @@ function QSClassDescription(declaration, qsName){
     }
 
     this.getFields = function(){
-        /*$.merge(ret, members);
-        $.merge(ret, expressions);*/
         var ret = {};
-        for(var item in members)
-        {
+        for(var item in members){
             ret[item]=members[item];
         }
-        for(var item in expressions)
-        {
+        for(var item in expressions){
             ret[item]=expressions[item];
         }
         return ret;

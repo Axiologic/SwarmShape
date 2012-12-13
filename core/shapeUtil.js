@@ -53,7 +53,7 @@ function shape__linePrint(prefix,text, fullStack){
     else{
         strTrace = "\n\n" + trace.join("\n") + "\n";
     }
-    text = strTrace + ">>\t"  + text;
+    text = strTrace + ">>\n\t"  + text;
 
     if(shape__linePrint_hasConsole == "undefined"){
         console = prefix + text;
