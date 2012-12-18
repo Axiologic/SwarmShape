@@ -46,7 +46,7 @@ function Shape(){
         var desc = new QSClassDescription(declaration,modelName);
         classRegistry[modelName] = desc;
         if(!ignoreOnBuild){
-            this.registerBuildFunction(modelName, function(memberDescription, args){
+            this.registerTypeBuilderFunction(modelName, function(memberDescription, args){
                 var result;
                 if(memberDescription != undefined){
                     var desc = memberDescription;
@@ -71,10 +71,10 @@ function Shape(){
     this.registerInterface = function(interfaceName, declaration){
         interfaceRegistry[interfaceName] = new InterfaceDescription(declaration,interfaceName);
         /* Because interfaces shouldn't be instantiated we return null every time from build function. */
-        this.registerBuildFunction(interfaceName, function(){ return null});
+        this.registerTypeBuilderFunction(interfaceName, function(){ return null});
     }
 
-    this.registerBuildFunction = function(typeName, buildFunction){
+    this.registerTypeBuilderFunction = function(typeName, buildFunction){
         if(typeBuilderRegistry[typeName]){
             wprint("Shouldn't have more than one entry for "+typeName+" !");
         }
@@ -274,7 +274,7 @@ function Shape(){
                 return true;
             }
         }
-        wprint("Unable to automatically detect a shape for " + viewModel);
+        wprint("Unable to automatically detect a shape for " + J(viewModel));
         return false;
     }
 
@@ -343,8 +343,8 @@ function Shape(){
             }
 
             if(parentCtrl == null || parentCtrl == undefined){
-                ctrl.parentCtrl = ctrl;
-                ctrl.ctxtCtrl = ctrl;
+                /*ctrl.parentCtrl = ctrl;
+                ctrl.ctxtCtrl = ctrl;*/
                 ctrl.changeModel(rootModel);
             } else{
                 ctrl.parentCtrl = parentCtrl;
@@ -357,7 +357,7 @@ function Shape(){
                     if(!ctrl.hasTransparentModel){
                         ctrl.addChangeWatcher("",
                             function(changedModel, modelProperty, value){
-                                if(ctrl.parentCtrl != ctrl){
+                                if(ctrl.parentCtrl != null){
                                     ctrl.parentModel = changedModel;
                                     ctrl.parentModelProperty = modelProperty;
                                 }
@@ -424,7 +424,7 @@ function Shape(){
             if(!ctrl.hasTransparentModel){
                 ctrl.addChangeWatcher("",
                     function(changedModel, modelProperty, value){
-                        if(ctrl.parentCtrl != ctrl){
+                        if(ctrl.parentCtrl != null){
                             ctrl.parentModel = changedModel;
                             ctrl.parentModelProperty = modelProperty;
                         }

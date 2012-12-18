@@ -1,4 +1,4 @@
-shape.registerBuildFunction("boolean",function(objectDescription, args){
+shape.registerTypeBuilderFunction("boolean",function(objectDescription, args){
     if(objectDescription.value!=undefined){
         if(objectDescription.value==null || objectDescription.value=="null"){
             return null;

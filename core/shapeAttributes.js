@@ -40,3 +40,12 @@ shape.registerAttribute("shape-model",{
     "applyAttribute" : null,
     "expandHTMLTag"  : true
 });
+
+shape.registerAttribute("shape-context",{
+    "applyAttribute" : function(dom, newValue, ctrl){
+        if(newValue){
+            ctrl.contextName = newValue;
+        }
+    },
+    "expandHTMLTag"  : true
+});

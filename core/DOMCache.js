@@ -38,7 +38,7 @@ function DOMCache(){
             callBack(cache[model]);
             return;
         }
-        shape.getPerfectShape(model,null,getComponentBinder(model, parentCtrl, callBack));
+        shape.getPerfectShape(model,parentCtrl.getContextName(),getComponentBinder(model, parentCtrl, callBack));
     }
 
     var refreshQueue = [];

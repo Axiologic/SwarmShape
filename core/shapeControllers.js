@@ -28,8 +28,8 @@ function BaseController(ctrlName){
     this.chain = "";
     this.isCWRoot = false;
     this.hasTransparentModel = false;
-    this.parentCtrl = this;
-    this.ctxtCtrl   = this;
+    this.parentCtrl = null;
+    this.ctxtCtrl   = null;
     this.isController = true;
     this.initialised = false;
     this.model = undefined;
@@ -52,7 +52,7 @@ BaseController.prototype.getCtxtCtrl = function(){
 BaseController.prototype.addChangeWatcher = function(chain,handler){
     var self = this;
     function createCW(ctrl, currChain){
-        if(ctrl == ctrl.parentCtrl || ctrl.isCWRoot){
+        if(ctrl.parentCtrl == null || ctrl.isCWRoot){
             var watcher;
             //dprint("Chain " + ctrl.model + "->"+currChain);
             watcher = addChangeWatcher(ctrl.model,currChain,handler);
@@ -141,10 +141,20 @@ BaseController.prototype.modelAssign = function(value){
 }
 
 BaseController.prototype.action = function(type, model){
-    if(this.parentCtrl != null && this.parentCtrl != this){
+    if(this.parentCtrl != null){
         this.parentCtrl.action(type, model);
     } else {
         wprint("Nobody is handling action " + type + " for " +model);
+    }
+}
+
+BaseController.prototype.getContextName = function(){
+    var contextName = null;
+    if(this.contextName){
+        return this.contextName;
+    }
+    if(this.parentCtrl!=null){
+        return this.parentCtrl.getContextName();
     }
 }
 
