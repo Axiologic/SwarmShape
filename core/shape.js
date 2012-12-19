@@ -51,7 +51,7 @@ function Shape(){
                 if(memberDescription != undefined){
                     var desc = memberDescription;
                     if(memberDescription.type){
-                        if(memberDescription.value==null||memberDescription.value=="null"){
+                        if(memberDescription.value===null||memberDescription.value=="null"){
                             return null;
                         }
                         desc = shape.getClassDescription(memberDescription.type);
