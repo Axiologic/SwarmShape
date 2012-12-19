@@ -55,8 +55,12 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
         if(ctrl.parentCtrl == null || ctrl.isCWRoot){
             var watcher;
             //dprint("Chain " + ctrl.model + "->"+currChain);
-            watcher = addChangeWatcher(ctrl.model,currChain,handler);
-            self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
+            if(currChain==""){
+                handler(null, null, ctrl.model);
+            }else{
+                watcher = addChangeWatcher(ctrl.model,currChain,handler);
+                self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
+            }
             return;
         }
         if(ctrl.hasTransparentModel) {
@@ -149,11 +153,10 @@ BaseController.prototype.action = function(type, model){
 }
 
 BaseController.prototype.getContextName = function(){
-    var contextName = null;
     if(this.contextName){
         return this.contextName;
     }
-    if(this.parentCtrl!=null){
+    if(this.parentCtrl != null){
         return this.parentCtrl.getContextName();
     }
 }

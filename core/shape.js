@@ -263,14 +263,14 @@ function Shape(){
         }
 
         if(name != undefined) {
-            name = name + "." + usecase;
-            if(shapeUrlRegistry[name] != undefined){
-                this.getShapeContent(name,callBack);
+            var shapeName = name + "." + usecase;
+            if(shapeUrlRegistry[shapeName] != undefined){
+                this.getShapeContent(shapeName,callBack);
                 return true;
             }
-            name = name + ".default";
-            if(shapeUrlRegistry[name] != undefined){
-                this.getShapeContent(name,callBack);
+            shapeName = name + ".default";
+            if(shapeUrlRegistry[shapeName] != undefined){
+                this.getShapeContent(shapeName,callBack);
                 return true;
             }
         }
@@ -354,7 +354,7 @@ function Shape(){
                     ctrl.isCWRoot = true;
                     ctrl.changeModel(rootModel);
                 } else{
-                    if(!ctrl.hasTransparentModel){
+                   // if(!ctrl.hasTransparentModel){
                         ctrl.addChangeWatcher("",
                             function(changedModel, modelProperty, value){
                                 if(ctrl.parentCtrl != null){
@@ -364,7 +364,7 @@ function Shape(){
                                 ctrl.changeModel(value);
                             }
                         );
-                    }
+                   // }
                 }
             }
 
@@ -421,7 +421,7 @@ function Shape(){
             ctrl.isCWRoot = true;
             ctrl.changeModel(rootModel);
         } else {
-            if(!ctrl.hasTransparentModel){
+            //if(!ctrl.hasTransparentModel){
                 ctrl.addChangeWatcher("",
                     function(changedModel, modelProperty, value){
                         if(ctrl.parentCtrl != null){
@@ -431,13 +431,13 @@ function Shape(){
                         ctrl.changeModel(value);
                     }
                 );
-            }
+            //}
         }
 
         if(expandChilds == true){
             bindAttributes(domObj,ctrl);
         } else{
-            bindDirectAttributes(domObj,parentCtrl);
+            bindDirectAttributes(domObj,parentCtrl,ctrl);
         }
         ctrl.changeView(domObj);
         return ctrl;
@@ -447,7 +447,7 @@ function Shape(){
         return expandHTMLElement(domElem,parentCtrl,rootModel,true);
     }
 
-    function bindDirectAttributes(element,ctrl){
+    function bindDirectAttributes(element,parentCtrl,ctrl){
         $(element.attributes).each (
             function() {
                 var attributeName = this.name;
@@ -457,14 +457,14 @@ function Shape(){
                     if(value[0] == "@"){
                         value = value.substring(1);
                         if(value!=""){
-                            ctrl.addChangeWatcher(value,
+                            parentCtrl.addChangeWatcher(value,
                                 function(changedModel, modelProperty, value, oldValue ){
                                     //dprint("applyAttribute:" + attributeName);
                                     applyAttribute(attributeName,element,value,ctrl);
                                 });
                         } else{
                             //TODO: we can detect model changes !?
-                            applyAttribute(attributeName, element, ctrl.model ,ctrl);
+                            applyAttribute(attributeName, element, parentCtrl.model,ctrl);
                         }
                     } else{
                         applyAttribute(attributeName, element, value, ctrl);
@@ -473,13 +473,13 @@ function Shape(){
                     if(value[0] == "@"){
                         value = value.substring(1);
                         if(value!=""){
-                            ctrl.addChangeWatcher(value,
+                            parentCtrl.addChangeWatcher(value,
                                 function(changedModel, modelProperty, value, oldValue ){
                                     $(element).attr(attributeName,value);
                                 });
                         } else{
                             //TODO: we can detect model changes !?
-                            $(element).attr(attributeName,ctrl.model);
+                            $(element).attr(attributeName,parentCtrl.model);
                         }
                     }
                 }
@@ -512,9 +512,9 @@ function Shape(){
                 }
             } else
             if(elementIsShapedHtmlElement(element)){
-                expandHTMLElement(element,ctrl);
+                expandHTMLElement(element, ctrl);
             } else {
-                bindDirectAttributes(element,ctrl);
+                bindDirectAttributes(element, ctrl, ctrl);
             }
         });
         for (var i=0; i< forExpand.length; i++){
@@ -555,6 +555,10 @@ function Shape(){
      * */
     this.checkChain = function(model, chain){
         var chainItems = chain.split(".");
+        if(chain==""){
+            wprint("Chain can't be empty!");
+            return "";
+        }
         var classDesc = shape.getClassDescription(getMetaAttr(model, SHAPE.CLASS_NAME));
         for(var i=0; i<chainItems.length; i++){
             if(classDesc){
