@@ -5,11 +5,14 @@ Goals: simplicity, programming discipline, reusable components, component layout
 
 Right now: Experimental web interface framework for creating complex RIA applications using Java Script
 
-Our simple rules:
-  - inversion of control
+Our priciples/features:
+  - declarative when possible
+  - based on inversion of control
+  - reusability of controllers (mainly) and models
   - html tags will magically become components if you put shape-ctrl or shape-view attributes
   - clean separation of models, views, controllers
   - fat models
+  - models with type checking (types, interfaces)
   - use computed properties (expression computed from properties chains) to describe self contained models
   - explicitly put as much as possible from your specific logic in models (code and data) and not in behaviors/controllers,views, helper classes
   - everything else get reusable (components, views, controllers, helpers, style, layouts)
