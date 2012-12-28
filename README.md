@@ -1,3 +1,6 @@
+For the classical TODO example commnly created to show JS frameworks checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server as apache is required) 
+
+
 ShapeJS : MVC framework for big enterprise projects (portals, RIA, single page applications)
 =============================================================================================
 
