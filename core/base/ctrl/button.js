@@ -15,6 +15,6 @@ shape.registerCtrl("base/button",{
     toView:function(){
     },
     onClick:function(objectId){
-        this.action(this.shape_action, this.model);
+        this.emit(new ClickEvent(this.shape_action, this.model));
     }
 });

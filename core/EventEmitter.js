@@ -1,5 +1,5 @@
 
-function makeEventEmitter(obj){
+function makeEventEmitter(obj, parent){
     obj.on = function(type, callBack){
         shapePubSub.sub(obj,callBack, function(message){
             if(message.type == type || (message.__meta && message.__meta.type == type) ){
@@ -11,8 +11,10 @@ function makeEventEmitter(obj){
 
     obj.emit = function(event){
         if(event.type == undefined){
-            wprint("Who will catch an event without a type? Directly use \"pub\" for this.");
+            wprint("Who will catch an event without a type? Directly use \"pub\" for this. "+J(event));
         }
-        shapePubSub.pub(obj,event);
+        if(!shapePubSub.pub(obj,event)&&parent){
+            parent.emit(parent, event);
+        }
     }
 }

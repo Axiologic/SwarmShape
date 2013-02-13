@@ -46,7 +46,7 @@ function QSClassDescription(declaration, qsName){
             }catch(err){
                 wprint(err.message);
             }
-
+            model.bindableProperty(n);
             //addChangeWatcher(model,n,changeCallBack)
         }
 

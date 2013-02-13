@@ -1,9 +1,10 @@
-
+<script type="text/javascript" src="../../core/shapeConstants.js"> </script>
 <script type="text/javascript" src="../../deps/jquery.min.js"></script>
 <script type="text/javascript" src="../../deps/stacktrace.js"></script>
 <script type="text/javascript" src="../../core/shapeUtil.js"> </script>
 <script type="text/javascript" src="../../core/soundPubSub.js"> </script>
-<script type="text/javascript" src="../../core/shapeConstants.js"> </script>
+<script type="text/javascript" src="../../core/eventFactory.js"> </script>
+<script type="text/javascript" src="../../core/eventEmitter.js"> </script>
 <script type="text/javascript" src="../../core/shape.js"> </script>
 <script type="text/javascript" src="../../core/base/objectTypes/int.js"></script>
 <script type="text/javascript" src="../../core/base/objectTypes/boolean.js"></script>

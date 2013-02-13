@@ -105,9 +105,9 @@ function Shape(){
         shapeUrlRegistry[viewName] = url;
     }
 
-    this.getController = function (ctrlName){
+    this.getController = function (ctrlName, parentCtrl){
         //dprint("Creating controller " + ctrlName);
-        var newCtrl         = new BaseController(ctrlName);
+        var newCtrl         = new BaseController(ctrlName, parentCtrl);
         var base =  shapeControllers[ctrlName];
         if(base != undefined){
             for(var vn in base){
@@ -331,7 +331,7 @@ function Shape(){
                 ctrlName = viewName;
             }
 
-            ctrl = shape.getController(ctrlName);
+            ctrl = shape.getController(ctrlName, parentCtrl);
             ctrl.hasTransparentModel = transparentModel;
 
             if(modelChain != undefined && !rootModel ){
@@ -347,7 +347,6 @@ function Shape(){
                 ctrl.ctxtCtrl = ctrl;*/
                 ctrl.changeModel(rootModel);
             } else{
-                ctrl.parentCtrl = parentCtrl;
                 ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
 
                 if(rootModel != undefined){
@@ -398,15 +397,12 @@ function Shape(){
         if(ctrlName == undefined){
             ctrlName =  "base/" + domObj.nodeName.toLowerCase();
         }
-        var ctrl = shape.getController(ctrlName);
+        var ctrl = shape.getController(ctrlName, parentCtrl);
 
         //cprint("New controller " + ctrl.ctrlName);
 
 
         ctrl.hasTransparentModel   = transparentModel;
-
-
-        ctrl.parentCtrl = parentCtrl;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
 
         if(ctrl.hasTransparentModel){
@@ -569,6 +565,11 @@ function Shape(){
                     classDesc = shape.getClassDescription(m.type);
                 }
             }else{
+                var interfaceDesc = shape.getInterfaceDescription(m.type);
+                //if i find an Interface in chain a have to stop checking
+                if(interfaceDesc){
+                    break;
+                }
                 return chainItems[i];
             }
         }
@@ -590,18 +591,32 @@ function getBaseUrl(){
 
 //cprint("Loading shape...");
 
+function UrlHashChange(obj){
+    this.type=SHAPEEVENTS.URL_CHANGE;
+    for(var prop in obj){
+        if(prop!= "type"){
+            this[prop]=obj[prop];
+        }else{
+            wprint("Sorry dude, \"type\" is a keyword for hash fragments in Shape's URLs!");
+        }
+    }
+}
 
 function watchHashEvent(ctrl){
     $(window).bind('hashchange', function(e) {
-        var action = window.location.hash;
-        var index = action.indexOf("#");
+        var fragment = window.location.hash;
+        var index = fragment.indexOf("#");
         if(index == -1) {
-            action = "homePage";
+            fragment = "";
         } else{
-            action = action.substr(index+1);
+            fragment = fragment.substr(index+1);
         }
-        ctrl.action(action);
+        ctrl.emit(new UrlHashChange(fragmentToObject(fragment)));
     });
- // Trigger the event (useful on page load).
-    //$(window).hashchange();
 }
+
+function navigateUsingObject(obj){
+    window.location.hash = objectToFragment(obj);
+}
+
+

@@ -8,6 +8,8 @@ shape.registerCtrl("todo",{
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);
         watchHashEvent(this);
+        this.on(SHAPEEVENTS.URL_CHANGE, this.hashResponse);
+        this.on(SHAPEEVENTS.CLICK, this.clickResponse);
     },
     addNewTitle :function(){
         if( this.model.newTitle != ""){
@@ -16,34 +18,42 @@ shape.registerCtrl("todo",{
             this.model.newTitle = "";
         }
     },
-    action: function(type, model){
+    hashResponse: function(event){
         //cprint("Action required: " + type+ " for " + model);
-        if(type == "completedToggle"){
-            this.model.toggle(model);
-        } else if(type == "remove"){
-            this.model.remove(model);
-        }else if(type == "removeAllCompleted"){
-            this.model.removeAllCompleted();
-        }else if(type == "completedTasks"){
+        var selection=event.selection;
+        if(selection == "completedTasks"){
             this.model.current = this.model.completed;
-            this.setLinkSelection(type);
-        }else if(type == "activeTasks"){
+            this.setLinkSelection(selection);
+        }else if(selection == "activeTasks"){
             this.model.current = this.model.active;
-            this.setLinkSelection(type);
-        }else if(type == "allTasks"){
+            this.setLinkSelection(selection);
+        }else if(selection == "allTasks"){
             this.model.current = this.model.all;
-            this.setLinkSelection(type);
+            this.setLinkSelection(selection);
         }
         else{
-          wprint("Unknown action " + type);
+          wprint("Unknown action " + selection);
         }
     },
+    clickResponse:function(event){
+        var action = event.userAction;
+        var model = event.viewModel;
+        if(action == "completedToggle"){
+            this.model.toggle(model);
+        } else if(action == "remove"){
+            this.model.remove(model);
+        }else if(action == "removeAllCompleted"){
+            this.model.removeAllCompleted();
+        }else{
+            wprint("Unknown action " + action);
+        }
+     },
     toView:function(){
 
     },
     setLinkSelection:function(href){
         $(shape.localFilter(this.view, "a[class='selected']")).toggleClass("selected");
-        $(shape.localFilter(this.view, "a[href='#"+href+"']")).toggleClass("selected");
+        $(shape.localFilter(this.view, "a[href='#selection/"+href+"']")).toggleClass("selected");
     }
 });
 

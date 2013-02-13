@@ -16,7 +16,7 @@ shape.registerCtrl("todo/taskLine",{
     completedChanged:function(){
         if(this.oldValue != this.model.completed){
             $(this.view).toggleClass("completed", this.model.completed);
-            this.action("completedToggle",this.model);
+            this.emit(new ClickEvent("completedToggle", this.model));
             this.oldValue = this.model.completed;
         }
     },
@@ -30,7 +30,6 @@ shape.registerCtrl("todo/taskLine",{
         }
     },
     keyHandler:function(event){
-        console.log(event.keyCode);
         if(event.keyCode==13||event.keyCode==27)
         {
             this.switchToEdit();

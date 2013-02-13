@@ -22,13 +22,13 @@
  */
 
 
-function BaseController(ctrlName){
+function BaseController(ctrlName, parentCtrl){
     this.ctrlName = ctrlName;
     this.changeWatchers = [];
     this.chain = "";
     this.isCWRoot = false;
     this.hasTransparentModel = false;
-    this.parentCtrl = null;
+    this.setParentCtrl(parentCtrl);
     this.ctxtCtrl   = null;
     this.isController = true;
     this.initialised = false;
@@ -144,14 +144,6 @@ BaseController.prototype.modelAssign = function(value){
     this.parentModel[this.parentModelProperty]  = value;
 }
 
-BaseController.prototype.action = function(type, model){
-    if(this.parentCtrl != null){
-        this.parentCtrl.action(type, model);
-    } else {
-        wprint("Nobody is handling action " + type + " for " +model);
-    }
-}
-
 BaseController.prototype.getContextName = function(){
     if(this.contextName){
         return this.contextName;
@@ -159,5 +151,10 @@ BaseController.prototype.getContextName = function(){
     if(this.parentCtrl != null){
         return this.parentCtrl.getContextName();
     }
+}
+
+BaseController.prototype.setParentCtrl = function(parent){
+    this.parentCtrl = parent;
+    makeEventEmitter(this, parent);
 }
 

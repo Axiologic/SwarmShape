@@ -1,4 +1,4 @@
-
+/*
 function ShapeEvent(type){
     this.type = type;
     this.data = [];
@@ -17,4 +17,10 @@ function shapeEventsFactory(){
     this.create = function (type,params){
 
     }
+}*/
+
+function ClickEvent(userAction, viewModel){
+    this.type = SHAPEEVENTS.CLICK;
+    this.userAction = userAction;
+    this.viewModel = viewModel;
 }

@@ -62,5 +62,27 @@ function shape__linePrint(prefix,text, fullStack){
     }
 }
 
+function fragmentToObject(fragment){
+    fragment = decodeURI(fragment);
+
+    var params = fragment.split("/");
+    var obj={};
+
+    for(var i=0; i<params.length; i+=2){
+        if(params[i]==""){
+            break;
+        }
+        obj[params[i]]=params[i+1].replace("/%2f/g", "/");
+    }
+    return obj;
+}
+
+function objectToFragment(obj){
+    var frag = "";
+    for(var prop in obj){
+        frag+=prop+"/"+obj[prop].replace("/\//g","%2f")+"/";
+    }
+    return encodeURI(frag);
+}
 
 

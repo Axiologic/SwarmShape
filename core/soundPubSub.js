@@ -49,17 +49,14 @@
 
 // TODO: detect infinite loops (or very deep propagation) It is possible!?
 
-var COLLECTION_CHANGE_EVENT_TYPE = "CollectionChange";
-var PROPERTY_CHANGE_EVENT_TYPE   = "PropertyChange";
-
 function CollectionChangeEvent(data){
-    this.type = COLLECTION_CHANGE_EVENT_TYPE;
+    this.type = SHAPEEVENTS.COLLECTION_CHANGE;
     this.history = [];
     this.history.push(data);
 }
 
 function PropertyChangeEvent(model,property,newValue, oldValue){
-    this.type = PROPERTY_CHANGE_EVENT_TYPE;
+    this.type = SHAPEEVENTS.PROPERTY_CHANGE;
     this.property = property;
     this.newValue = newValue;
     this.oldValue = oldValue;
@@ -131,7 +128,7 @@ function SoundPubSub(){
                     }
                 }
             } catch(err){
-                wprint("Event callback failed: "+ subscriber.callBack);
+                wprint("Event callback failed: "+ subscriber.callBack +"error: "+err);
             }
             //
             if(fromReleaseCallBacks){
@@ -217,7 +214,7 @@ function SoundPubSub(){
         }
     }
 
-    this.registerCompactor(PROPERTY_CHANGE_EVENT_TYPE, function(newEvent, oldEvent){
+    this.registerCompactor(SHAPEEVENTS.PROPERTY_CHANGE, function(newEvent, oldEvent){
         if(newEvent.type ==  oldEvent.type && newEvent.property == oldEvent.property ){
             newEvent.newValue = oldEvent.newValue;
             return oldEvent;
@@ -225,7 +222,7 @@ function SoundPubSub(){
         return newEvent;
     });
 
-    this.registerCompactor(COLLECTION_CHANGE_EVENT_TYPE,function(newEvent, oldEvent){
+    this.registerCompactor(SHAPEEVENTS.COLLECTION_CHANGE,function(newEvent, oldEvent){
         if(newEvent.type ==  oldEvent.type){
             for(var i = 0; i< newEvent.history.length; i++){
                 oldEvent.history.push(newEvent.history[i]);

@@ -167,14 +167,14 @@ function ChangeWatcher(model, chain, handler){
         }else{
             model.bindableProperty(property);
             shapePubSub.sub(model,nw, function(event){
-                if(event.type == PROPERTY_CHANGE_EVENT_TYPE){
+                if(event.type == SHAPEEVENTS.PROPERTY_CHANGE){
                     if(event.property != property) {
                         return false;
                     }
                     else {
                         return true;
                     }
-                } else if(event.type == COLLECTION_CHANGE_EVENT_TYPE){
+                } else if(event.type == SHAPEEVENTS.COLLECTION_CHANGE){
                     return true;
                 }
                 return false;
