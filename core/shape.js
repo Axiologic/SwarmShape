@@ -23,6 +23,8 @@ function Shape(){
 
     var shapeAttributes = {};
 
+    var shapeLocaleRegistry = {};
+
     this.registerCtrl = function (name,functObj){
         //console.log("Registering controller " + name);
         shapeControllers[name] = functObj;
@@ -33,11 +35,11 @@ function Shape(){
         shapeAttributes[name] = new ShapeAttribute(name,functObj);
     }
 
-    function shapeKnowsAttribute(name){
+    this.shapeKnowsAttribute = function(name){
         return shapeAttributes[name] != undefined;
     }
 
-    function applyAttribute(name, dom,value,ctrl){
+    this.applyAttribute = function(name, dom,value,ctrl){
         var attr = shapeAttributes[name];
         if(attr) attr.applyAttribute(dom,value,ctrl);
     }
@@ -169,12 +171,14 @@ function Shape(){
 
         try{
             var desc = shape.getClassDescription(className);
+            //TODO:De sters codul asta zic eu ca e copy/paste cu apelul res = shape.newMember(desc);
             var callFunc = typeBuilderRegistry[className];
             if(callFunc){
                 res = callFunc(desc, args);
             }else{
                 wprint("Can't create object with type "+className);
             }
+
         }catch(err){
             dprint(err);
             wprint("Creating object (or Ctor code) failed for " + className);
@@ -338,7 +342,11 @@ function Shape(){
                 if(ctrl.hasTransparentModel){
                     ctrl.changeModel(parentCtrl.model);
                 } else{
-                    ctrl.chain = modelChain;
+                    if(shape.isChainExpression(modelChain)){
+                        ctrl.chain = modelChain;
+                    }else{
+                        ctrl.chain = "";
+                    }
                 }
             }
 
@@ -409,7 +417,11 @@ function Shape(){
             ctrl.changeModel(parentCtrl.model);
         } else{
             if(modelChain != undefined){
-                ctrl.chain = modelChain;
+                if(shape.isChainExpression(modelChain)){
+                    ctrl.chain = modelChain;
+                }else{
+                    ctrl.chain = "";
+                }
             }
         }
 
@@ -433,7 +445,7 @@ function Shape(){
         if(expandChilds == true){
             bindAttributes(domObj,ctrl);
         } else{
-            bindDirectAttributes(domObj,parentCtrl,ctrl);
+            ctrl.bindDirectAttributes(domObj,parentCtrl);
         }
         ctrl.changeView(domObj);
         return ctrl;
@@ -443,45 +455,32 @@ function Shape(){
         return expandHTMLElement(domElem,parentCtrl,rootModel,true);
     }
 
-    function bindDirectAttributes(element,parentCtrl,ctrl){
+   /* function bindDirectAttributes(element,parentCtrl,ctrl){
         $(element.attributes).each (
             function() {
                 var attributeName = this.name;
                 var value = this.value;
                 if(shapeKnowsAttribute(attributeName)){
                     //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
-                    if(value[0] == "@"){
-                        value = value.substring(1);
-                        if(value!=""){
-                            parentCtrl.addChangeWatcher(value,
-                                function(changedModel, modelProperty, value, oldValue ){
-                                    //dprint("applyAttribute:" + attributeName);
-                                    applyAttribute(attributeName,element,value,ctrl);
-                                });
-                        } else{
-                            //TODO: we can detect model changes !?
-                            applyAttribute(attributeName, element, parentCtrl.model,ctrl);
-                        }
-                    } else{
-                        applyAttribute(attributeName, element, value, ctrl);
+                    var exp = newShapeExpression(value);
+                    if(exp){
+                        exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                            applyAttribute(attributeName,element,value,ctrl);
+                        });
+                    }else{
+                        applyAttribute(attributeName, element, value,ctrl);
                     }
                 } else {
-                    if(value[0] == "@"){
-                        value = value.substring(1);
-                        if(value!=""){
-                            parentCtrl.addChangeWatcher(value,
-                                function(changedModel, modelProperty, value, oldValue ){
-                                    $(element).attr(attributeName,value);
-                                });
-                        } else{
-                            //TODO: we can detect model changes !?
-                            $(element).attr(attributeName,parentCtrl.model);
-                        }
+                    var exp = newShapeExpression(value);
+                    if(exp){
+                        exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                            $(element).attr(attributeName,value);
+                        });
                     }
                 }
             });
     }
-
+*/
 
 
     function elementIsShapeComponent(element){
@@ -510,7 +509,7 @@ function Shape(){
             if(elementIsShapedHtmlElement(element)){
                 expandHTMLElement(element, ctrl);
             } else {
-                bindDirectAttributes(element, ctrl, ctrl);
+                ctrl.bindDirectAttributes(element, ctrl);
             }
         });
         for (var i=0; i< forExpand.length; i++){
@@ -575,6 +574,29 @@ function Shape(){
         }
         return null;
     }
+
+    this.isChainExpression = function(expression){
+        var result = expression.match(/^((?:[^\W]+\.{1})*[^\W]*)$/);
+       // console.log("expression "+expression+" result "+result);
+        if(result!=null){
+            return true;
+        }
+        return false;
+    }
+
+    this.registerLocale = function(language, dictionary){
+        mergeInRepository(shapeLocaleRegistry, language, dictionary);
+    }
+
+    this.getLocaleKey = function(key, language){
+        if(language==undefined){
+            language = this.currentLanguage;
+        }
+        return shapeLocaleRegistry[language][key];
+    }
+
+    this.currentLanguage ="en";
+
 }
 
 window.shape = new Shape();
@@ -619,4 +641,14 @@ function navigateUsingObject(obj){
     window.location.hash = objectToFragment(obj);
 }
 
-
+L = function(key){
+    try{
+        var text = shape.getLocaleKey( key);
+    }catch(err){
+        //hoho
+    }
+    if(text==undefined){
+        text = key;
+    }
+    return text;
+}

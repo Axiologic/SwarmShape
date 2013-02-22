@@ -5,6 +5,8 @@ shape.registerTypeBuilderFunction("collection",function(objectDescription, args)
         }
         return objectDescription.value;
     }else{
-        return new Collection();
+        var res = new Collection();
+        setMetaAttr(res, "contains", objectDescription.contains);
+        return res;
     }
 });

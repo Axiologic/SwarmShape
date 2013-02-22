@@ -35,6 +35,7 @@ Collection.prototype.pop = function(){
 }
 
 Collection.prototype.push = function(elem){
+    this.canJoin(elem);
     var val = this.container.push(elem);
     this.announceChange("push");
     return val;
@@ -67,12 +68,36 @@ Collection.prototype.removeAt = function(index){
 }
 
 Collection.prototype.insertAt = function(elem, index){
+    this.canJoin(elem);
     this.container[index] = elem;
     this.announceChange("insert", index);
 }
 
 Collection.prototype.size = function(){
      return this.container.length;
+}
+/**
+ *
+ * Method canJoin checks if a new item passes <contains> filter
+ *
+ * */
+Collection.prototype.canJoin = function(item){
+    var contains = getMetaAttr(this,"contains");
+    if(contains){
+        var desc = shape.getInterfaceDescription(contains);
+        if(desc){
+            if(!desc.implementsYou(item)){
+                wprint("This collection expects objects to implement interface "+contains+" and your "+getMetaAttr(item,SHAPE.CLASS_NAME)+" doesn't implement!");
+            }
+        }else{
+            var itemClass=getMetaAttr(item,SHAPE.CLASS_NAME);
+            if(contains==itemClass){
+
+            }else{
+                wprint("This collection expects objects with type "+contains+" and your are trying to add objects with type "+itemClass+"!");
+            }
+        }
+    }
 }
 
 /*var cp = Collection.prototype;

@@ -21,6 +21,10 @@ function wprint (str,fullStack){
     shape__linePrint("Warning:",str, fullStack);
 }
 
+function eprint(str, err){
+    shape__linePrint("Error:", str+" "+err.message, err.stack);
+}
+
 //pretty print for bindable objects, donn't print __meta stuff
 J = function(obj) {
     var tmpObj={};
@@ -83,6 +87,20 @@ function objectToFragment(obj){
         frag+=prop+"/"+obj[prop].replace("/\//g","%2f")+"/";
     }
     return encodeURI(frag);
+}
+
+function mergeInRepository(repo, key, newValues){
+    if(repo[key]==undefined){
+        repo[key] = {};
+    }
+
+    for(var newKey in newValues){
+        if(repo[key][newKey]!=undefined){
+            wprint("Overwriting key "+newKey);
+        }
+        //in some cases a full cloning could be more appropriate
+        repo[key][newKey] = newValues[newKey];
+    }
 }
 
 

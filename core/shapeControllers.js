@@ -158,3 +158,39 @@ BaseController.prototype.setParentCtrl = function(parent){
     makeEventEmitter(this, parent);
 }
 
+
+BaseController.prototype.applyHtmlAttribute = function(attributeName, element, value){
+    $(element).attr(attributeName,value);
+}
+
+BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
+    var ctrl = this;
+    $(element.attributes).each (
+        function() {
+            var attributeName = this.name;
+            var value = this.value;
+            if(shape.shapeKnowsAttribute(attributeName)){
+                //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
+                var exp = newShapeExpression(value);
+                if(exp){
+                    exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                        shape.applyAttribute(attributeName,element,value,ctrl);
+                    });
+                }else{
+                    shape.applyAttribute(attributeName, element, value,ctrl);
+                }
+            } else {
+                var exp = newShapeExpression(value);
+                if(exp){
+                    exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                        //$(element).attr(attributeName,value);
+                        ctrl.applyHtmlAttribute(attributeName, element, value);
+                    });
+                }
+            }
+        });
+}
+
+
+
+

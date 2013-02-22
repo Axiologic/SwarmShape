@@ -30,16 +30,6 @@ shape.registerModel("todo",{
             type:"task",
             value:"null"
         },
-        pluralizer:{
-            chains:"todoCount",
-            code:function(){
-                if(this.todoCount == 1){
-                    return "";
-                } else {
-                    return "(s)";
-                }
-            }
-        },
         todoCount:{
             chains:"active.length",
             code:function(){

@@ -19,6 +19,8 @@
 <script type="text/javascript" src="../../core/shapeModels.js"> </script>
 <script type="text/javascript" src="../../core/Collection.js"> </script>
 <script type="text/javascript" src="../../core/shapeControllers.js"> </script>
+<script type="text/javascript" src="../../core/base/shapeExpression.js"> </script>
+<script type="text/javascript" src="locale/en.js"> </script>
 
 <script type="text/javascript" src="../../core/base/ctrl/button.js"> </script>
 <script type="text/javascript" src="../../core/base/ctrl/label.js"> </script>
