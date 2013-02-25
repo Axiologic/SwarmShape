@@ -3,17 +3,19 @@ ShapeExpression=function(expression){
 
     var chains = expression.match(/(@(?:[^\W]+\.{1})*[^\W]*)/g);
     var interpretedExpress = expression;
-    for(var i=0;i<chains.length;i++){
-        if(chains[i] == '@'){
-            interpretedExpress = interpretedExpress.replace("@", "this.ctrl.model");
-        }else{
-            try{
-                var t = chains[i].slice(1);
-                interpretedExpress = interpretedExpress.replace(chains[i], "this.ctrl.model."+t);
-            }catch(e){
-                console.log(e);
-            }
+    if(chains){
+        for(var i=0;i<chains.length;i++){
+            if(chains[i] == '@'){
+                interpretedExpress = interpretedExpress.replace("@", "this.ctrl.model");
+            }else{
+                try{
+                    var t = chains[i].slice(1);
+                    interpretedExpress = interpretedExpress.replace(chains[i], "this.ctrl.model."+t);
+                }catch(e){
+                    console.log(e);
+                }
 
+            }
         }
     }
 
@@ -37,25 +39,39 @@ ShapeExpression=function(expression){
     this.bindToPlace = function(_ctrl, _onChangeHandler){
         this.ctrl = _ctrl;
         onChangeHandler = _onChangeHandler;
-        for(var i=0; i<chains.length;i++){
-            this.ctrl.addChangeWatcher(chains[i].slice(1), function(model, prop, value, oldValue){
-                _onChangeHandler(model, prop, callhandler(), oldValue);
-            });
+        if(chains){
+            for(var i=0; i<chains.length;i++){
+                this.ctrl.addChangeWatcher(chains[i].slice(1), function(model, prop, value, oldValue){
+                    _onChangeHandler(model, prop, callhandler(), oldValue);
+                });
+            }
+        }else{
+            _onChangeHandler(this.ctrl.model, null, callhandler(), null);
         }
     }
 }
 
 function newShapeExpression(expression){
     try{
-        var validExpression = expression.search(/[@=><]/);
+        var specialChars = expression.match(/\(|\)|@/g);
 
-        if(validExpression==-1){
-            return null;
-        }else{
-          // console.log("Valid Expression: "+expression);
-           return new ShapeExpression(expression);
+        if(specialChars){
+            var open=0;
+            for(var i = 0; i<specialChars.length; i++){
+                if(specialChars[i]=='('){
+                    open++;
+                }else{
+                    if(specialChars[i]==')'){
+                        open--;
+                    }
+                }
+            }
+            if(open==0){
+                return new ShapeExpression(expression);
+            }
         }
     }catch(error){
         wprint("Syntax error in expression: "+expression);
     }
+    return null;
 }

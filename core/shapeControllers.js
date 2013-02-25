@@ -158,9 +158,13 @@ BaseController.prototype.setParentCtrl = function(parent){
     makeEventEmitter(this, parent);
 }
 
-
-BaseController.prototype.applyHtmlAttribute = function(attributeName, element, value){
-    $(element).attr(attributeName,value);
+BaseController.prototype.applyHtmlAttribute = function(attributeName, element, value, overrideDefault){
+    if(overrideDefault==undefined){
+        try{
+            $(element).attr(attributeName,value);
+        }catch(err){
+        }
+    }
 }
 
 BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
@@ -186,6 +190,8 @@ BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
                         //$(element).attr(attributeName,value);
                         ctrl.applyHtmlAttribute(attributeName, element, value);
                     });
+                }else{
+                    ctrl.applyHtmlAttribute(attributeName, element, value, true);
                 }
             }
         });

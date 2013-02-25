@@ -19,13 +19,13 @@ shape.registerCtrl("base/label",{
             this.label.textContent = this.model;
         }
     },
-    applyHtmlAttribute:function(attributeName, element, value){
+    applyHtmlAttribute:function(attributeName, element, value, overrideDefault){
         if(attributeName=="value"){
             element.innerText = value;
             //textContent for firefox ONLY!!!
             element.textContent = value;
         }else{
-            $(element).attr(attributeName,value);
+            BaseController.prototype.applyHtmlAttribute(attributeName, element, value, overrideDefault)
         }
     }
 });
