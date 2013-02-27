@@ -7,9 +7,9 @@ shape.registerCtrl("todo",{
     count:0,
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);
-        watchHashEvent(this);
         this.on(SHAPEEVENTS.URL_CHANGE, this.hashResponse);
         this.on(SHAPEEVENTS.CLICK, this.clickResponse);
+        watchHashEvent(this);
     },
     addNewTitle :function(){
         if( this.model.newTitle != ""){

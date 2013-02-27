@@ -54,6 +54,22 @@ makeBindable = function (obj){
         localObjectsCount = localObjectsCount + 1;
         obj.__meta.bindableProperties = {};
     }
+    if(obj.__meta.innerValues==undefined){
+        obj.__meta.innerValues = {};
+        obj.__meta.innerTransientValues = {};
+
+        obj.getTransientValues = function(){
+            return obj.__meta.innerTransientValues;
+        }
+
+        obj.getInnerValues = function(){
+            return this.__meta.innerValues;
+        }
+
+        obj.getClassName = function(){
+            return obj.__meta[SHAPE.CLASS_NAME];
+        }
+    }
 }
 
 //internal stuff
@@ -206,25 +222,37 @@ if (!Object.prototype.bindableProperty) {
         , configurable: true
         , writable: false
         , value: function (prop) {
+            var savedValue = this[prop];
             if(haveToExpandProperty(this, prop)){
-                var oldval = this[prop],
-                    newval = oldval,
                     getter = function (){
-                        return newval;
-                    },
-                    setter = function (val){
-                        oldval = newval;
-                        newval = val;
-                        if(oldval !== val){
-
-                            /*  we take a small test to see if the newVal that will be set on this.prop should
-                                implement any interface. This test will not prevent any other operation(s).
-                            */
-                            shape.verifyObjectAgainstInterface(this, prop, newval);
-
-                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
+                        var res = this.getInnerValues()[prop];
+                        if(res==undefined){
+                            res = this.getTransientValues()[prop];
                         }
-                        return newval;
+                        //todo lazy for
+                        return res;
+                    },
+                    setter = function (value){
+                        var inner = this.getInnerValues();
+                        var oldval = inner[prop];
+                        if(oldval !== value){
+                            /*  we take a small test to see if the newVal that will be set on this.prop should
+                             implement any interface. This test will not prevent any other operation(s).
+                             */
+                            shape.verifyObjectAgainstInterface(this, prop, value);
+                            var newValue = value;
+                            //if it has meta then is a full model object
+                            // - else is a basic object(int, number, string, etc.)
+                            var myClassDescription = shape.getClassDescription(getMetaAttr(this, SHAPE.CLASS_NAME));
+                            if(myClassDescription){
+                                newValue = myClassDescription.updateMemberValue(this,prop,value);
+                            }else{
+                                inner[prop] = value;
+                            }
+                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue , oldval));
+                            //shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
+                        }
+                        return newValue;
                     };
 
                 if (delete this[prop]){ // can't watch constants
@@ -234,6 +262,9 @@ if (!Object.prototype.bindableProperty) {
                         , enumerable: true
                         , configurable: true
                     });
+
+                    //call the setter in the case when the previous values was useful
+                    this[prop] = savedValue;
                 }
             }
         }

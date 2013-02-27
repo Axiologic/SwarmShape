@@ -16,6 +16,7 @@ function Shape(){
     var classRegistry = {};
     var interfaceRegistry = {};
     var typeBuilderRegistry = {};
+    var typeUpdateRegistry = {};
 
     var dataRegistries = {};
     var shapeUrlRegistry = {};
@@ -59,6 +60,7 @@ function Shape(){
                         desc = shape.getClassDescription(memberDescription.type);
                     }
                     result = {};
+
                     try{
                         desc.attachClassDescription(result, args);
                     }catch(err){
@@ -66,8 +68,32 @@ function Shape(){
                     }
                 }
                 return result;
+            }, function(host, property, value){
+                var descHost = shape.getClassDescription(getMetaAttr(host, SHAPE.CLASS_NAME));
+                var propertyDesc = descHost.getMemberDescription(property);
+                var memberClassDesc = shape.getClassDescription(propertyDesc.type);
+
+                var actualValue = value;
+                // if embedded
+
+                //
+                if(typeof(value) != "object"){
+                    //actualValue = shape.lookupByPK(memberClassDesc.type, value);
+                }
+                host.getInnerValues()[property] = actualValue;
+                return actualValue;
             });
         }
+    }
+
+    this.getUpdateFunction = function(memberType){
+        var f = typeUpdateRegistry[memberType];
+        if(f == null){
+            f = function(host,prop,value){
+                wprint("Unknown update function for member "+ prop + " with type" + memberType + " in class " + host.getClassName());
+            }
+        }
+        return f;
     }
 
     this.registerInterface = function(interfaceName, declaration){
@@ -76,15 +102,25 @@ function Shape(){
         this.registerTypeBuilderFunction(interfaceName, function(){ return null});
     }
 
-    this.registerTypeBuilderFunction = function(typeName, buildFunction){
+    this.registerTypeBuilderFunction = function(typeName, buildFunction, updateFunction){
         if(typeBuilderRegistry[typeName]){
             wprint("Shouldn't have more than one entry for "+typeName+" !");
         }
         typeBuilderRegistry[typeName] = buildFunction;
+        if(updateFunction == undefined) {
+            updateFunction = function(host, property, value){
+                host.getInnerValues()[property] = value;
+            }
+        }
+        typeUpdateRegistry[typeName] = updateFunction;
     }
 
-    this.getClassDescription = function(modelName){
-        return classRegistry[modelName];
+    this.getClassDescription = function(modelName, ignoreWarning){
+        var ret = classRegistry[modelName];
+        if(ignoreWarning==undefined&&!ret){
+            wprint("Undefined class " + modelName);
+        }
+        return ret;
     }
 
     this.getInterfaceDescription = function(modelName){
@@ -230,21 +266,11 @@ function Shape(){
         }
     }
 
-    this.getShapeContent = function(shapeName, callBack){
+    function getShapeContent(shapeName, callBack){
         var requestedShapeName = shapeName;
         var content = shapeRegistry[shapeName];
         if( content == undefined){
-            var fileName = shapeUrlRegistry[shapeName]
-            if(fileName == undefined){
-                shapeName =  shapeName + ".default";
-                content = shapeRegistry[shapeName];
-                if(!content){
-                    fileName = shapeUrlRegistry[shapeName];
-                }else{
-                    callBack(content);
-                    return;
-                }
-            }
+            var fileName = shapeUrlRegistry[shapeName];
             if(fileName != undefined) {
                 ajaxCall(fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
@@ -262,30 +288,39 @@ function Shape(){
 
     this.getPerfectShape = function(viewModel, usecase, callBack){
         var name = getMetaAttr(viewModel, SHAPE.CLASS_NAME);
-        if(usecase == undefined || usecase == null){
-            usecase = "default";
+        var result = this.getShapeByName(name, usecase, callBack);
+        if(!result){
+            wprint("Unable to automatically detect a shape for " + J(viewModel));
         }
+        return result;
+    }
 
+    this.getShapeByName = function(shapeName, usecase, callBack){
+        var name = shapeName;
         if(name != undefined) {
-            var shapeName = name + "." + usecase;
+            shapeName = name + "." + usecase;
             if(shapeUrlRegistry[shapeName] != undefined){
-                this.getShapeContent(shapeName,callBack);
+                getShapeContent(shapeName,callBack);
+                return true;
+            }
+            shapeName = name;
+            if(shapeUrlRegistry[shapeName] != undefined){
+                getShapeContent(shapeName,callBack);
                 return true;
             }
             shapeName = name + ".default";
             if(shapeUrlRegistry[shapeName] != undefined){
-                this.getShapeContent(shapeName,callBack);
+                getShapeContent(shapeName,callBack);
                 return true;
             }
         }
-        wprint("Unable to automatically detect a shape for " + J(viewModel));
+        wprint("Could not find html view:" + shapeName);
         return false;
     }
 
-
-
     function loadInnerHtml(domObj, viewName, ctrl, parentCtrl){
-        shape.getShapeContent(viewName, function(data) {
+        var usecase = ctrl?ctrl.getContextName():"";
+        shape.getShapeByName(viewName, usecase, function(data) {
             domObj.innerHTML = data;
             if(ctrl)
             {
@@ -561,7 +596,7 @@ function Shape(){
                 if(!m){
                     return chainItems[i];
                 }else{
-                    classDesc = shape.getClassDescription(m.type);
+                    classDesc = shape.getClassDescription(m.type, true);
                 }
             }else{
                 var interfaceDesc = shape.getInterfaceDescription(m.type);
@@ -597,6 +632,10 @@ function Shape(){
 
     this.currentLanguage ="en";
 
+    this.delete = function(){
+        console.log("Delete not implemented");
+    }
+
 }
 
 window.shape = new Shape();
@@ -625,7 +664,7 @@ function UrlHashChange(obj){
 }
 
 function watchHashEvent(ctrl){
-    $(window).bind('hashchange', function(e) {
+    function handler(e){
         var fragment = window.location.hash;
         var index = fragment.indexOf("#");
         if(index == -1) {
@@ -634,7 +673,9 @@ function watchHashEvent(ctrl){
             fragment = fragment.substr(index+1);
         }
         ctrl.emit(new UrlHashChange(fragmentToObject(fragment)));
-    });
+    }
+    $(window).bind('hashchange', handler);
+    handler(null);
 }
 
 function navigateUsingObject(obj){

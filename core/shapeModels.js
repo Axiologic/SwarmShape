@@ -31,6 +31,7 @@ function QSClassDescription(declaration, qsName){
     }
 
     this.attachClassDescription = function(model, ctorArgs){
+
         makeBindable(model);
         setMetaAttr(model,SHAPE.CLASS_NAME,this.className);
 
@@ -71,9 +72,6 @@ function QSClassDescription(declaration, qsName){
         }
     }
 
-    this.update = function(objId, newValues){
-    //TODO: update from external sources
-    }
 
     this.getFields = function(){
         var ret = {};
@@ -84,6 +82,38 @@ function QSClassDescription(declaration, qsName){
             ret[item]=expressions[item];
         }
         return ret;
+    }
+
+    this.getMemberDescription = function(memberName){
+        if(members[memberName]==undefined){
+            wprint("Unknown member "+memberName+" in class "+this.className);
+        }else{
+            return members[memberName];
+        }
+        return null;
+    }
+
+    this.updateMemberValue = function(target,prop,value){
+        if(this.isTransientMember(prop)){
+            target.getTransientValues()[prop] = value;
+            return null;
+        }
+        var member = this.getMemberDescription(prop);
+        if(member){
+            var f = shape.getUpdateFunction(member.type);
+           f(target,prop,value);
+        }
+    }
+
+    this.isTransientMember = function(memberName){
+        if(expressions[memberName]){
+            return true;
+        }
+        var member = members[memberName];
+        if(member && member.transient){
+            return true;
+        }
+        return false;
     }
 }
 

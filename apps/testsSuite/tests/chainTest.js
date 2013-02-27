@@ -1,0 +1,31 @@
+registerTest("Testing chain bindings",
+    function(){
+        this.grandpa = shape.newTransientObject("SpaghettiMonster", "Luke... I'm your father!");
+        this.father = shape.newTransientObject("SpaghettiMonster", "Luke", this.grandpa);
+        this.nephew = shape.newTransientObject("SpaghettiMonster", "Bau", this.father);
+
+        this.father.family.push(this.nephew);
+        this.father.family.push(this.grandpa);
+
+        this.nephew.family.push(this.father);
+        this.nephew.family.push(this.grandpa);
+
+        this.nephew.father.prankVictim = this.grandpa;
+        this.nephew.father.prankVictim.prankVictim = this.nephew;
+        this.nephew.prankVictim = this.father;
+        this.start(1,1000);
+    },
+    function(){
+        var self = this;
+        var testFunction = function(model, prop, value){
+            //self.assert.equal(value,self.father);
+            self.assert.equal(value,self.nephew);
+        }
+        var watcher = addChangeWatcher(this.nephew, "father.prankVictim.prankVictim.prankVictim", testFunction);
+    },
+    function(){
+        shape.delete(this.father);
+        shape.delete(this.grandpa);
+        shape.delete(this.nephew);
+    }
+)
