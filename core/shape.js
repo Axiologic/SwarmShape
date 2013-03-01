@@ -16,7 +16,6 @@ function Shape(){
     var classRegistry = {};
     var interfaceRegistry = {};
     var typeBuilderRegistry = {};
-    var typeUpdateRegistry = {};
 
     var dataRegistries = {};
     var shapeUrlRegistry = {};
@@ -49,40 +48,35 @@ function Shape(){
         var desc = new QSClassDescription(declaration,modelName);
         classRegistry[modelName] = desc;
         if(!ignoreOnBuild){
-            this.registerTypeBuilderFunction(modelName, function(memberDescription, args){
-                var result;
-                if(memberDescription != undefined){
-                    var desc = memberDescription;
-                    if(memberDescription.type){
-                        if(memberDescription.value===null||memberDescription.value=="null"){
-                            return null;
+            this.registerTypeBuilder(modelName, {
+                initializer:function(memberDescription, args) {
+                    var result;
+                    if(memberDescription != undefined){
+                        var desc = memberDescription;
+                        if(memberDescription.type){
+                            if(memberDescription.value===null||memberDescription.value=="null"){
+                                return null;
+                            }
+                            desc = shape.getClassDescription(memberDescription.type);
                         }
-                        desc = shape.getClassDescription(memberDescription.type);
+                        result = {};
+
+                        try{
+                            desc.attachClassDescription(result, args);
+                        }catch(err){
+                            dprint(err.message);
+                        }
                     }
-                    result = {};
+                    return result;
+                },
+                encode:function(outerObject){
 
-                    try{
-                        desc.attachClassDescription(result, args);
-                    }catch(err){
-                        dprint(err.message);
-                    }
+                 },
+                decode:function(){
+
                 }
-                return result;
-            }, function(host, property, value){
-                var descHost = shape.getClassDescription(getMetaAttr(host, SHAPE.CLASS_NAME));
-                var propertyDesc = descHost.getMemberDescription(property);
-                var memberClassDesc = shape.getClassDescription(propertyDesc.type);
-
-                var actualValue = value;
-                // if embedded
-
-                //
-                if(typeof(value) != "object"){
-                    //actualValue = shape.lookupByPK(memberClassDesc.type, value);
-                }
-                host.getInnerValues()[property] = actualValue;
-                return actualValue;
-            });
+            }
+            );
         }
     }
 
@@ -99,20 +93,18 @@ function Shape(){
     this.registerInterface = function(interfaceName, declaration){
         interfaceRegistry[interfaceName] = new InterfaceDescription(declaration,interfaceName);
         /* Because interfaces shouldn't be instantiated we return null every time from build function. */
-        this.registerTypeBuilderFunction(interfaceName, function(){ return null});
+        this.registerTypeBuilder(interfaceName, {initializer:function(){ return null}});
     }
 
-    this.registerTypeBuilderFunction = function(typeName, buildFunction, updateFunction){
+    this.registerTypeBuilder = function(typeName, typeDescription){
         if(typeBuilderRegistry[typeName]){
             wprint("Shouldn't have more than one entry for "+typeName+" !");
         }
-        typeBuilderRegistry[typeName] = buildFunction;
-        if(updateFunction == undefined) {
-            updateFunction = function(host, property, value){
-                host.getInnerValues()[property] = value;
-            }
-        }
-        typeUpdateRegistry[typeName] = updateFunction;
+        typeBuilderRegistry[typeName] = typeDescription;
+    }
+
+    this.getTypeBuilder = function(typeName){
+        return typeBuilderRegistry[typeName];
     }
 
     this.getClassDescription = function(modelName, ignoreWarning){
@@ -162,101 +154,14 @@ function Shape(){
         return newCtrl;
     }
 
-    /**
-     * First argument should be the event type
-     */
-
-    this.newEvent = function(){
-        var args = []; // empty array
-        // copy all other arguments we want to "pass through"
-        for(var i = 0; i < arguments.length; i++){
-            args.push(arguments[i]);
-        }
-        var className = arguments[0];
-        if(className == undefined || classRegistry[className] == undefined){
-            wprint("First argument of newEvent should be a class name!");
-            return null;
-        }
-        var o = this.newObject.apply(this, args);
-        if(o.type == undefined){
-            o.type = className;
-        }
-        return o;
-    }
-
-    this.newMember = function(memberDesc){
-        var res;
-        var callFunc = typeBuilderRegistry[memberDesc.type];
-        if(callFunc){
-            res = callFunc(memberDesc);
-        }else{
-            wprint("Can't create object with type "+memberDesc.type);
-        }
-        return res;
-    }
-
-    this.newObject = function(className){
-        var res;
-        var args = []; // empty array
-        // copy all other arguments we want to "pass through"
-        for(var i = 1; i < arguments.length; i++){
-            args.push(arguments[i]);
-        }
-
-        shapePubSub.blockCallBacks();
-
-        try{
-            var desc = shape.getClassDescription(className);
-            //TODO:De sters codul asta zic eu ca e copy/paste cu apelul res = shape.newMember(desc);
-            var callFunc = typeBuilderRegistry[className];
-            if(callFunc){
-                res = callFunc(desc, args);
-            }else{
-                wprint("Can't create object with type "+className);
-            }
-
-        }catch(err){
-            dprint(err);
-            wprint("Creating object (or Ctor code) failed for " + className);
-        }
-
-        shapePubSub.releaseCallBacks();
-        return res;
-    }
-
-    this.newTransientObject = function(className){
-        var args = []; // empty array
-        // copy all other arguments we want to "pass through"
-        for(var i = 0; i < arguments.length; i++){
-            args.push(arguments[i]);
-        }
-        var res = this.newObject.apply(this, args);
-        if(res){
-            setMetaAttr(res,"persistence", "transient");
-        }
-        return res;
-    }
-
-    this.newPersistentObject = function(className){
-        var args = []; // empty array
-        // copy all other arguments we want to "pass through"
-        for(var i = 0; i < arguments.length; i++){
-            args.push(arguments[i]);
-        }
-        var res = this.newObject.apply(this, args);
-        //TODO: add in dataRegistries
-        setMetaAttr(res,"persistence", "global");
-        return res;
-    }
-
     function ajaxCall(url, callBack){
         if(shapePubSub.hasChannel(url))
         {
-            var subCall = function(response){
-                            shapePubSub.unsub(url, subCall);
-                            callBack(response.response);
-                          };
             shapePubSub.sub(url, subCall);
+            var subCall = function(response){
+                shapePubSub.unsub(url, subCall);
+                callBack(response.response);
+            };
         }else{
             shapePubSub.addChannel(url);
             $.get(url, function(response){
@@ -288,6 +193,9 @@ function Shape(){
 
     this.getPerfectShape = function(viewModel, usecase, callBack){
         var name = getMetaAttr(viewModel, SHAPE.CLASS_NAME);
+        if(name==undefined){
+            name  = typeof(viewModel);
+        }
         var result = this.getShapeByName(name, usecase, callBack);
         if(!result){
             wprint("Unable to automatically detect a shape for " + J(viewModel));
@@ -489,34 +397,6 @@ function Shape(){
     this.expandExistingDOM = function(domElem,parentCtrl,rootModel){
         return expandHTMLElement(domElem,parentCtrl,rootModel,true);
     }
-
-   /* function bindDirectAttributes(element,parentCtrl,ctrl){
-        $(element.attributes).each (
-            function() {
-                var attributeName = this.name;
-                var value = this.value;
-                if(shapeKnowsAttribute(attributeName)){
-                    //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
-                    var exp = newShapeExpression(value);
-                    if(exp){
-                        exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
-                            applyAttribute(attributeName,element,value,ctrl);
-                        });
-                    }else{
-                        applyAttribute(attributeName, element, value,ctrl);
-                    }
-                } else {
-                    var exp = newShapeExpression(value);
-                    if(exp){
-                        exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
-                            $(element).attr(attributeName,value);
-                        });
-                    }
-                }
-            });
-    }
-*/
-
 
     function elementIsShapeComponent(element){
         return element.hasAttribute("shape-view");

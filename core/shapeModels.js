@@ -33,7 +33,7 @@ function QSClassDescription(declaration, qsName){
     this.attachClassDescription = function(model, ctorArgs){
 
         makeBindable(model);
-        setMetaAttr(model,SHAPE.CLASS_NAME,this.className);
+        setMetaAttr(model,"classDescription",this);
 
         var n;
         for(n in functions){
@@ -102,6 +102,26 @@ function QSClassDescription(declaration, qsName){
         if(member){
             var f = shape.getUpdateFunction(member.type);
            f(target,prop,value);
+        }
+    }
+
+    this.isOuterKindMember = function(memberName){
+        var memDesc = this.getMemberDescription(memberName);
+        if(memDesc.isTransientMember()){
+            return true;
+        }
+        var res = shape.getClassDescription(memDesc.type, true);
+        if(res==undefined){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    this.createOuterMember = function(memberName, innerValues){
+        var memDesc = this.getMemberDescription(memberName);
+        if(memDesc.isTransientMember()){
+            return shape.newTransientObject()
         }
     }
 

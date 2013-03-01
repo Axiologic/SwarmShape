@@ -20,6 +20,8 @@
 <script type="text/javascript" src="../../core/Collection.js"> </script>
 <script type="text/javascript" src="../../core/shapeControllers.js"> </script>
 <script type="text/javascript" src="../../core/base/shapeExpression.js"> </script>
+<script type="text/javascript" src="../../core/base/persistence/ObjectRepository.js"> </script>
+<script type="text/javascript" src="../../core/base/persistence/BasePersistence.js"> </script>
 
 <!--test suite base models-->
 <script type="text/javascript" src="model/testViewModel.js"> </script>
@@ -34,6 +36,7 @@
 <!--tests-->
 <script type="text/javascript" src="tests/chainTest.js"> </script>
 <script type="text/javascript" src="tests/expressionTest.js"> </script>
+<script type="text/javascript" src="tests/dateRepositoryTest.js"> </script>
 
 <script type="text/javascript" src="../../core/base/ctrl/button.js"> </script>
 <script type="text/javascript" src="../../core/base/ctrl/label.js"> </script>

@@ -19,7 +19,7 @@ registerTest("Testing chain bindings",
         var self = this;
         var testFunction = function(model, prop, value){
             self.assert.equal(value,self.father);
-        }
+        };
         var watcher = addChangeWatcher(this.nephew, "father.prankVictim.prankVictim.prankVictim", testFunction);
     },
     function(){

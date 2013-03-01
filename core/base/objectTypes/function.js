@@ -1,3 +1,5 @@
-shape.registerTypeBuilderFunction("function",function(objectDescription, args){
-    return undefined;
+shape.registerTypeBuilder("function",{
+    initializer:function(objectDescription, args){
+        return undefined;
+    }
 });

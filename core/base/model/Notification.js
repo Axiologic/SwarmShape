@@ -1,6 +1,6 @@
 shape.registerModel("Notification",{
     meta:{
-
+        persistence: "relational"
     },
     error:{
         type:"string"

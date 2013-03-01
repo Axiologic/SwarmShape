@@ -1,4 +1,8 @@
 <li shape-ctrl="component">
     <label id="status" class="@testPassed"></label>
     <label id="description" shape-model="@name"></label>
+    <div id="console">
+        <ul shape-model="@failled" shape-visible="@failled.length>0"></ul>
+    </div>
+    <label id="asserts" value="'Passed asserts '+@passed+' from a total of '+@expectedAsserts+'!'" shape-ctrl="base/label" shape-visible="@testPassed==false?true:false"></label>
 </li>

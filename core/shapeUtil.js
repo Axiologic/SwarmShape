@@ -39,12 +39,22 @@ J = function(obj) {
 //internal stuff
 var shape__linePrint_hasConsole = typeof console; // for IE...
 
-function shape__linePrint(prefix,text, fullStack){
+function shape__linePrint(prefix, text, fullStack){
+    var text = shape__prettyStack(text, fullStack)+'>>'+text;
+
+    if(shape__linePrint_hasConsole == "undefined"){
+        console = prefix + text;
+    }else{
+        console.log(prefix + text);
+    }
+}
+
+function shape__prettyStack(fullStack){
     var trace = printStackTrace();
     var strTrace;
     if(fullStack == undefined || fullStack == false){
         for(var i=0;i<trace.length;i++){
-            if(trace[i].indexOf("linePrint") != -1){
+            if(trace[i].indexOf("prettyStack") != -1){
                 strTrace =  trace[i+2];
                 if(strTrace != null){
                     strTrace = strTrace.replace(getBaseUrl(),"");
@@ -57,13 +67,7 @@ function shape__linePrint(prefix,text, fullStack){
     else{
         strTrace = "\n\n" + trace.join("\n") + "\n";
     }
-    text = strTrace + ">>\n\t"  + text;
-
-    if(shape__linePrint_hasConsole == "undefined"){
-        console = prefix + text;
-    }else{
-        console.log(prefix + text);
-    }
+    return strTrace;
 }
 
 function fragmentToObject(fragment){

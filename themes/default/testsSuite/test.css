@@ -439,3 +439,36 @@ li label{
 .undefined{
     background-color: #808080;
 }
+
+#asserts{
+    font-size: 14px;
+    left: 54px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+}
+
+#console{
+    font-size: 14px!important;
+    margin-left: 53px;
+    margin-right: 11px;
+}
+
+#console ul{
+    margin: 0;
+    padding: 0;
+    padding-left:-35px!important;
+}
+
+#console li{
+    list-style: none outside none;
+    margin: 0;
+    margin-bottom: 2px;
+    border: 1px solid #CCCCCC!important;
+}
+
+#console label{
+    font-size: 14px;
+    padding: 4px!important;
+    margin:0!important;
+}

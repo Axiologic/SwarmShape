@@ -1,4 +1,8 @@
 shape.registerModel("SpaghettiMonster",{
+    meta:{
+        persistence:"null",
+        pk:"name"
+    },
     ctor:function(name, father){
         this.name = name;
         this.father = father;
@@ -21,7 +25,9 @@ shape.registerModel("SpaghettiMonster",{
     familySecret:{
         chains:"father.name",
         code:function(){
-            return this.name+"...!"+this.father.name;
+            if(this.father!=undefined){
+                return this.name+"...!"+this.father.name;
+            }
         }
     }
 });

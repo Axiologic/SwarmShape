@@ -56,10 +56,10 @@ makeBindable = function (obj){
     }
     if(obj.__meta.innerValues==undefined){
         obj.__meta.innerValues = {};
-        obj.__meta.innerTransientValues = {};
+        obj.__meta.outerValues = {};
 
-        obj.getTransientValues = function(){
-            return obj.__meta.innerTransientValues;
+        obj.getOuterValues = function(){
+            return obj.__meta.outerValues;
         }
 
         obj.getInnerValues = function(){
@@ -225,10 +225,16 @@ if (!Object.prototype.bindableProperty) {
             var savedValue = this[prop];
             if(haveToExpandProperty(this, prop)){
                     getter = function (){
-                        var res = this.getInnerValues()[prop];
-                        if(res==undefined){
-                            res = this.getTransientValues()[prop];
+                        var res = this.getOuterValues()[prop];
+                        if(res){
+                            return res;
+                        }else{
+                            res = this.getInnerValues()[prop];
+                            var propDesc = shape.getClassDescription(this.__meta.className).getMemberDescription(prop);
+
                         }
+
+                        res = this.getTransientValues()[prop];
                         //todo lazy for
                         return res;
                     },
