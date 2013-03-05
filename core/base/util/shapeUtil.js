@@ -7,6 +7,10 @@
     dprint  // a print debug messages (remove those in release)
  */
 
+//TODO: move more utility classes here
+function ShapeUtil(){
+
+}
 
 function cprint(str, fullStack){
     shape__linePrint("",str, fullStack);
@@ -108,3 +112,17 @@ function mergeInRepository(repo, key, newValues){
 }
 
 
+
+
+ShapeUtil.prototype.initUtil = function(){
+    ShapeUtil.prototype.mkArgs = function(myArguments, from){
+        if(!from){
+            from = 0;
+        }
+        var args = [];
+        for(var i = from; i<myArguments.length;i++){
+            args.push(myArguments[i]);
+        }
+        return args;
+    }
+}

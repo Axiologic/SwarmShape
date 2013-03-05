@@ -25,6 +25,10 @@ function Shape(){
 
     var shapeLocaleRegistry = {};
 
+    ShapeUtil.prototype.initUtil();
+    ShapeUtil.prototype.initRepositories();
+
+
     this.registerCtrl = function (name,functObj){
         //console.log("Registering controller " + name);
         shapeControllers[name] = functObj;
@@ -511,10 +515,6 @@ function Shape(){
     }
 
     this.currentLanguage ="en";
-
-    this.delete = function(){
-        console.log("Delete not implemented");
-    }
 
 }
 

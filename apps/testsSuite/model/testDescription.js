@@ -1,7 +1,7 @@
-var testRegistry = shape.newTransientObject("TestViewModel");
+var testRegistry = shape.newTransient("TestViewModel");
 
 function registerTest(description, prepare, run, clean){
-    var test = shape.newTransientObject("TestDescription", description, prepare, run, clean);
+    var test = shape.newTransient("TestDescription", description, prepare, run, clean);
     testRegistry.tests.push(test);
 }
 

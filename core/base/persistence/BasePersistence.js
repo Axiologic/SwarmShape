@@ -120,32 +120,11 @@ function initPersistence(){
         persistenceRegistry[type] = persistence;
     }
 
-    BasePersistence.prototype.newRawObject = function(className){
-        var res;
-        var args = []; // empty array
-        // copy all other arguments we want to "pass through"
-        for(var i = 1; i < arguments.length; i++){
-            args.push(arguments[i]);
-        }
 
-        shapePubSub.blockCallBacks();
 
-        try{
-            var desc = shape.getClassDescription(className);
-            var callFunc = shape.getTypeBuilder(className).initializer;
-            if(callFunc){
-                res = callFunc(desc, args);
-            } else {
-                wprint("Can't create object with type " + className);
-            }
-        } catch(err){
-            dprint(err);
-            wprint("Creating object (or Ctor code) failed for " + className);
-        }
-        shapePubSub.releaseCallBacks();
-        return res;
+    BasePersistence.prototype.remember = function(obj){
+
     }
-
 }
 
 
