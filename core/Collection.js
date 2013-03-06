@@ -18,6 +18,8 @@ isBindableCollection = function (obj){
 function Collection(){
     makeBindable(this);
     setMetaAttr(this, SHAPE.CLASS_NAME, SHAPE.COLLECTION);
+    setMetaAttr(this, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
+
     this.__meta.bindableCollection = true;
     this.container = [];
     this.length = this.container.length;
@@ -87,12 +89,11 @@ Collection.prototype.canJoin = function(item){
         var desc = shape.getInterfaceDescription(contains);
         if(desc){
             if(!desc.implementsYou(item)){
-                wprint("This collection expects objects to implement interface "+contains+" and your "+getMetaAttr(item,SHAPE.CLASS_NAME)+" doesn't implement!");
+                wprint("This collection expects objects to implement interface "+contains+" and your "+ item.getClassName() +" doesn't implement!");
             }
         }else{
-            var itemClass=getMetaAttr(item,SHAPE.CLASS_NAME);
+            var itemClass = item.getClassName();
             if(contains==itemClass){
-
             }else{
                 wprint("This collection expects objects with type "+contains+" and your are trying to add objects with type "+itemClass+"!");
             }

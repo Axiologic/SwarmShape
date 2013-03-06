@@ -1,23 +1,6 @@
 function ObjectRepository(className){
-    var objectDictionary = {};
-
-    this.lookup = function(pk, autocreate){
-        var res= null;
-        if(pk){
-            res = objectDictionary[pk];
-        }
-
-        if(!res&&autocreate){
-            res = BasePersistence.prototype.newRawObject(className);
-        }
-
-        if(!pk){
-            objectDictionary[res.__meta.__localId] = res;
-            //cerere id
-            BasePersistence.prototype.getPersistence(shape.getClassDescription(className).persistence);
-        }
-
-        return res;
+    this.getClassName = function(){
+        return className;
     }
 }
 
@@ -53,16 +36,21 @@ ShapeUtil.prototype.initRepositories = function(){
             res = repo[pk];
         } else {
             res =  Shape.prototype.newRawObject(className,args);
-            repo[res.__meta.pk] = res.__meta.pk;
+            pk = res.__meta.pk;
+            repo[pk] = res;
         }
 
         if(!res && (autocreate == undefined || autocreate == true)){
             res =  Shape.prototype.newRawObject(className,args);
-            repo[pk] = res.__meta.pk;
+            pk = res.__meta.pk;
+            repo[pk] = res;
         }
 
         if(!isTransient){
-            BasePersistence.prototype.remember(res);
+            var pers = BasePersistence.prototype.getPersistenceForClass(res.getClassDescription());
+            if(pers){
+                pers.remember(res);
+            }
         }
         return res;
     }
@@ -95,17 +83,16 @@ ShapeUtil.prototype.initRepositories = function(){
         shapePubSub.blockCallBacks();
 
         try{
-            var desc = shape.getClassDescription(className);
             var callFunc = shape.getTypeBuilder(className).initializer;
             if(callFunc){
-                res = callFunc(desc, args);
+                res = callFunc(className, undefined, args);
             } else {
                 wprint("Can't create object with type " + className);
             }
         } catch(err){
-            dprint(err);
-            wprint("Creating object (or Ctor code) failed for " + className);
+            eprint("Creating object (or Ctor code) failed for " + className +"\n>>>Err:", err);
         }
+        res.__meta.pk = "local:" + res.__meta.__localId;
         shapePubSub.releaseCallBacks();
         return res;
     }

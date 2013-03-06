@@ -23,7 +23,7 @@
         $.ajaxSetup({ cache: false });
         <?php include("shapes.js"); ?>
         shape.baseUrl = "http://localhost";
-        var model = shape.newTransientObject("todo");
+        var model = shape.newTransient("todo");
         model.addNewTask("Task number 1");
         model.addNewTask("Task number 2");
         shape.expandShapeComponent(document.getElementById("main"),null, model);

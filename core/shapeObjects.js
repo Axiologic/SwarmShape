@@ -25,7 +25,7 @@ addChangeWatcher = function(model, chain, handler){
     if(!wrongLink){
         return new ChangeWatcher(model, chain, handler);
     }else{
-        wprint("Found wrong link '"+wrongLink+"' from chain '"+chain+"' in model with type '"+getMetaAttr(model, SHAPE.CLASS_NAME)+"'!");
+        wprint("Found wrong link '"+wrongLink+"' from chain '"+chain+"' in model with type '"+ model.getClassName()+"'!");
     }
 }
 
@@ -55,8 +55,14 @@ makeBindable = function (obj){
         obj.__meta.bindableProperties = {};
     }
     if(obj.__meta.innerValues==undefined){
+        //keep a tree of serialisable (encoded) objects (transformable in JSON anytime)
         obj.__meta.innerValues = {};
+
+        // keep a tree of models and decoded values
         obj.__meta.outerValues = {};
+
+        // keep transient values
+        obj.__meta.transientValues = {};
 
         obj.getOuterValues = function(){
             return obj.__meta.outerValues;
@@ -66,8 +72,22 @@ makeBindable = function (obj){
             return this.__meta.innerValues;
         }
 
+        obj.getTransientValues = function(){
+            return this.__meta.transientValues;
+        }
+
         obj.getClassName = function(){
-            return obj.__meta[SHAPE.CLASS_NAME];
+            var cdsc = obj.__meta[SHAPE.CLASS_DESCRIPTION];
+            if(cdsc){
+                return cdsc.className;
+            } else
+            {
+                return "NoClass";
+            }
+        }
+
+        obj.getClassDescription = function(){
+            return obj.__meta[SHAPE.CLASS_DESCRIPTION];
         }
     }
 }
@@ -225,17 +245,28 @@ if (!Object.prototype.bindableProperty) {
             var savedValue = this[prop];
             if(haveToExpandProperty(this, prop)){
                     getter = function (){
-                        var res = this.getOuterValues()[prop];
+                        var res = this.getTransientValues()[prop];
                         if(res){
                             return res;
-                        }else{
-                            res = this.getInnerValues()[prop];
-                            var propDesc = shape.getClassDescription(this.__meta.className).getMemberDescription(prop);
-
                         }
-
-                        res = this.getTransientValues()[prop];
-                        //todo lazy for
+                        res = this.getOuterValues()[prop];
+                        if(res){
+                            return res;
+                        }
+                        res = this.getInnerValues()[prop];
+                        if(res){
+                            var classDesc = this.getClassDescription();
+                            if(classDesc){
+                                var propDesc = classDesc.getMemberDescription(prop);
+                                if(propDesc){
+                                    var decodeFun = shape.getTypeBuilder(propDesc.type).decode;
+                                    if(decodeFun){
+                                        res = decodeFun(res);
+                                    }
+                                }
+                                this.getOuterValues()[prop] = res;
+                            }
+                        }
                         return res;
                     },
                     setter = function (value){
@@ -249,7 +280,7 @@ if (!Object.prototype.bindableProperty) {
                             var newValue = value;
                             //if it has meta then is a full model object
                             // - else is a basic object(int, number, string, etc.)
-                            var myClassDescription = shape.getClassDescription(getMetaAttr(this, SHAPE.CLASS_NAME));
+                            var myClassDescription = this.getClassDescription();
                             if(myClassDescription){
                                 newValue = myClassDescription.updateMemberValue(this,prop,value);
                             }else{
@@ -269,8 +300,18 @@ if (!Object.prototype.bindableProperty) {
                         , configurable: true
                     });
 
-                    //call the setter in the case when the previous values was useful
-                    this[prop] = savedValue;
+                    //use savedObject if the previous values was allready created
+                    var classDesc = this.getClassDescription();
+                    if(classDesc){
+                        var propDesc = classDesc.getMemberDescription(prop);
+                        if(propDesc && !classDesc.isTransientMember(prop)){
+                            this.getOuterValues()[prop] = savedValue;
+                        } else {
+                            this.getTransientValues()[prop] = savedValue;
+                        }
+                    } else{
+                        this.getTransientValues()[prop] = savedValue;
+                    }
                 }
             }
         }

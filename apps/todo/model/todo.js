@@ -92,7 +92,7 @@ shape.registerModel("todo",{
             this.all.copy(this.active);
         },
         addNewTask:function(description){
-            var newTask = shape.newPersistentObject("task");
+            var newTask = shape.newEntity("task");
             newTask.description = description;
             this.active.push(newTask);
             this.all.push(newTask);

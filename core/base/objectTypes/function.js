@@ -1,5 +1,5 @@
 shape.registerTypeBuilder("function",{
-    initializer:function(objectDescription, args){
-        return undefined;
+    initializer:function(type, value, args){
+        return value;
     }
 });

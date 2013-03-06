@@ -139,7 +139,7 @@ BaseController.prototype.modelAssign = function(value){
     //console.log("Assigning property " + this.parentModelProperty + " in " + this.parentModel + " value " + value);
     var wrongLink = shape.checkChain(this.parentModel, this.parentModelProperty);
     if(wrongLink){
-      wprint("You can't assign property "+this.parentModelProperty+" on "+getMetaAttr(this.parentModel,SHAPE.CLASS_NAME));
+      wprint("You can't assign property "+this.parentModelProperty+" on "+ this.parentModel.getClassName());
     }
     this.parentModel[this.parentModelProperty]  = value;
 }

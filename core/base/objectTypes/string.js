@@ -1,10 +1,7 @@
 shape.registerTypeBuilder("string",{
-    initializer:function(objectDescription, args){
-        if(objectDescription.value!=undefined){
-            if(objectDescription.value==null || objectDescription.value=="null"){
-                return null;
-            }
-            return objectDescription.value;
+    initializer:function(type, value, args){
+        if(value){
+            return value;
         }else{
             return "";
         }

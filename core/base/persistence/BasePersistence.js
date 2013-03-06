@@ -65,7 +65,7 @@ function BasePersistence(){
     }
 }
 
-function initPersistence(){
+ShapeUtil.prototype.initPersistences = function(){
 
     var persistenceRegistry = {};
 
@@ -105,12 +105,16 @@ function initPersistence(){
         shapePubSub.releaseCallBacks();
     }
 
-
-
-    BasePersistence.prototype.getPersistence = function(type){
-        var persistence = persistenceRegistry[type];
+    BasePersistence.prototype.getPersistenceForClass = function(classDesc){
+        var persistenceName = "default";
+        if(classDesc.meta != undefined ){
+            if(classDesc.meta.persitence != ""){
+                persistenceName = classDesc.meta.persitence;
+            }
+        }
+        var persistence = persistenceRegistry[persistenceName];
         if(!persistence){
-            wprint("Can't find any persistence named "+type);
+            xprint("Can't find any persistence for class " + classDesc.className);
             return null;
         }
         return persistence;
@@ -120,10 +124,8 @@ function initPersistence(){
         persistenceRegistry[type] = persistence;
     }
 
-
-
     BasePersistence.prototype.remember = function(obj){
-
+        wprint("Remember not implemented");
     }
 }
 

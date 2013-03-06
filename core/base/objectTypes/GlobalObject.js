@@ -1,21 +1,18 @@
-shape.registerTypeBuilder("globalObject", {
-    initializer:function(memberDescription, args) {
+shape.registerTypeBuilder("GlobalObject", {
+    initializer:function(type, value, args) {
         var result;
-        if(memberDescription != undefined){
-            var desc = memberDescription;
-            if(memberDescription.type){
-                if(memberDescription.value===null||memberDescription.value=="null"){
-                    return null;
-                }
-                desc = shape.getClassDescription(memberDescription.type);
-            }
-            result = {};
-            try{
-                desc.attachClassDescription(result, args);
-            }catch(err){
-                dprint(err.message);
-            }
+        if(value === null || value == "null"){
+            return null;
         }
+
+        var desc = shape.getClassDescription(type);
+        result = {};
+        try{
+            desc.attachClassDescription(result, args);
+        }catch(err){
+            dprint(err.message);
+        }
+
         return result;
     },
     encode:function(outerObject){

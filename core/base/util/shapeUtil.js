@@ -16,6 +16,9 @@ function cprint(str, fullStack){
     shape__linePrint("",str, fullStack);
 }
 
+function xprint(str){
+    console.log(str);
+}
 
 function dprint(str, fullStack){
     shape__linePrint("Debug:",str,fullStack);

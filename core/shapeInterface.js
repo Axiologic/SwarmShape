@@ -49,7 +49,7 @@ function InterfaceDescription(declaration, interfaceName){
      * @return boolean
      * */
     this.implementsYou = function(object){
-        itemDesc = shape.getClassDescription(getMetaAttr(object, SHAPE.CLASS_NAME));
+        itemDesc = object.getClassDescription();
         objectFields = itemDesc.getFields();
         
         for(var memberName in members){

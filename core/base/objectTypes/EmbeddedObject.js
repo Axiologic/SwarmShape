@@ -1,6 +1,6 @@
 shape.registerTypeBuilder("EmbeddedObject", {
-    initializer:function(memberDescription, args) {
-        var result;
+    initializer:function(type, value, args) {
+        /*var result;
         if(memberDescription != undefined){
             var desc = memberDescription;
             if(memberDescription.type){
@@ -15,7 +15,8 @@ shape.registerTypeBuilder("EmbeddedObject", {
             }catch(err){
                 dprint(err.message);
             }
-        }
+        } */
+        dprint("Not implemented");
         return result;
     },
     encode:function(outerObject){

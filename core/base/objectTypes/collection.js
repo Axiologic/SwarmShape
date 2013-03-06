@@ -1,21 +1,23 @@
 shape.registerTypeBuilder("collection",{
-    initializer:function(objectDescription, args){
-        if(objectDescription.value!=undefined){
-            if(objectDescription.value==null || objectDescription.value=="null"){
-                return null;
-            }
-            return objectDescription.value;
-        }else{
-            var res = new Collection();
-            setMetaAttr(res, "contains", objectDescription.contains);
-            return res;
+    initializer:function(type, value, args, memberDescription){
+
+        if(value == "null" || value === null){
+            return null;
         }
+        var res = new Collection();
+        if(args != undefined || value != undefined){
+            wprint("Collection initialisation not implemented");
+        }
+        if(memberDescription){
+            setMetaAttr(res, "contains", memberDescription.contains);
+        }
+        return res;
     },
     encode:function(outerObject){
-        //UTC time
-        return outerObject.getTime();
+        xprint("Collection serialisation not implemented");
+
     },
     decode:function(outerObject, innerValue){
-        outerObject.setTime(innerValue);
+        xprint("Collection deserialisation not implemented");
     }
 });

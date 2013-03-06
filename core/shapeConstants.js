@@ -1,5 +1,5 @@
 function ShapeConstants(){
-    this.CLASS_NAME = "CLASS_NAME";
+    this.CLASS_DESCRIPTION      = "CLASS_DESCRIPTION";
     this.COLLECTION = "collection";
     this.LOCAL = "local";
     this.GLOBAL = "global";
