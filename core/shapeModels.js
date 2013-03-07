@@ -85,9 +85,12 @@ function QSClassDescription(declaration, qsName){
     }
 
     this.getMemberDescription = function(memberName){
-        if(members[memberName]==undefined){
+        if(members[memberName]==undefined && expressions[memberName] == undefined ){
             wprint("Unknown member "+memberName+" in class "+this.className);
-        }else{
+        } else {
+            if(expressions[memberName] != undefined ){
+                return expressions[memberName];
+            }
             return members[memberName];
         }
         return null;
@@ -107,10 +110,15 @@ function QSClassDescription(declaration, qsName){
             }   else{
                 ev = value;
             }
-            target.getInnerValues()[prop] = ev;
+            if(member.transient){
+                target.getTransientValues()[prop] = value;
+            } else {
+                target.getOuterValues()[prop] = value;
+            }
         }
     }
 
+    /*
     this.isOuterKindMember = function(memberName){
         var memDesc = this.getMemberDescription(memberName);
         if(memDesc.isTransientMember()){
@@ -129,7 +137,7 @@ function QSClassDescription(declaration, qsName){
         if(memDesc.isTransientMember()){
             return shape.newTransientObject()
         }
-    }
+    }     */
 
     this.isTransientMember = function(memberName){
         if(expressions[memberName]){

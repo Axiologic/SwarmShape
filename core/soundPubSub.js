@@ -183,6 +183,9 @@ function SoundPubSub(){
 
     this.sub = function(target, callBack, filter){
         //var fctRef = new FunctionReference(callBack);
+        if(!callBack && typeof callBack != "function"){
+            wprint("Can't subscribe to an invalid callback!");
+        }
         var subscriber = {"callBack":callBack, "filter":filter};
         var arr = channelSubscribers[target];
         if(arr == undefined){

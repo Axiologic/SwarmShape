@@ -1,5 +1,5 @@
 shape.registerTypeBuilder("GlobalObject", {
-    initializer:function(type, value, args) {
+    initializer:function(type, value, args, memberDesc) {
         var result;
         if(value === null || value == "null"){
             return null;
@@ -18,8 +18,8 @@ shape.registerTypeBuilder("GlobalObject", {
     encode:function(outerObject){
         return outerObject.__meta.pk;
     },
-    decode:function(innerValue, member){
-        return shape.lookup(innerValue,true,member.transient);
+    decode:function(innerValue){
+        return shape.lookup(innerValue,true,false);
         /*outerObject.setTime(innerValue);*/
     }
 });

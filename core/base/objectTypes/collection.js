@@ -17,7 +17,7 @@ shape.registerTypeBuilder("collection",{
         xprint("Collection serialisation not implemented");
 
     },
-    decode:function(outerObject, innerValue){
+    decode:function(innerValue){
         xprint("Collection deserialisation not implemented");
     }
 });

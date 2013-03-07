@@ -1,8 +1,8 @@
 registerTest("Testing chain bindings",
     function(){
-        this.grandpa = shape.newTransientObject("SpaghettiMonster", "Luke... I'm your father!");
-        this.father = shape.newTransientObject("SpaghettiMonster", "Luke", this.grandpa);
-        this.nephew = shape.newTransientObject("SpaghettiMonster", "Bau", this.father);
+        this.grandpa = shape.newTransient("SpaghettiMonster", "Luke... I'm your father!");
+        this.father = shape.newTransient("SpaghettiMonster", "Luke", this.grandpa);
+        this.nephew = shape.newTransient("SpaghettiMonster", "Bau", this.father);
 
         this.father.family.push(this.nephew);
         this.father.family.push(this.grandpa);

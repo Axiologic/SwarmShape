@@ -46,8 +46,9 @@ ShapeUtil.prototype.initRepositories = function(){
             repo[pk] = res;
         }
 
-        if(!isTransient){
-            var pers = BasePersistence.prototype.getPersistenceForClass(res.getClassDescription());
+        if(!isTransient && res){
+            var csdsc = res.getClassDescription();
+            var pers = BasePersistence.prototype.getPersistenceForClass(csdsc);
             if(pers){
                 pers.remember(res);
             }

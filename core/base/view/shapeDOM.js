@@ -51,11 +51,11 @@ ShapeUtil.prototype.initDOMHandling = function(){
     function ajaxCall(url, callBack){
         if(shapePubSub.hasChannel(url))
         {
-            shapePubSub.sub(url, subCall);
             var subCall = function(response){
                 shapePubSub.unsub(url, subCall);
                 callBack(response.response);
             };
+            shapePubSub.sub(url, subCall);
         }else{
             shapePubSub.addChannel(url);
             $.get(url, function(response){

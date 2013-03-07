@@ -12,7 +12,7 @@ shape.registerCtrl("todo",{
         watchHashEvent(this);
     },
     addNewTitle :function(){
-        if( this.model.newTitle != ""){
+        if( this.model.newTitle != "" && this.model.newTitle){
             dprint("New task added..." + this.model.newTitle);
             this.model.recentTask = this.model.addNewTask(this.model.newTitle);
             this.model.newTitle = "";

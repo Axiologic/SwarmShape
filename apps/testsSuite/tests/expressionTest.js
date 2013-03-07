@@ -1,7 +1,7 @@
 registerTest("Testing expressions",
     function(){
-        this.father = shape.newTransientObject("SpaghettiMonster", "I'm your father!");
-        this.son = shape.newTransientObject("SpaghettiMonster", "Luke", this.father);
+        this.father = shape.newTransient("SpaghettiMonster", "I'm your father!");
+        this.son = shape.newTransient("SpaghettiMonster", "Luke", this.father);
         this.start(1,1000);
     },
     function(){

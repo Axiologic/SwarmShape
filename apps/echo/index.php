@@ -23,7 +23,7 @@
         $.ajaxSetup({ cache: false });
         <?php include("shapes.js"); ?>
         shape.baseUrl = "http://localhost";
-        var model = shape.newTransientObject("echo");
+        var model = shape.newTransient("echo");
         shape.expandShapeComponent(document.getElementById("main"),null, model);
     }
 

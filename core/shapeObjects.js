@@ -246,22 +246,22 @@ if (!Object.prototype.bindableProperty) {
             if(haveToExpandProperty(this, prop)){
                     getter = function (){
                         var res = this.getTransientValues()[prop];
-                        if(res){
+                        if(res != undefined){
                             return res;
                         }
                         res = this.getOuterValues()[prop];
-                        if(res){
+                        if(res != undefined){
                             return res;
                         }
                         res = this.getInnerValues()[prop];
-                        if(res){
+                        if(res != undefined){
                             var classDesc = this.getClassDescription();
                             if(classDesc){
                                 var propDesc = classDesc.getMemberDescription(prop);
                                 if(propDesc){
                                     var decodeFun = shape.getTypeBuilder(propDesc.type).decode;
                                     if(decodeFun){
-                                        res = decodeFun(res);
+                                        res = decodeFun(res, propDesc);
                                     }
                                 }
                                 this.getOuterValues()[prop] = res;
