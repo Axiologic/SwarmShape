@@ -1,7 +1,6 @@
-
 shape.registerModel("todo",{
         meta:{
-            persitence:"none"
+            persistence:"none"
         },
         ctor:function(){
           this.current = this.all;
