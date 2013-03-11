@@ -47,7 +47,7 @@ J = function(obj) {
 var shape__linePrint_hasConsole = typeof console; // for IE...
 
 function shape__linePrint(prefix, text, fullStack){
-    var text = shape__prettyStack(text, fullStack)+'>>'+text;
+    var text = shape__prettyStack(fullStack,3)+'>>\n'+text;
 
     if(shape__linePrint_hasConsole == "undefined"){
         console = prefix + text;
@@ -56,13 +56,16 @@ function shape__linePrint(prefix, text, fullStack){
     }
 }
 
-function shape__prettyStack(fullStack){
+function shape__prettyStack(fullStack, add){
     var trace = printStackTrace();
     var strTrace;
+    if(add==undefined){
+        add=2;
+    }
     if(fullStack == undefined || fullStack == false){
         for(var i=0;i<trace.length;i++){
             if(trace[i].indexOf("prettyStack") != -1){
-                strTrace =  trace[i+2];
+                strTrace =  trace[i+add];
                 if(strTrace != null){
                     strTrace = strTrace.replace(getBaseUrl(),"");
                 } else{

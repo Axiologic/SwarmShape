@@ -135,7 +135,7 @@ function QSClassDescription(declaration, qsName){
     this.createOuterMember = function(memberName, innerValues){
         var memDesc = this.getMemberDescription(memberName);
         if(memDesc.isTransientMember()){
-            return shape.newTransientObject()
+            return shape.newTransient()
         }
     }     */
 
