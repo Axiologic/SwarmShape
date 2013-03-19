@@ -86,13 +86,17 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
 
     Shape.prototype.getPerfectShape = function(viewModel, usecase, callBack){
+        if(viewModel==undefined||viewModel==""){
+            callBack("");
+            return;
+        }
         var name = viewModel.getClassName();
         if(name==undefined){
             name  = typeof(viewModel);
         }
         var result = this.getShapeByName(name, usecase, callBack);
         if(!result){
-            wprint("Unable to automatically detect a shape for " + J(viewModel));
+            wprint("Unable to automatically detect a shape for type " + name);
         }
         return result;
     }
@@ -122,7 +126,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
     function loadInnerHtml(domObj, viewName, ctrl, parentCtrl){
         var usecase = ctrl?ctrl.getContextName():"";
-        shape.getShapeByName(viewName, usecase, function(data) {
+        var callBack = function(data) {
             domObj.innerHTML = data;
             if(ctrl)
             {
@@ -131,7 +135,12 @@ ShapeUtil.prototype.initDOMHandling = function(){
             }else{
                 bindAttributes(domObj, parentCtrl);
             }
-        });
+        };
+        if(viewName==undefined){
+            shape.getPerfectShape(ctrl.model, usecase, callBack);
+        }else{
+            shape.getShapeByName(viewName, usecase, callBack);
+        }
     }
 
     Shape.prototype.expandShapeComponent = function(domObj, parentCtrl, rootModel){
@@ -139,7 +148,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var viewName  = $(domObj).attr("shape-view");
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
-
+        var context = $(domObj).attr("shape-context");
 
         if(parentCtrl && parentCtrl.isController == undefined){
             wprint("Wtf? Give me a proper controller!");
@@ -169,11 +178,16 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
         } else {
             if(ctrlName == undefined){
-                ctrlName = viewName;
+                if(viewName==undefined){
+                    ctrlName = "DynamicController";
+                }else{
+                    ctrlName = viewName;
+                }
             }
 
             ctrl = shape.getController(ctrlName, parentCtrl);
             ctrl.hasTransparentModel = transparentModel;
+            ctrl.contextName = context;
 
             if(modelChain != undefined && !rootModel ){
                 if(ctrl.hasTransparentModel){
@@ -216,7 +230,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
         }
         return ctrl;
     }
-
 
     function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
         var modelChain = $(domObj).attr("shape-model");
@@ -293,7 +306,8 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function elementIsShapeComponent(element){
-        return element.hasAttribute("shape-view");
+        return element.hasAttribute("shape-view")||
+            (element.hasAttribute("shape-model")&&!element.hasAttribute("shape-ctrl")&&($(element).is('div')||$(element).is('span')));
     }
 
     function elementIsShapedHtmlElement(element){

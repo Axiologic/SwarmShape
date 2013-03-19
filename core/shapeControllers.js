@@ -77,7 +77,7 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
 }
 
 function try2InitCtrl(ctrl){
-    if(!this.initialised){
+    if(!ctrl.initialised){
         if(ctrl.model != undefined && ctrl.view != undefined){
             ctrl.initialised = true;
             ctrl.init();
