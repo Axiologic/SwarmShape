@@ -54,7 +54,7 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
     function createCW(ctrl, currChain){
         if(ctrl.parentCtrl == null || ctrl.isCWRoot){
             var watcher;
-            //dprint("Chain " + ctrl.model + "->"+currChain);
+            //dprint("Chain " + ctrl.model.getClassName() + "->"+currChain);
             if(currChain==""){
                 handler(null, null, ctrl.model);
             }else{

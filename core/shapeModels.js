@@ -260,6 +260,10 @@ ShapeUtil.prototype.initSchemaSupport = function(){
                     return chainItems[i];
                 }else{
                     classDesc = shape.getClassDescription(m.type, true);
+                    //when finding a basic object type in chain we stop checking
+                    if(m.type=="object"){
+                        break;
+                    }
                 }
             }else{
                 var interfaceDesc = shape.getInterfaceDescription(m.type);

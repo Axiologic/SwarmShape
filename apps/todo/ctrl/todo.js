@@ -32,7 +32,9 @@ shape.registerCtrl("todo",{
             this.setLinkSelection(selection);
         }
         else{
-          wprint("Unknown action " + selection);
+            if(selection!=undefined){
+                wprint("Unknown action " + selection);
+            }
         }
     },
     clickResponse:function(event){

@@ -199,7 +199,7 @@ function ChangeWatcher(model, chain, handler){
         var chainLink = shape.checkChain(model, property);
         if(chainLink)
         {
-            wprint("Unknown property "+property+" in model "+J(model));
+            wprint("Unknown property "+property+" in model "+model.getClassName()+ " while evaluating chain "+chain);
         }else{
             model.bindableProperty(property);
             shapePubSub.sub(model,nw, function(event){

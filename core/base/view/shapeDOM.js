@@ -58,7 +58,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
             shapePubSub.sub(url, subCall);
         }else{
             shapePubSub.addChannel(url);
+            /*var stack = printStackTrace();*/
             $.get(url, function(response){
+                /*stack;*/
                 callBack(response);
                 shapePubSub.pub(url, {"response":response});
             });
@@ -178,11 +180,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
         } else {
             if(ctrlName == undefined){
-                if(viewName==undefined){
-                    ctrlName = "DynamicController";
-                }else{
-                    ctrlName = viewName;
-                }
+                ctrlName = viewName;
             }
 
             ctrl = shape.getController(ctrlName, parentCtrl);
@@ -253,10 +251,13 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
 
         if(ctrlName == undefined){
-            ctrlName =  "base/" + domObj.nodeName.toLowerCase();
+            if(($(domObj).is('div')||$(domObj).is('span'))&&$(domObj).attr("shape-view")==undefined){
+                ctrlName = "DynamicController";
+            }else{
+                ctrlName =  "base/" + domObj.nodeName.toLowerCase();
+            }
         }
         var ctrl = shape.getController(ctrlName, parentCtrl);
-
         //cprint("New controller " + ctrl.ctrlName);
 
 
@@ -306,8 +307,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function elementIsShapeComponent(element){
-        return element.hasAttribute("shape-view")||
-            (element.hasAttribute("shape-model")&&!element.hasAttribute("shape-ctrl")&&($(element).is('div')||$(element).is('span')));
+        return element.hasAttribute("shape-view");
     }
 
     function elementIsShapedHtmlElement(element){
@@ -340,6 +340,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
             shape.expandShapeComponent(forExpand[i], ctrl);
         }
     }
+    Shape.prototype.bindAttributes = bindAttributes;
 
     /**
      * Extension of jQuery filter method that search recursively in DOM but stops when it finds expanded
