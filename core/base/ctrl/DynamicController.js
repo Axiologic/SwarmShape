@@ -3,12 +3,14 @@ shape.registerCtrl("DynamicController",{
         this.isCWRoot = true;
     },
     toView:function(){
-        if(this.model&& this.oldModelClass!=this.model.getClassName()){
-            this.oldModelClass=this.model.getClassName();
-            this.view.innerHTML = "";
-            self = this;
+        var className=ShapeUtil.prototype.getType(this.model);
+        if(this.model && this.oldModelClass!=className){
+            this.oldModelClass=className;
+
+            var self = this;
             shape.getPerfectShape(this.model, this.getContextName(), function(newElem){
                 var ch = $(newElem);
+                self.view.innerHTML = "";
                 $(self.view).append(ch);
                 shape.bindAttributes(self.view, self);
             });

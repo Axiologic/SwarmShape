@@ -8,6 +8,7 @@ function ShapeAttribute(attributeName, description){
            description.applyAttribute(dom, value,ctrl);
        }
   }
+    this.expandHTMLTag = description.expandHTMLTag;
 }
 
 shape.registerAttribute("shape-visible",{
@@ -18,7 +19,7 @@ shape.registerAttribute("shape-visible",{
            $(dom).css('display', 'inline');
        }
    },
-   "expandTag":false
+   "expandHTMLTag":false
 });
 
 shape.registerAttribute("shape-event",{
@@ -45,6 +46,14 @@ shape.registerAttribute("shape-context",{
     "applyAttribute" : function(dom, newValue, ctrl){
         if(newValue){
             ctrl.contextName = newValue;
+        }
+        if(ctrl.view){
+            ctrl.view.innerHTML = "";
+            shape.getPerfectShape(ctrl.model, ctrl.getContextName(), function(newElem){
+                var ch = $(newElem);
+                $(ctrl.view).append(ch);
+                shape.bindAttributes(ctrl.view, ctrl);
+            });
         }
     },
     "expandHTMLTag"  : true

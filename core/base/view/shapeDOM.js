@@ -18,12 +18,22 @@ ShapeUtil.prototype.initDOMHandling = function(){
         return shapeAttributes[name] != undefined;
     }
 
+
+    function elementIsShapedHtmlElement(element){
+        var attributes = element.attributes;
+        for(var i=0; i<attributes.length;i++){
+            var attr = shapeAttributes[attributes[i].name];
+            if(attr&&attr.expandHTMLTag){
+                return true;
+            }
+        }
+        return false;
+    }
+
     Shape.prototype.applyAttribute = function(name, dom,value,ctrl){
         var attr = shapeAttributes[name];
         if(attr) attr.applyAttribute(dom,value,ctrl);
     }
-
-
 
     Shape.prototype.registerShapeURL = function(viewName,url){
         shapeUrlRegistry[viewName] = url;
@@ -41,8 +51,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
                     newCtrl[vn] = base[vn];
                 }
             }
-        } else{
-            wprint("Unable to create controller " + ctrlName);
         }
 
         return newCtrl;
@@ -92,7 +100,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
             callBack("");
             return;
         }
-        var name = viewModel.getClassName();
+        var name = ShapeUtil.prototype.getType(viewModel);
         if(name==undefined){
             name  = typeof(viewModel);
         }
@@ -145,12 +153,23 @@ ShapeUtil.prototype.initDOMHandling = function(){
         }
     }
 
+    function ctrlExist(ctrlName){
+        if(ctrlName){
+            var ctrlDesc =  shapeControllers[ctrlName];
+            if(!ctrlDesc){
+                wprint("Unable to create controller " + ctrlName);
+            }
+        }
+    }
+
     Shape.prototype.expandShapeComponent = function(domObj, parentCtrl, rootModel){
         var ctrl;
         var viewName  = $(domObj).attr("shape-view");
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
         var context = $(domObj).attr("shape-context");
+
+        ctrlExist(ctrlName);
 
         if(parentCtrl && parentCtrl.isController == undefined){
             wprint("Wtf? Give me a proper controller!");
@@ -232,6 +251,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
     function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
+        var context  = $(domObj).attr("shape-context");
+
+        ctrlExist(ctrlName);
 
         if(parentCtrl.isController == undefined){
             wprint("Wtf? Give me a proper controller!");
@@ -259,7 +281,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         }
         var ctrl = shape.getController(ctrlName, parentCtrl);
         //cprint("New controller " + ctrl.ctrlName);
-
+        ctrl.contextName = context;
 
         ctrl.hasTransparentModel   = transparentModel;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
@@ -308,12 +330,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
     function elementIsShapeComponent(element){
         return element.hasAttribute("shape-view");
-    }
-
-    function elementIsShapedHtmlElement(element){
-        return element.hasAttribute("shape-model") ||
-            element.hasAttribute("shape-ctrl") ||
-            element.hasAttribute("shape-event");
     }
 
     function bindAttributes(domObj, ctrl){

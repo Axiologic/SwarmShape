@@ -121,7 +121,7 @@ BaseController.prototype.changeView = function(view){
 }
 
 BaseController.prototype.toView = function(){
-    wprint("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
+    //wprint("Calling BaseController's toView function is probably wrong (missing a proper controller) for " + this.ctrlName);
 }
 
 // UNDO/REDO and binding support is based on using those function when working with models

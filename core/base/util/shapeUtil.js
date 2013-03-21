@@ -118,8 +118,6 @@ function mergeInRepository(repo, key, newValues){
 }
 
 
-
-
 ShapeUtil.prototype.initUtil = function(){
     ShapeUtil.prototype.mkArgs = function(myArguments, from){
         if(!from){
@@ -131,4 +129,8 @@ ShapeUtil.prototype.initUtil = function(){
         }
         return args;
     }
+}
+
+ShapeUtil.prototype.getType = function(object){
+    return (object["getClassName"])?object.getClassName():typeof object;
 }
