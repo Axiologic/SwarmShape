@@ -1,12 +1,17 @@
-For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server as apache is required) 
+
+SwarmShape : modern MVVM framework 
+======================================
+* Created for big enterprise projects 
+* Real time web applications
+* Portals, RIA, single page applications)
+* Type checking in Java Script (only for models)
+* If you know HTML, you know SwarmShape 
+* Rest APIs or SwarmESB for backend
+* Goals: simplicity, programming discipline, reusable components, component layouts, themes
 
 
-ShapeJS : MVC framework for big enterprise projects (portals, RIA, single page applications)
-=============================================================================================
-
-Goals: simplicity, programming discipline, reusable components, component layouts, themes
-
-Right now: Experimental web interface framework for creating complex RIA applications using Java Script
+Example:
+For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server is required) 
 
 Our priciples/features:
   - declarative when possible
@@ -28,7 +33,7 @@ Our priciples/features:
   - when possible, let conventions discover a proper controller or a model for a HTML tags
   - add your custom attributes to any html tag to enhance code readability and do more magic
 
-Main features (in progress):
+Main features:
 - MVC (MVVM) with clean and simple architecture
 - bindable/observable chains and collections
 - ui component oriented (yes,you can create reusable components with HTML!)
@@ -38,7 +43,7 @@ Main features (in progress):
 - works with Ajax and swarms (SwarmESB) for backend (wip)
 
 
-Quick Example:
+Quick Code Example:
 ===============
 
    Model:
