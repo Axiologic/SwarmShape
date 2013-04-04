@@ -1,5 +1,10 @@
-SwarmShape : modern MVVM framework. Complements SwarmESB  
+   SwarmShape : JS MVVM framework for REST and Swarms 
 ======================================
+
+SwarmESB: https://github.com/salboaie/SwarmESB
+* Enterprise Service Bus: orchestrate services (REST APIs, or code)
+ 
+SwarmShape:
 * Created for big enterprise projects 
 * Real time web applications
 * Portals, RIA, single page applications)
@@ -12,7 +17,7 @@ SwarmShape : modern MVVM framework. Complements SwarmESB
 Example:
 For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server is required) 
 
-Our priciples/features:
+SwarmShape priciples/features:
   - declarative when possible
   - based on inversion of control
   - reusability of controllers (mainly) and models
