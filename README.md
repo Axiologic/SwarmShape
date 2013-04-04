@@ -1,9 +1,12 @@
    SwarmShape : JS MVVM framework for REST and Swarms 
 ======================================
 
-SwarmESB: https://github.com/salboaie/SwarmESB
-* Enterprise Service Bus: orchestrate services (REST APIs, or code)
+SwarmShape is part of "Swarm" project and provides UI components and client side architecture for "Swarmified" applications 
+* SwarmESB (https://github.com/salboaie/SwarmESB)  is an Enterprise Service Bus: orchestrates services (REST APIs, or functions)
+* SwarmShape is open and extensible. Combined with SwarmESB is powerfull but it can be used with custom servers (your own CRUD, web services)
  
+License: LGPL
+
 SwarmShape:
 * Created for big enterprise projects 
 * Real time web applications
