@@ -1,5 +1,4 @@
-
-SwarmShape : modern MVVM framework 
+SwarmShape : modern MVVM framework. Complements SwarmESB  
 ======================================
 * Created for big enterprise projects 
 * Real time web applications
@@ -109,3 +108,5 @@ Quick Code Example:
       shape.expandShapeComponent(document.getElementById("main"),null, model)
 
 
+
+Links: https://github.com/salboaie/SwarmESB
