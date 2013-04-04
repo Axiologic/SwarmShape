@@ -4,6 +4,7 @@
 SwarmShape is part of "Swarm" project and provides UI components and client side architecture for "Swarmified" applications 
 * SwarmESB (https://github.com/salboaie/SwarmESB)  is an Enterprise Service Bus: orchestrates services (REST APIs, or functions)
 * SwarmShape is open and extensible. Combined with SwarmESB is powerfull but it can be used with custom servers (your own CRUD, web services)
+* SwarmShape is a modern Java Script and HTML5 development framework
  
 License: LGPL
 
