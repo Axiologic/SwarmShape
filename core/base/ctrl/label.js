@@ -9,10 +9,9 @@ shape.registerCtrl("base/label",{
             this.label = this.view.find("label")[0];
         }*/
         this.useValue = $(this.view).attr("value") == undefined ? false : true;
-        this.toView();
+        /*this.toView();*/
     },
     toView:function(){
-
         if(!this.useValue&&this.model != undefined){
             this.label.innerText = this.model;
             //textContent for firefox ONLY!!!

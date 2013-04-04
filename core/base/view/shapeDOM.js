@@ -138,14 +138,19 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var usecase = ctrl?ctrl.getContextName():"";
         var callBack = function(data) {
             domObj.innerHTML = data;
-            if(ctrl)
-            {
+            if(ctrl){
                 bindAttributes(domObj, ctrl);
                 ctrl.changeView(domObj);
             }else{
                 bindAttributes(domObj, parentCtrl);
             }
         };
+        if(parentCtrl){
+            if(ctrl){
+                console.log(ctrl.ctrlName+" delaying "+parentCtrl.ctrlName);
+            }
+            parentCtrl.waitExpansion(1);
+        }
         if(viewName==undefined){
             shape.getPerfectShape(ctrl.model, usecase, callBack);
         }else{
@@ -255,6 +260,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
         ctrlExist(ctrlName);
 
+
         if(parentCtrl.isController == undefined){
             wprint("Wtf? Give me a proper controller!");
         }
@@ -285,7 +291,10 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
         ctrl.hasTransparentModel   = transparentModel;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
-
+        if(parentCtrl){
+            console.log(ctrl.ctrlName+" delaying "+parentCtrl.ctrlName);
+            parentCtrl.waitExpansion(1);
+        }
         if(ctrl.hasTransparentModel){
             ctrl.changeModel(parentCtrl.model);
         } else{

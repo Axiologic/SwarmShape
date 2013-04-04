@@ -14,7 +14,7 @@ function makeEventEmitter(obj, parent){
             wprint("Who will catch an event without a type? Directly use \"pub\" for this. "+J(event));
         }
         if(!shapePubSub.pub(obj,event)&&parent){
-            parent.emit(parent, event);
+            parent.emit(event);
         }
     }
 }
