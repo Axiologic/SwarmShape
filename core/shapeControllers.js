@@ -79,18 +79,14 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
 
 function try2InitCtrl(ctrl){
     if(!ctrl.initialised){
-        if(ctrl.model != undefined && ctrl.view != undefined){
+        if(ctrl.modelInitialized && ctrl.view != undefined){
             ctrl.initialised = true;
-            if(ctrl.ctrlName=="portalCtrl"){
-                console.log("abia acuma s-ar si eu!");
-            }
             ctrl.init();
             ctrl.onModelChanged();
             ctrl.onViewChanged();
             ctrl.toView();
             if(ctrl.parentCtrl){
-                console.log(ctrl.ctrlName+" has announced "+ctrl.parentCtrl.ctrlName);
-                ctrl.parentCtrl.afterExpansion();
+                ctrl.parentCtrl.afterExpansion(ctrl);
             }
         }
     }
@@ -109,58 +105,41 @@ BaseController.prototype.changeModel = function(model){
     if(this.isCWRoot && model == undefined){
         dprint("This is wrong, not possible...");
     }
-    if(this.ctrlName=="portalCtrl"){
-        console.log("tocmai am primit model " +model);
-    }
     this.model = model;
+    this.modelInitialized = true;
     if(this.initialised){
         this.onModelChanged();
         this.toView();
     } else{
         try2InitCtrl(this);
-        if(model==undefined){
-            if(this.parentCtrl){
-                console.log(this.ctrlName+" has announced "+this.parentCtrl.ctrlName);
-                this.parentCtrl.afterExpansion();
-            }
-        }
     }
+}
+BaseController.prototype.beginExpansion = function(){
+    this.afterExpansion(this);
 }
 
 BaseController.prototype.changeView = function(view, ignore){
-    if(this.ctrlName=="portalCtrl"){
-        console.log("tocmai am primit view " +view);
-    }
     this.view = view;
-    this.afterExpansion();
+    this.beginExpansion();
+
 }
 
 BaseController.prototype.waitExpansion = function(number){
-    if(!this.initialised){
-        this.__waitCounter+=number;
-        console.log(this.ctrlName+" waiting for "+this.__waitCounter);
-    }
+    this.__waitCounter+=number;
 }
 
 BaseController.prototype.afterExpansion = function(caller){
+    this.__waitCounter--;
+    if(this.__waitCounter==0){
+        try2InitCtrl(this);
+        this.afterChildExpansion(caller);
+    }
+}
 
-        this.__waitCounter--;
-        if(this.__waitCounter==0){
-            console.log(this.ctrlName+" yo mis ready!");
-            if(this.initialised){
-                this.toView();
-                this.onViewChanged();
-                if(this.parentCtrl){
-                    console.log(this.ctrlName+" has announced "+this.parentCtrl.ctrlName);
-                    this.parentCtrl.afterExpansion();
-                }
-            } else {
-                try2InitCtrl(this);
-            }
-
-        }else{
-            console.log(this.ctrlName+" yo inca mai astept! "+this.__waitCounter);
-        }
+BaseController.prototype.afterChildExpansion = function(caller){
+    if(this.parentCtrl){
+        this.parentCtrl.afterChildExpansion(this);
+    }
 }
 
 BaseController.prototype.toView = function(){

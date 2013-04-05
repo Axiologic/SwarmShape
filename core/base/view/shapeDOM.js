@@ -143,13 +143,15 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 ctrl.changeView(domObj);
             }else{
                 bindAttributes(domObj, parentCtrl);
+                parentCtrl.afterExpansion();
             }
         };
         if(parentCtrl){
             if(ctrl){
-                console.log(ctrl.ctrlName+" delaying "+parentCtrl.ctrlName);
+                parentCtrl.waitExpansion(1);
+            }else{
+                parentCtrl.waitExpansion(1);
             }
-            parentCtrl.waitExpansion(1);
         }
         if(viewName==undefined){
             shape.getPerfectShape(ctrl.model, usecase, callBack);
@@ -292,7 +294,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
         ctrl.hasTransparentModel   = transparentModel;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
         if(parentCtrl){
-            console.log(ctrl.ctrlName+" delaying "+parentCtrl.ctrlName);
             parentCtrl.waitExpansion(1);
         }
         if(ctrl.hasTransparentModel){

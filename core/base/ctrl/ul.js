@@ -3,23 +3,38 @@
  */
 
 shape.registerCtrl("base/ul",{
-    model:null,
-    init:function(){
-    this.domCache = new DOMCache();
+    beginExpansion:function(){
+        this.domCache = new DOMCache();
+        var self = this;
+        this.expander(function(){
+            self.afterExpansion(self);
+        });
     },
-    toView:function(){
+    init:function(){
+    },
+    expander:function(callback){
         var view = $(this.view);
         var selfCtrl = this;
-        this.domCache.doRefresh( this.model, this,
-            function(){
-                view.children().each(function(){$(this).detach()});
-            },
-            function(newElement){
-                view.append(newElement);
-            },
-            function(){
-            //do nothing, be happy :)
-            }
-        );
+        if(this.model){
+            this.domCache.doRefresh( this.model, this,
+                function(){
+                    view.children().each(function(){$(this).detach()});
+                },
+                function(newElement){
+                    view.append(newElement);
+                },
+                function(){
+                    callback();
+                }
+            );
+        }else{
+            callback();
+        }
+    },
+    toView:function(){
+        var self = this;
+        this.expander(function(){
+            self.afterChildExpansion(self);
+        });
     }
 });
