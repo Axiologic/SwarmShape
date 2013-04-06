@@ -2,8 +2,10 @@
   "ToDo":{
     "template": "../index_template.html",
     "target":"index.html",
+    "mainView" : "todo",
+    "mainCtrl" : "todo",
     "css":[
-    "../../themes/default/todo/todo.css"
+    "theme/todo.css"
     ],
     "js":[
         "../../deps/",

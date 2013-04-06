@@ -1,0 +1,23 @@
+{
+  "ShapeTestSuite":{
+    "template" : "../index_template.html",
+    "target"   : "index.html",
+    "mainView" : "testsSuite",
+    "mainCtrl" : "testsSuiteCtrl",
+    "css":[
+        "theme/test.css"
+    ],
+    "js":[
+        "../../deps/",
+        "../../core/util",
+        "../../core/persistence",
+        "../../core/shape",
+        "../../core/shape.js",
+        "../../core",
+        "model/testViewModel.js",
+        ".",
+        "main.js"
+    ],
+    "html":[ "view" ]
+  }
+}

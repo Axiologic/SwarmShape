@@ -8,7 +8,7 @@
     <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
     <meta content="no-cache" http-equiv="Pragma">
 
-    <link rel="stylesheet" type="text/css"  href="../../themes/default/todo/todo.css"/>
+    <link rel="stylesheet" type="text/css"  href="theme/todo.css"/>
 
     <script type="text/javascript" src="../../deps/jquery.min.js"> </script>
 <script type="text/javascript" src="../../deps/socket.io/socket.io.js"> </script>
@@ -52,13 +52,12 @@
 <script type="text/javascript" src="../../core/objectTypes/object.js"> </script>
 <script type="text/javascript" src="../../core/objectTypes/string.js"> </script>
 <script type="text/javascript" src="../../core/SwarmClient.js"> </script>
-<script type="text/javascript" src="./ctrl/taskLine.js"> </script>
-<script type="text/javascript" src="./ctrl/todo.js"> </script>
-<script type="text/javascript" src="./locale/en.js"> </script>
-<script type="text/javascript" src="./main.js"> </script>
-<script type="text/javascript" src="./model/task.js"> </script>
-<script type="text/javascript" src="./model/todo.js"> </script>
+<script type="text/javascript" src="ctrl/taskLine.js"> </script>
+<script type="text/javascript" src="ctrl/todo.js"> </script>
+<script type="text/javascript" src="locale/en.js"> </script>
 <script type="text/javascript" src="main.js"> </script>
+<script type="text/javascript" src="model/task.js"> </script>
+<script type="text/javascript" src="model/todo.js"> </script>
 
 </head>
 <script type="text/javascript">
@@ -78,6 +77,6 @@ shape.registerShapeURL("todo.default","view/todo/default.html");
     }
 </script>
 <body >
-<div id="main" shape-view="todo" > Not loaded!!! </div>
+<div id="main" shape-view="todo"  shape-ctrl="todo" > Not loaded!!! </div>
 </body>
 </html>
