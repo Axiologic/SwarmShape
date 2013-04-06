@@ -14,8 +14,7 @@
         "../../core/shape",
         "../../core/shape.js",
         "../../core",
-        ".",
-        "main.js"
+        "."
     ],
     "html":[ "view" ]
   },
