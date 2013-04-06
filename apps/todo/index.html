@@ -1,0 +1,83 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="01 Jan 1970 00:00:00 GMT, -1" http-equiv="Expires">
+    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="Pragma">
+
+    <link rel="stylesheet" type="text/css"  href="../../themes/default/todo/todo.css"/>
+
+    <script type="text/javascript" src="../../deps/jquery.min.js"> </script>
+<script type="text/javascript" src="../../deps/socket.io/socket.io.js"> </script>
+<script type="text/javascript" src="../../deps/stacktrace.js"> </script>
+<script type="text/javascript" src="../../core/util/DOMCache.js"> </script>
+<script type="text/javascript" src="../../core/util/EventEmitter.js"> </script>
+<script type="text/javascript" src="../../core/util/eventFactory.js"> </script>
+<script type="text/javascript" src="../../core/util/functionReference.js"> </script>
+<script type="text/javascript" src="../../core/util/shapeConstants.js"> </script>
+<script type="text/javascript" src="../../core/util/shapeUtil.js"> </script>
+<script type="text/javascript" src="../../core/persistence/BasePersistence.js"> </script>
+<script type="text/javascript" src="../../core/persistence/ObjectRepository.js"> </script>
+<script type="text/javascript" src="../../core/persistence/shapeModels.js"> </script>
+<script type="text/javascript" src="../../core/shape/shapeControllers.js"> </script>
+<script type="text/javascript" src="../../core/shape/shapeDOM.js"> </script>
+<script type="text/javascript" src="../../core/shape/shapeExpression.js"> </script>
+<script type="text/javascript" src="../../core/shape/shapeInterface.js"> </script>
+<script type="text/javascript" src="../../core/shape/shapeObjects.js"> </script>
+<script type="text/javascript" src="../../core/shape/soundPubSub.js"> </script>
+<script type="text/javascript" src="../../core/shape.js"> </script>
+<script type="text/javascript" src="../../core/attributes/shapeAttributes.js"> </script>
+<script type="text/javascript" src="../../core/collections/Collection.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/button.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/checkbox.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/component.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/DynamicController.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/img.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/input.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/label.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/link.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/menu.js"> </script>
+<script type="text/javascript" src="../../core/ctrl/ul.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/boolean.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/collection.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/date.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/EmbeddedObject.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/function.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/GlobalObject.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/int.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/number.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/object.js"> </script>
+<script type="text/javascript" src="../../core/objectTypes/string.js"> </script>
+<script type="text/javascript" src="../../core/SwarmClient.js"> </script>
+<script type="text/javascript" src="./ctrl/taskLine.js"> </script>
+<script type="text/javascript" src="./ctrl/todo.js"> </script>
+<script type="text/javascript" src="./locale/en.js"> </script>
+<script type="text/javascript" src="./main.js"> </script>
+<script type="text/javascript" src="./model/task.js"> </script>
+<script type="text/javascript" src="./model/todo.js"> </script>
+<script type="text/javascript" src="main.js"> </script>
+
+</head>
+<script type="text/javascript">
+    function initShape(){
+        $.ajaxSetup({ cache: false });
+        shape.registerShapeURL("task.default","view/task/default.html");
+shape.registerShapeURL("task.render","view/task/render.html");
+shape.registerShapeURL("todo.default","view/todo/default.html");
+
+        var model = shapeMain();
+        shape.expandShapeComponent(document.getElementById("main"),null, model);
+    }
+    if(!$.isReady){
+        jQuery(initShape);
+    }else{
+        initShape();
+    }
+</script>
+<body >
+<div id="main" shape-view="todo" > Not loaded!!! </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "ToDo":{
+    "template": "../index_template.html",
+    "target":"index.html",
+    "css":[
+    "../../themes/default/todo/todo.css"
+    ],
+    "js":[
+        "../../deps/",
+        "../../core/util",
+        "../../core/persistence",
+        "../../core/shape",
+        "../../core/shape.js",
+        "../../core",
+        ".",
+        "main.js"
+    ],
+    "html":[ "view" ]
+  },
+  "ToDoMin":{
+      "template": "../index_template.html",
+      "target":"index.html",
+       "minify":"ToDoMin.js",
+       "css":[
+           "../themes/default/todo/todo.css"
+           ],
+      "js":[
+          "../../depsMin/",
+          "../../core/"
+      ],
+      "views":{
+          "todo":"todo/view"
+      }
+  }
+}
