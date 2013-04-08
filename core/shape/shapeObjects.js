@@ -270,13 +270,38 @@ if (!Object.prototype.bindableProperty) {
                         return res;
                     },
                     setter = function (value){
-                        var inner = this.getInnerValues();
-                        var oldval = inner[prop];
-                        if(oldval !== value){
+                        var propDesc = classDesc.getMemberDescription(prop);
+                        var newValue = value;
+                        var oldValue;
+
+
+                        if(propDesc){
+                            if(propDesc.isTransientMember()) {
+                                    oldValue = this.getTransientValues()[prop];
+                                    this.getTransientValues()[prop] = value;
+                            } else {
+                                var isNativeType = shape.getTypeBuilder(propDesc.type).native;
+                                if(isNativeType){
+                                    oldValue = this.getInnerValues()[prop];
+                                    this.getInnerValues()[prop] = value;
+                                    this.getOuterValues()[prop] = value;
+                                } else {
+                                    oldValue = this.getOuterValues()[prop];
+                                    this.getInnerValues()[prop] = value;
+                                    var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
+                                    this.getInnerValues()[prop] = encodeFun(value);
+                                    this.getOuterValues()[prop] = value;
+                                }
+                            }
+                        }
+
+                        if(oldValue !== newValue){
+                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue, oldValue));
+                        }
                             /*  we take a small test to see if the newVal that will be set on this.prop should
                              implement any interface. This test will not prevent any other operation(s).
                              */
-                            shape.verifyObjectAgainstInterface(this, prop, value);
+                            /*shape.verifyObjectAgainstInterface(this, prop, value);
                             var newValue = value;
                             //if it has meta then is a full model object
                             // - else is a basic object(int, number, string, etc.)
@@ -286,10 +311,10 @@ if (!Object.prototype.bindableProperty) {
                             }else{
                                 inner[prop] = value;
                             }
-                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue , oldval));
-                            //shapePubSub.pub(this, new PropertyChangeEvent(this, prop, val, oldval));
+                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue , oldval));*/
+
                         }
-                        return newValue;
+                        //return value;
                     };
 
                 if (delete this[prop]){ // can't watch constants

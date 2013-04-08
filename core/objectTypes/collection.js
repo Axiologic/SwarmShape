@@ -1,6 +1,6 @@
 shape.registerTypeBuilder("collection",{
+    native : true,
     initializer:function(type, value, args, memberDescription){
-
         if(value == "null" || value === null){
             return null;
         }

@@ -96,10 +96,10 @@ function QSClassDescription(declaration, qsName){
         return null;
     }
 
+    /*
     this.updateMemberValue = function(target,prop,value){
         if(this.isTransientMember(prop)){
             target.getTransientValues()[prop] = value;
-            return null;
         }
         var member = this.getMemberDescription(prop);
         if(member){
@@ -116,7 +116,7 @@ function QSClassDescription(declaration, qsName){
                 target.getOuterValues()[prop] = value;
             }
         }
-    }
+    } */
 
     /*
     this.isOuterKindMember = function(memberName){

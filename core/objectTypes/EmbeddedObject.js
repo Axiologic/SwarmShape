@@ -1,4 +1,5 @@
 shape.registerTypeBuilder("EmbeddedObject", {
+    native : false,
     initializer:function(type, value, args) {
         /*var result;
         if(memberDescription != undefined){

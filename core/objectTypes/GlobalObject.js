@@ -1,4 +1,5 @@
 shape.registerTypeBuilder("GlobalObject", {
+    native : false,
     initializer:function(type, value, args, memberDesc) {
         var result;
         if(value === null || value == "null"){

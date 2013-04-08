@@ -1,11 +1,9 @@
 shape.registerTypeBuilder("boolean",{
+    native : true,
     initializer:function(type, value, args){
-        if(value!=undefined){
-            if(value === null || value=="null"){
-                return null;
-            }
-            return value;
-        }else {
+        if(value && value != "false"){
+            return true;
+        } else {
             return false;
         }
     }

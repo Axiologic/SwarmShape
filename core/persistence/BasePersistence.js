@@ -10,17 +10,27 @@ function ObjectChangeEvent(className, pk, chain, newValue, oldValue){
 
 function BasePersistence(){
     var self = this;
+
+    /**
+     * Watch object for auto save
+     * @param obj
+     */
     this.register = function(obj){
         obj.on(SHAPEEVENTS.OBJECT_CHANGE, this.onObjectChange);
     }
 
+    /**
+     * apply a change event
+     * it will call the setters that will be able
+     * @param change : {type, chain, pk, newValue}
+     */
     this.onRemoteObjectChange = function(change){
         var target = shape.lookup(change.type, change.pk);
         var chains = change.chain.split(".");
         for(var i=0;i<chains.length-1;i++){
             target = target[chains[i]];
         }
-        target[chains[chains.length]] = change.newValue;
+        target[chains[chains.length-1]] = change.newValue;
     }
 
     this.onRemoteDelete = function(deleteEvent){

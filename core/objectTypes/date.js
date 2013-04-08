@@ -1,5 +1,5 @@
-shape.registerTypeBuilder("date",
-    {
+shape.registerTypeBuilder("date",{
+        native : true,
         initializer:function(type, value, args){
             if(value != undefined){
                 if(value === null || value == "null"){
