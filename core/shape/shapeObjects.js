@@ -271,12 +271,12 @@ if (!Object.prototype.bindableProperty) {
                     },
                     setter = function (value){
                         var propDesc = classDesc.getMemberDescription(prop);
+
                         var newValue = value;
                         var oldValue;
 
-
                         if(propDesc){
-                            if(propDesc.isTransientMember()) {
+                            if(classDesc.isTransientMember(prop)) {
                                     oldValue = this.getTransientValues()[prop];
                                     this.getTransientValues()[prop] = value;
                             } else {
@@ -293,6 +293,10 @@ if (!Object.prototype.bindableProperty) {
                                     this.getOuterValues()[prop] = value;
                                 }
                             }
+                        } else {
+                            //wprint("Auto-creating transient property " + prop );
+                            oldValue = this.getTransientValues()[prop];
+                            this.getTransientValues()[prop] = value;
                         }
 
                         if(oldValue !== newValue){
@@ -339,8 +343,7 @@ if (!Object.prototype.bindableProperty) {
                     }
                 }
             }
-        }
-    });
+        });
 }
 
 

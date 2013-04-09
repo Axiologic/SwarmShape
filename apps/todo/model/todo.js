@@ -20,7 +20,8 @@ shape.registerModel("todo",{
         },
         current:{
             type:"collection",
-            value:"null"
+            value:"null",
+            transient:true
         },
         newTitle:{
             type:"string"

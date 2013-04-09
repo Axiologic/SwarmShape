@@ -86,7 +86,7 @@ function QSClassDescription(declaration, qsName){
 
     this.getMemberDescription = function(memberName){
         if(members[memberName]==undefined && expressions[memberName] == undefined ){
-            wprint("Unknown member "+memberName+" in class "+this.className);
+            wprint("Unknown member " + memberName + " in class " + this.className);
         } else {
             if(expressions[memberName] != undefined ){
                 return expressions[memberName];
