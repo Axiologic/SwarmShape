@@ -42,12 +42,12 @@ function QSClassDescription(declaration, qsName){
 
         for(n in members){
             var m = members[n];
+            model.bindableProperty(n);
             try{
                 model[n] = shape.newMember(m);
             }catch(err){
                 wprint(err.message);
             }
-            model.bindableProperty(n);
             //addChangeWatcher(model,n,changeCallBack)
         }
 

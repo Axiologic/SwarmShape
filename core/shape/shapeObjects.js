@@ -243,109 +243,89 @@ if (!Object.prototype.bindableProperty) {
         , writable: false
         , value: function (prop) {
             var savedValue = this[prop];
-            if(haveToExpandProperty(this, prop)){
-                    getter = function (){
-                        var res = this.getTransientValues()[prop];
-                        if(res != undefined){
-                            return res;
-                        }
-                        res = this.getOuterValues()[prop];
-                        if(res != undefined){
-                            return res;
-                        }
-                        res = this.getInnerValues()[prop];
-                        if(res != undefined){
-                            var classDesc = this.getClassDescription();
-                            if(classDesc){
-                                var propDesc = classDesc.getMemberDescription(prop);
-                                if(propDesc){
-                                    var decodeFun = shape.getTypeBuilder(propDesc.type).decode;
-                                    if(decodeFun){
-                                        res = decodeFun(res, propDesc);
-                                    }
-                                }
-                                this.getOuterValues()[prop] = res;
-                            }
-                        }
-                        return res;
-                    },
-                    setter = function (value){
-                        var propDesc = classDesc.getMemberDescription(prop);
+            var classDesc = this.getClassDescription();
+            var propDesc = classDesc.getMemberDescription(prop);
 
-                        var newValue = value;
-                        var oldValue;
+            var getter = function (){
+                var res = this.getTransientValues()[prop];
+                if(res != undefined){
+                    return res;
+                }
+                res = this.getOuterValues()[prop];
+                if(res != undefined){
+                    return res;
+                }
+                res = this.getInnerValues()[prop];
+                if(res != undefined){
+                    if(classDesc){
 
                         if(propDesc){
-                            if(classDesc.isTransientMember(prop)) {
-                                    oldValue = this.getTransientValues()[prop];
-                                    this.getTransientValues()[prop] = value;
-                            } else {
-                                var isNativeType = shape.getTypeBuilder(propDesc.type).native;
-                                if(isNativeType){
-                                    oldValue = this.getInnerValues()[prop];
-                                    this.getInnerValues()[prop] = value;
-                                    this.getOuterValues()[prop] = value;
-                                } else {
-                                    oldValue = this.getOuterValues()[prop];
-                                    this.getInnerValues()[prop] = value;
-                                    var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
-                                    this.getInnerValues()[prop] = encodeFun(value);
-                                    this.getOuterValues()[prop] = value;
-                                }
+                            var decodeFun = shape.getTypeBuilder(propDesc.type).decode;
+                            if(decodeFun){
+                                res = decodeFun(res, propDesc);
                             }
-                        } else {
-                            //wprint("Auto-creating transient property " + prop );
-                            oldValue = this.getTransientValues()[prop];
-                            this.getTransientValues()[prop] = value;
                         }
-
-                        if(oldValue !== newValue){
-                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue, oldValue));
-                        }
-                            /*  we take a small test to see if the newVal that will be set on this.prop should
-                             implement any interface. This test will not prevent any other operation(s).
-                             */
-                            /*shape.verifyObjectAgainstInterface(this, prop, value);
-                            var newValue = value;
-                            //if it has meta then is a full model object
-                            // - else is a basic object(int, number, string, etc.)
-                            var myClassDescription = this.getClassDescription();
-                            if(myClassDescription){
-                                newValue = myClassDescription.updateMemberValue(this,prop,value);
-                            }else{
-                                inner[prop] = value;
-                            }
-                            shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue , oldval));*/
-
-                        }
-                        //return value;
-                    };
-
-                if (delete this[prop]){ // can't watch constants
-                    Object.defineProperty(this, prop, {
-                        get: getter
-                        , set: setter
-                        , enumerable: true
-                        , configurable: true
-                    });
-
-                    //use savedObject if the previous values was allready created
-                    var classDesc = this.getClassDescription();
-                    if(classDesc){
-                        var propDesc = classDesc.getMemberDescription(prop);
-                        if(propDesc && !classDesc.isTransientMember(prop)){
-                            this.getOuterValues()[prop] = savedValue;
-                        } else {
-                            this.getTransientValues()[prop] = savedValue;
-                        }
-                    } else{
-                        this.getTransientValues()[prop] = savedValue;
+                        this.getOuterValues()[prop] = res;
                     }
                 }
-            }
-        });
-}
+                return res;
+            };
+            var setter = function (value){
+                var newValue = value;
+                var oldValue;
 
+                if(propDesc){
+                    if(classDesc.isTransientMember(prop)) {
+                        oldValue = this.getTransientValues()[prop];
+                        this.getTransientValues()[prop] = value;
+                    } else {
+                        var isNativeType = shape.getTypeBuilder(propDesc.type).native;
+                        if(isNativeType){
+                            oldValue = this.getInnerValues()[prop];
+                            this.getInnerValues()[prop] = value;
+                            this.getOuterValues()[prop] = value;
+                        } else {
+                            oldValue = this.getOuterValues()[prop];
+                            var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
+                            this.getInnerValues()[prop] = encodeFun(value);
+                            this.getOuterValues()[prop] = value;
+                        }
+                    }
+                } else {
+                    //wprint("Auto-creating transient property " + prop );
+                    oldValue = this.getTransientValues()[prop];
+                    this.getTransientValues()[prop] = value;
+                }
+
+                if(oldValue !== newValue){
+                    shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue, oldValue));
+                }
+            }
+
+                if(haveToExpandProperty(this, prop)){
+                    if (delete this[prop]){ // can't watch constants
+                        Object.defineProperty(this, prop, {
+                            get: getter
+                            , set: setter
+                            , enumerable: true
+                            , configurable: true
+                        });
+                    }
+                        /*
+                        //use savedObject if the previous values was allready created
+                        if(classDesc){
+                            if(propDesc && !classDesc.isTransientMember(prop)){
+                                this.getOuterValues()[prop] = savedValue;
+                            } else {
+                                this.getTransientValues()[prop] = savedValue;
+                            }
+                        } else {
+                            this.getTransientValues()[prop] = savedValue;
+                        } */
+            }
+        }
+    });
+}
 
 // when possible returns the "local id" instead of useless [Object]
 var defaultToString = Object.prototype.toString;
