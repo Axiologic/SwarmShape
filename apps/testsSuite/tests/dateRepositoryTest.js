@@ -6,7 +6,7 @@ registerTest("Testing data repository",
     },
     function(){
         var luke = shape.lookup("SpaghettiMonster", "Luke");
-        self.assert.equal(luke.father,this.grandpa);
+        this.assert.equal(luke.father,this.grandpa);
     },
     function(){
         shape.delete(this.father);

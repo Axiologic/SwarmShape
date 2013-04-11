@@ -10,9 +10,13 @@ function QSClassDescription(declaration, qsName){
     var expressions = {};
     var queries = {};
     var functions = {};
+    var meta;
     this.className = qsName;
 
     for(var a in declaration){
+        if(a == "meta"){
+            meta = declaration[a];
+        } else
        if(typeof declaration[a] === 'function'){
            functions[a] = declaration[a];
         }
@@ -28,6 +32,13 @@ function QSClassDescription(declaration, qsName){
          else if(declaration[a].lang != undefined ){
                 queries[a] = declaration[a];
             }
+    }
+
+    this.getPkFieldName = function(){
+        if(meta){
+            return meta.pk;
+        }
+        return undefined;
     }
 
     this.attachClassDescription = function(model, ctorArgs){

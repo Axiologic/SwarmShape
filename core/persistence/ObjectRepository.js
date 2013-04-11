@@ -17,16 +17,25 @@ ShapeUtil.prototype.initRepositories = function(){
     function lookup (className, pk, autocreate, transientScope, args){
         var res = null;
         var repo;
+        function createNewObject(){
+            res =  Shape.prototype.newRawObject(className,args);
+            if(pk == undefined){
+                pk = res.getPK();
+            } else{
+                res.setPK(pk);
+            }
+        }
+
         var isTransient = (transientScope==undefined || transientScope==true);
         if(isTransient){
             repo = transientRepositories[className];
-            if(repo==undefined){
+            if(repo == undefined){
                 repo = new ObjectRepository(className);
                 transientRepositories[className] = repo;
             }
         } else {
             repo = persistentRepositories[className];
-            if(repo==undefined){
+            if(repo == undefined){
                 repo = new ObjectRepository(className);
                 persistentRepositories[className] = repo;
             }
@@ -35,14 +44,12 @@ ShapeUtil.prototype.initRepositories = function(){
         if(pk){
             res = repo[pk];
         } else {
-            res =  Shape.prototype.newRawObject(className,args);
-            pk = res.__meta.pk;
-            repo[pk] = res;
+           createNewObject(); // assign in res
+           repo[pk] = res;
         }
 
         if(!res && (autocreate == undefined || autocreate == true)){
-            res =  Shape.prototype.newRawObject(className,args);
-            pk = res.__meta.pk;
+            createNewObject(); // assign in res  and pk
             repo[pk] = res;
         }
 
@@ -78,7 +85,7 @@ ShapeUtil.prototype.initRepositories = function(){
             wprint("shape.lookup was used with an undefined Primary Key. Use newEntity instead!");
         }
         var args = ShapeUtil.prototype.mkArgs(arguments,2);
-        return lookup(typeName, pk, false, false, args);
+        return lookup(typeName, pk, true, false, args);
     }
 
     Shape.prototype.delete = function(){

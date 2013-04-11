@@ -80,10 +80,32 @@ makeBindable = function (obj){
             var cdsc = obj.__meta[SHAPE.CLASS_DESCRIPTION];
             if(cdsc){
                 return cdsc.className;
-            } else
-            {
+            } else {
                 return "NoClass";
             }
+        }
+
+        obj.setPK = function(pk){
+            var cdsc = obj.__meta[SHAPE.CLASS_DESCRIPTION];
+            if(cdsc){
+                var pkName = cdsc.getPkFieldName();
+                this[pkName] = pk;
+            }
+        }
+
+        obj.getPK = function(){
+            var cdsc = obj.__meta[SHAPE.CLASS_DESCRIPTION];
+            if(cdsc){
+                var pkName = cdsc.getPkFieldName();
+                if(pkName){
+                    var res = this[pkName];
+                    if(res){
+                        return res;
+                    }
+                }
+            }
+            cprint("Defaulting to localId pk");
+            return obj.__meta.__localId;
         }
 
         obj.getClassDescription = function(){
@@ -286,8 +308,12 @@ if (!Object.prototype.bindableProperty) {
                             this.getOuterValues()[prop] = value;
                         } else {
                             oldValue = this.getOuterValues()[prop];
-                            var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
-                            this.getInnerValues()[prop] = encodeFun(value);
+                            if(value){
+                                var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
+                                this.getInnerValues()[prop] = encodeFun(value);
+                            } else {
+                                delete this.getInnerValues()[prop];
+                            }
                             this.getOuterValues()[prop] = value;
                         }
                     }
