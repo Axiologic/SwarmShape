@@ -2,6 +2,10 @@ function ObjectRepository(className){
     this.getClassName = function(){
         return className;
     }
+
+    this.setPersistence = function(persistenceName){
+
+    }
 }
 
 
@@ -9,9 +13,26 @@ ShapeUtil.prototype.initRepositories = function(){
     var persistentRepositories = {};
     var transientRepositories = {};
 
+    function getRepository(isTransient, className){
+       var repo;
+        if(isTransient){
+            repo = transientRepositories[className];
+            if(repo == undefined){
+                repo = new ObjectRepository(className);
+                transientRepositories[className] = repo;
+            }
+        } else {
+            repo = persistentRepositories[className];
+            if(repo == undefined){
+                repo = new ObjectRepository(className);
+                persistentRepositories[className] = repo;
+            }
+        }
+       return repo;
+    }
     /*
         pk - if null create a new object
-        autocreate - defaut true
+        autocreate - default true
         transientScope - default false
      */
     function lookup (className, pk, autocreate, transientScope, args){
@@ -27,19 +48,8 @@ ShapeUtil.prototype.initRepositories = function(){
         }
 
         var isTransient = (transientScope==undefined || transientScope==true);
-        if(isTransient){
-            repo = transientRepositories[className];
-            if(repo == undefined){
-                repo = new ObjectRepository(className);
-                transientRepositories[className] = repo;
-            }
-        } else {
-            repo = persistentRepositories[className];
-            if(repo == undefined){
-                repo = new ObjectRepository(className);
-                persistentRepositories[className] = repo;
-            }
-        }
+        repo = getRepository( isTransient, className);
+
 
         if(pk){
             res = repo[pk];
@@ -110,5 +120,10 @@ ShapeUtil.prototype.initRepositories = function(){
         res.__meta.pk = "local:" + res.__meta.__localId;
         shapePubSub.releaseCallBacks();
         return res;
+    }
+
+    Shape.prototype.setPersistenceForClass  = function(className, persistenceName){
+        var repo = getRepository(className);
+        repo.setPersistence(persistenceName);
     }
 }

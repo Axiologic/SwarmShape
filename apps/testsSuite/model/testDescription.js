@@ -69,9 +69,12 @@ shape.registerModel("TestDescription",{
         this.clean = clean;
         this.assert = {};
         this.assert.runningTest = this;
-        this.assert.equal = function(expectedValue, testedValue){
+        this.assert.equal = function(expectedValue, testedValue , text){
             if(expectedValue != testedValue){
                 var logText = "Failed equal assert between "+ expectedValue+ " and " + testedValue + " at:\n" + shape__prettyStack();
+                if(text){
+                    logText = text + "\n" + logText;
+                }
                 this.failed.push(logText);
                 console.log("Failed " + logText);
             } else{

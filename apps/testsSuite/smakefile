@@ -10,7 +10,7 @@
     "js":[
         "../../deps/",
         "../../core/util",
-        "../../core/persistence",
+        "../../core/shapeModelBase",
         "../../core/shape",
         "../../core/shape.js",
         "../../core",
