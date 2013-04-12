@@ -19,29 +19,47 @@ function runNextTest(){
     testRegistry.currentIndex++;
     var runningTest = testRegistry.tests.getAt(testRegistry.currentIndex);
     if(runningTest){
-        runningTest.prepare();
-        runningTest.__timer = setTimeout(function(){
-            runningTest.afterTimeout = true;
-            assertEndTestVerification(runningTest);
-        },runningTest.timeout);
-        runningTest.run();
+        try{
+            runningTest.prepare();
+            runningTest.__timer = setTimeout(function(){
+                assertEndTestVerification(runningTest);
+            },runningTest.timeout);
+            runningTest.run();
+        } catch(error){
+            assertEndTestVerification(runningTest, "Unknown exception:"+ error)
+        }
     }
 }
 
-function assertEndTestVerification(runningTest){
-    if(runningTest.afterTimeout){
-        runningTest.failled.push("Test failed because of timeout ");
+function assertEndTestVerification(runningTest, failCause){
+    function testFail(failCause){
+        runningTest.failled.push(failCause);
         runningTest.testPassed = false;
         testRegistry.failledTests.push(runningTest);
         runningTest.clean();
-        runNextTest();
-    }else if(runningTest.passed == runningTest.expectedAsserts && runningTest.failled.length == 0) {
-        clearTimeout(runningTest.__timer);
+    }
+
+    function testPass(){
         runningTest.testPassed = true;
         testRegistry.passedTests.push(runningTest);
         runningTest.clean();
-        runNextTest();
     }
+
+    if(failCause != undefined){
+        testFail(failCause);
+
+    }
+    else{  //timeout passed
+        if(runningTest.passed == runningTest.expectedAsserts && runningTest.failled.length == 0) {
+            testPass();
+        } else{
+            testFail("Test failed because of timeout ");
+        }
+    }
+    clearTimeout(runningTest.__timer);
+    runNextTest();
+
+
 }
 
 shape.registerModel("TestDescription",{
@@ -61,7 +79,7 @@ shape.registerModel("TestDescription",{
                 this.passed++;
                 console.log("Passed");
             }
-            assertEndTestVerification(this);
+            //assertEndTestVerification(this);
         }.bind(this);
     },
     name:{
@@ -93,12 +111,11 @@ shape.registerModel("TestDescription",{
     expectedAsserts:{
         type:"int"
     },
-    start:function(expectedAsserts, timeout){
+    startTesting:function(expectedAsserts, timeout){
         this.passed = 0;
         this.testPassed = undefined;
         this.expectedAsserts = expectedAsserts==undefined?1:expectedAsserts;
         this.failled.removeAll();
         this.timeout = timeout==undefined?1000:timeout;
-        this.afterTimeout = false;
     }
 });

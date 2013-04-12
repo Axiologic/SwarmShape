@@ -104,7 +104,7 @@ makeBindable = function (obj){
                     }
                 }
             }
-            cprint("Defaulting to localId pk");
+            //cprint("Defaulting to localId pk");
             return obj.__meta.__localId;
         }
 

@@ -13,7 +13,7 @@ registerTest("Testing chain bindings",
         this.nephew.father.prankVictim = this.grandpa;
         this.nephew.father.prankVictim.prankVictim = this.nephew;
         this.nephew.prankVictim = this.father;
-        this.start(1,1000);
+        this.startTesting(1,1000);
     },
     function(){
         var self = this;
