@@ -428,11 +428,15 @@ li label{
     margin-top: -38px;
 }
 
-.true{
+.grey{
+    background-color:lightslategrey;
+}
+
+.green{
     background-color:green;
 }
 
-.false{
+.red{
     background-color: red;
 }
 

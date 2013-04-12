@@ -128,7 +128,7 @@ function SoundPubSub(){
                     }
                 }
             } catch(err){
-                wprint("Event callback failed: "+ subscriber.callBack +"error: "+err);
+                wprint("Event callback failed: "+ subscriber.callBack +"error: " + err.stack);
             }
             //
             if(fromReleaseCallBacks){

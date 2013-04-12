@@ -7,7 +7,7 @@ shape.registerModel("TestViewModel",{
         type:"collection",
         contains:"TestDescription"
     },
-    failledTests:{
+    failedTests:{
         type:"collection",
         contains:"TestDescription"
     },

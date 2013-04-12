@@ -9,7 +9,7 @@ function runTests(){
     for(var i=0; i<testRegistry.tests.length; i++){
         testRegistry.tests.getAt(i).passed = undefined;
         testRegistry.passedTests.removeAll();
-        testRegistry.failledTests.removeAll();
+        testRegistry.failedTests.removeAll();
     }
     testRegistry.currentIndex = -1;
     runNextTest();
@@ -33,9 +33,9 @@ function runNextTest(){
 
 function assertEndTestVerification(runningTest, failCause){
     function testFail(failCause){
-        runningTest.failled.push(failCause);
+        runningTest.failedTests.push(failCause);
         runningTest.testPassed = false;
-        testRegistry.failledTests.push(runningTest);
+        testRegistry.failedTests.push(runningTest);
         runningTest.clean();
     }
 
@@ -47,10 +47,9 @@ function assertEndTestVerification(runningTest, failCause){
 
     if(failCause != undefined){
         testFail(failCause);
-
     }
     else{  //timeout passed
-        if(runningTest.passed == runningTest.expectedAsserts && runningTest.failled.length == 0) {
+        if(runningTest.passed == runningTest.expectedAsserts && runningTest.failedTests.length == 0) {
             testPass();
         } else{
             testFail("Test failed because of timeout ");
@@ -73,7 +72,7 @@ shape.registerModel("TestDescription",{
         this.assert.equal = function(expectedValue, testedValue){
             if(expectedValue != testedValue){
                 var logText = "Failed equal assert between "+ expectedValue+ " and " + testedValue + " at:\n" + shape__prettyStack();
-                this.failled.push(logText);
+                this.failed.push(logText);
                 console.log("Failed " + logText);
             } else{
                 this.passed++;
@@ -89,7 +88,7 @@ shape.registerModel("TestDescription",{
         type:"boolean",
         value:true
     },
-    failled:{
+    failedTests:{
         type:"collection"
     },
     passed:{
@@ -115,7 +114,20 @@ shape.registerModel("TestDescription",{
         this.passed = 0;
         this.testPassed = undefined;
         this.expectedAsserts = expectedAsserts==undefined?1:expectedAsserts;
-        this.failled.removeAll();
+        this.failedTests.removeAll();
         this.timeout = timeout==undefined?1000:timeout;
+    },
+    colour:{
+        chains:"testPassed",
+        code:function(){
+            if(this.testPassed == undefined){
+                return "grey"
+            }
+            if(this.testPassed ){
+                return "green"
+            } else{
+                return "red";
+            }
+        }
     }
 });
