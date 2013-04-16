@@ -2,7 +2,7 @@ registerTest("Testing data repository",
     function(){
         this.grandpa = shape.lookup("SpaghettiMonster", "Luke... I'm your father!");
         this.father = shape.newEntity("SpaghettiMonster", "Luke", this.grandpa);
-        this.startTesting(1,1000);
+        this.startTesting(1,50);
     },
     function(){
         var luke = shape.lookup("SpaghettiMonster", "Luke");

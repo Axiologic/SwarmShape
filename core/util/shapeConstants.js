@@ -1,6 +1,7 @@
 function ShapeConstants(){
     this.CLASS_DESCRIPTION      = "CLASS_DESCRIPTION";
     this.COLLECTION = "collection";
+    this.QUERY_VIEW = "queryView";
     this.LOCAL = "local";
     this.GLOBAL = "global";
 }

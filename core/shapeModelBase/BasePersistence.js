@@ -47,11 +47,7 @@ function BasePersistence(){
         this.defaultRefresh(target, newValues);
     }
 
-    this.query = function(queryName){
-        var args = [];
-        for(var i=1;i<arguments;i++){
-            args.push(arguments[i]);
-        }
+    this.query = function(queryName, args){
         this.sendQuery(arguments[0],args);
     }
 

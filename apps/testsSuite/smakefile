@@ -13,6 +13,7 @@
         "../../core/shapeModelBase",
         "../../core/shape",
         "../../core/shape.js",
+        "../../core/collections",
         "../../core",
         "model/testViewModel.js",
         ".",

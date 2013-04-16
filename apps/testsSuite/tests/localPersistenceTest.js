@@ -6,12 +6,12 @@ registerTest("Testing local persistence",
         this.grandpa = shape.lookup("SpaghettiMonster", "Luke... I'm your father!");
         this.grandpa.name = "Luke's father";
         this.father = shape.newEntity("SpaghettiMonster", "Luke", this.grandpa);
-        this.startTesting(4,500);
+        this.startTesting(4,100);
     },
     function(){
         var queryView = new QueryView("SpaghettiMonster");
         queryView.query("*","SpaghettiMonster");
-        queryView.onEnd(function (){
+        queryView.on("end", function (){
             this.assert.equal(queryView.length,2);
 
             this.assert.equal(this.father.father.getPK(),"Luke's father");

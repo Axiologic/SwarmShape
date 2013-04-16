@@ -16,13 +16,15 @@ isBindableCollection = function (obj){
 
 
 function Collection(){
-    makeBindable(this);
-    setMetaAttr(this, SHAPE.CLASS_NAME, SHAPE.COLLECTION);
-    setMetaAttr(this, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
+    Collection.prototype.superInit(this);
+    setMetaAttr(myThis, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
+}
 
-    this.__meta.bindableCollection = true;
-    this.container = [];
-    this.length = this.container.length;
+Collection.prototype.superInit = function(myThis){
+    makeBindable(myThis);
+    myThis.__meta.bindableCollection = true;
+    myThis.container = [];
+    myThis.length = this.container.length;
 }
 
 Collection.prototype.announceChange = function(changeType){

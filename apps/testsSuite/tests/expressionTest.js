@@ -2,7 +2,7 @@ registerTest("Testing expressions",
     function(){
         this.father = shape.newTransient("SpaghettiMonster", "I'm your father!");
         this.son = shape.newTransient("SpaghettiMonster", "Luke", this.father);
-        this.startTesting(1,1000);
+        this.startTesting(1,50);
     },
     function(){
             this.assert.equal("Luke...!I'm your father!",this.son.familySecret);
