@@ -1,12 +1,4 @@
-function ObjectChangeEvent(className, pk, chain, newValue, oldValue){
-    this.type = SHAPEEVENTS.OBJECT_CHANGE;
-    this.className = className;
-    this.pk = pk;
-    this.chain = chain;
-    //newValue and oldValue are serialized
-    this.newValue = newValue;
-    this.oldValue = oldValue;
-}
+
 
 function BasePersistence(){
     var self = this;
@@ -16,7 +8,7 @@ function BasePersistence(){
      * @param obj
      */
     this.register = function(obj){
-        obj.on(SHAPEEVENTS.OBJECT_CHANGE, this.onObjectChange);
+        obj.on(SHAPEEVENTS.DOCUMENT_CHANGE, this.onObjectChange);
     }
 
     /**
@@ -48,9 +40,10 @@ function BasePersistence(){
     }
 
     this.query = function(queryName, args){
-        this.sendQuery(arguments[0],args);
+        return this.sendQuery(queryName,args);
     }
 
+    /*
     //only called by shape.delete
     this.delete = function(obj){
         //Overwrite this function to send detele events on server
@@ -68,15 +61,19 @@ function BasePersistence(){
 
     this.onObjectChange = function(event){
         //Overwrite this function to send changes on server
-    }
+    } */
 }
 
 ShapeUtil.prototype.initPersistences = function(){
 
     var persistenceRegistry = {};
 
-    BasePersistence.prototype.defaultRefresh = function(target, newValues){
-
+    /**
+     * update target to new values
+     * @param target
+     * @param newValues
+     */
+    BasePersistence.prototype.server2local = function(target, newValues){
         function generatePC1Level(host, newValues){
             var newVal;
             var oldInner = host.getInnerValues();

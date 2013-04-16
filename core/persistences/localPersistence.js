@@ -43,8 +43,10 @@ function LocalPersistence(spaceName){
         updateIndexCache(obj.getClassName(),obj.getPK(),true);
     }
 
+    this.queryCounter = 0;
     //only called by query function
     this.sendQuery = function(queryName, params){
+        this.queryCounter++;
         if(queryName == "*"){
             if(!params || params[0] == undefined){
                 wprint("Ignoring query" + queryName + "Class name is the first param of a query");
@@ -59,10 +61,10 @@ function LocalPersistence(spaceName){
         }   else {
             wprint("Query in local storage is not implemented");
         }
-        //Overwrite this function to send query events on server
+        return this.queryCounter;
     }
 
-    //called ObjectRepository when an object with known PK should be loaded from server
+    //called by ObjectRepository when an object with known PK should be loaded from server
     this.requestRefresh = function(className,pk){
         var jsonValue = $.localStorage(createKey(className,pk));
         var ret = JSON.parse(jsonValue);
