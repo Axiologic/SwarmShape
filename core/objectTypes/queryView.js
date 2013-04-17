@@ -11,6 +11,7 @@ shape.registerTypeBuilder("queryView",{
         if(memberDescription){
             setMetaAttr(res, "contains", memberDescription.contains);
         }
+        res.__meta.owner =  null;
         return res;
     },
     encode:function(outerObject){

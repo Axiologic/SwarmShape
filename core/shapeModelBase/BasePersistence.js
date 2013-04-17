@@ -1,22 +1,29 @@
 
+/**
+ * mclass is the name (classname) of a model
+ *  pk is the primary key of the object
+ * if chain is "@" then the newValue is the whole object
+ * if chain is "!" then is a request to delete this object
+ * request is an identifier for a specific call. Can be used for getting new PKs for objects (autoinc ids)
+ */
+
+function PersistenceEvent(className, pk, chain, newValue, request){
+       this.mclass      = className;
+       this.pk          = pk;
+       this.chain       = chain;
+       this.newValue    = newValue;
+       this.request     = request;
+}
 
 function BasePersistence(){
     var self = this;
 
-    /**
-     * Watch object for auto save
-     * @param obj
-     */
-    this.register = function(obj){
-        obj.on(SHAPEEVENTS.DOCUMENT_CHANGE, this.onObjectChange);
-    }
-
-    /**
+     /**
      * apply a change event
      * it will call the setters that will be able
-     * @param change : {type, chain, pk, newValue}
+     * @param change : {className, chain, pk, newValue}
      */
-    this.onRemoteObjectChange = function(change){
+    this.onRemotePersistenceEvent = function(change){
         var target = shape.lookup(change.type, change.pk);
         var chains = change.chain.split(".");
         for(var i=0;i<chains.length-1;i++){
@@ -32,11 +39,11 @@ function BasePersistence(){
         }
     }
 
-    this.onRefresh  = function(refreshEvent){
+    this.onRemoteRefresh  = function(refreshEvent){
         //refreshObject contains an object.
         var target = shape.lookup(refreshEvent.type, refreshEvent.pk);
         var newValues = refreshEvent.values;
-        this.defaultRefresh(target, newValues);
+        this.refresh(target, newValues);
     }
 
     this.query = function(queryName, args){
@@ -108,16 +115,17 @@ ShapeUtil.prototype.initPersistences = function(){
         shapePubSub.releaseCallBacks();
     }
 
-    BasePersistence.prototype.getPersistenceForClass = function(classDesc){
-        var persistenceName = "default";
-        if(classDesc.meta != undefined ){
-            if(classDesc.meta.persitence != ""){
+    Shape.prototype.getPersistenceForClass = function(className){
+        var csdsc = shape.getClassDescription(className);
+        var persistenceName = "NULL";
+        if(csdsc.meta != undefined ){
+            if(csdsc.meta.persitence != ""){
                 persistenceName = classDesc.meta.persitence;
             }
         }
         var persistence = persistenceRegistry[persistenceName];
         if(!persistence){
-            xprint("Can't find any persistence for class " + classDesc.className);
+            xprint("Can't find persistence " + persistenceName + " for class " + csdsc.className);
             return null;
         }
         return persistence;
@@ -127,8 +135,17 @@ ShapeUtil.prototype.initPersistences = function(){
         persistenceRegistry[type] = persistence;
     }
 
+    BasePersistence.prototype.getPersistenceByName = function(name){
+        return persistenceRegistry[name];
+    }
+
     BasePersistence.prototype.remember = function(obj){
-        wprint("Remember not implemented");
+        obj.on(SHAPEEVENTS.DOCUMENT_CHANGE,this.onLocalChange);
+    }
+
+    //event is a DocumentChange event
+    BasePersistence.prototype.onLocalChange = function(event){
+
     }
 }
 

@@ -134,3 +134,30 @@ ShapeUtil.prototype.initUtil = function(){
 ShapeUtil.prototype.getType = function(object){
     return (object["getClassName"])?object.getClassName():typeof object;
 }
+
+
+function Html5LocalStorage(key, value){
+     var ret;
+    if(value != undefined){
+        if(typeof value != "string"){
+            ret = value;
+            try{
+                value = JSON.stringify(value);
+            } catch(err){
+                console.log("Err" + err + " From:" + ret);
+                value = "";
+            }
+        }
+       localStorage.setItem(key,value);
+    } else{
+        ret = localStorage.getItem(key);
+        try{
+            if(ret){
+                ret = JSON.parse(ret);
+            }
+        } catch(err){
+            console.log("Err" + err + " From:" + ret);
+        }
+    }
+    return ret;
+}

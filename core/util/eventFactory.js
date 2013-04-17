@@ -22,17 +22,19 @@ function ClickEvent(userAction, viewModel){
     this.viewModel = viewModel;
 }
 
-function CollectionChangeEvent(data){
+function CollectionChangeEvent(collection, data){
     this.type = SHAPEEVENTS.COLLECTION_CHANGE;
+    this.collection = collection;
     this.history = [];
     this.history.push(data);
 }
 
 function PropertyChangeEvent(model,property,newValue, oldValue){
     this.type = SHAPEEVENTS.PROPERTY_CHANGE;
-    this.property = property;
-    this.newValue = newValue;
-    this.oldValue = oldValue;
+    this.model      = model;
+    this.property   = property;
+    this.newValue   = newValue;
+    this.oldValue   = oldValue;
 }
 
 /**
@@ -42,9 +44,8 @@ function PropertyChangeEvent(model,property,newValue, oldValue){
  * history is a
  */
 
-function DocumentChangeEvent(model, cause){
+function DocumentChangeEvent(cause){
     this.type    = SHAPEEVENTS.DOCUMENT_CHANGE;
-    this.model   = property;
     this.causes   = [];
     this.causes.push(cause);
 }

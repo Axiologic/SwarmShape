@@ -324,7 +324,11 @@ if (!Object.prototype.bindableProperty) {
                 }
 
                 if(oldValue !== newValue){
-                    shapePubSub.pub(this, new PropertyChangeEvent(this, prop, newValue, oldValue));
+                    var pcev = new PropertyChangeEvent(this, prop, newValue, oldValue);
+                    shapePubSub.pub(this, pcev);
+                    if(!classDesc.isTransientMember(prop)){
+                        shapePubSub.pub(this.__meta.owner, new DocumentChangeEvent(pcev));
+                    }
                 }
             }
 

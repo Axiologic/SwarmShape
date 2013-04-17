@@ -23,10 +23,13 @@ function Collection(){
     setMetaAttr(this, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
 }
 
-
 Collection.prototype.announceChange = function(changeType){
     this.length = this.container.length;
-    shapePubSub.pub(this, new CollectionChangeEvent(changeType));
+    var colChange = new CollectionChangeEvent(this, changeType);
+    shapePubSub.pub(this, colChange);
+    if(this.__meta.owner){
+        shapePubSub.pub(this.__meta.owner, new DocumentChangeEvent(pcev));
+    }
 }
 
 Collection.prototype.pop = function(){
@@ -113,7 +116,6 @@ try{
         cprint("Failing to define length property" + ex.message);
     }
 }*/
-
 
 Collection.prototype.shift = function(){
    var first = this.container.shift();

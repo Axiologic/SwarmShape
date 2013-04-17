@@ -49,18 +49,18 @@
 
 // TODO: detect infinite loops (or very deep propagation) It is possible!?
 
-function CollectionChangeEvent(data){
-    this.type = SHAPEEVENTS.COLLECTION_CHANGE;
-    this.history = [];
-    this.history.push(data);
-}
-
-function PropertyChangeEvent(model,property,newValue, oldValue){
-    this.type = SHAPEEVENTS.PROPERTY_CHANGE;
-    this.property = property;
-    this.newValue = newValue;
-    this.oldValue = oldValue;
-}
+//function CollectionChangeEvent(data){
+//    this.type = SHAPEEVENTS.COLLECTION_CHANGE;
+//    this.history = [];
+//    this.history.push(data);
+//}
+//
+//function PropertyChangeEvent(model,property,newValue, oldValue){
+//    this.type = SHAPEEVENTS.PROPERTY_CHANGE;
+//    this.property = property;
+//    this.newValue = newValue;
+//    this.oldValue = oldValue;
+//}
 
 
 function SoundPubSub(){

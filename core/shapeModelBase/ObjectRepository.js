@@ -1,19 +1,8 @@
-function ObjectRepository(className){
-    this.getClassName = function(){
-        return className;
-    }
-
-    this.setPersistence = function(persistenceName){
-
-    }
-}
-
-
 ShapeUtil.prototype.initRepositories = function(){
     var persistentRepositories = {};
     var transientRepositories = {};
 
-    function getRepository(isTransient, className){
+    function getRepository(className, isTransient){
        var repo;
         if(isTransient){
             repo = transientRepositories[className];
@@ -48,7 +37,7 @@ ShapeUtil.prototype.initRepositories = function(){
         }
 
         var isTransient = (transientScope==undefined || transientScope==true);
-        repo = getRepository( isTransient, className);
+        repo = getRepository( className, isTransient);
 
 
         if(pk){
@@ -56,19 +45,15 @@ ShapeUtil.prototype.initRepositories = function(){
         } else {
            createNewObject(); // assign in res
            repo[pk] = res;
+           repo.persistence.remember(res);
+           res.__meta.transient = isTransient;
         }
 
         if(!res && (autocreate == undefined || autocreate == true)){
             createNewObject(); // assign in res  and pk
             repo[pk] = res;
-        }
-
-        if(!isTransient && res){
-            var csdsc = res.getClassDescription();
-            var pers = BasePersistence.prototype.getPersistenceForClass(csdsc);
-            if(pers){
-                pers.remember(res);
-            }
+            repo.persistence.remember(res);
+            res.__meta.transient = isTransient;
         }
         return res;
     }
@@ -98,13 +83,34 @@ ShapeUtil.prototype.initRepositories = function(){
         return lookup(typeName, pk, true, false, args);
     }
 
-    Shape.prototype.delete = function(){
-
+    /**
+     *
+     * @param obj
+     */
+    Shape.prototype.delete = function(obj){
+        var repo = getRepository(obj.getClassName(), obj.__meta.transient);
+        delete repo[obj.getPK()];
     }
 
+    /**
+     *
+     * @param obj
+     * @param oldPK
+     */
+    Shape.prototype.renamePK = function(obj, oldPK){
+        var repo = getRepository(obj.getClassName(), obj.__meta.transient);
+        repo[obj.getPK()] = obj;
+        delete repo[oldPK];
+    }
+
+    /**
+     * Create an object froma model tmeplate but it is not registered anywhere
+     * @param className
+     * @param args
+     * @returns {*}
+     */
     Shape.prototype.newRawObject = function(className, args){
         var res;
-
         shapePubSub.blockCallBacks();
 
         try{
@@ -122,8 +128,26 @@ ShapeUtil.prototype.initRepositories = function(){
         return res;
     }
 
+    /**
+     *
+     * @param className
+     * @param persistenceName
+     */
     Shape.prototype.setPersistenceForClass  = function(className, persistenceName){
-        var repo = getRepository(className);
+        var repo = getRepository(className, false);
         repo.setPersistence(persistenceName);
+    }
+}
+
+function ObjectRepository(className){
+
+    this.persistence = shape.getPersistenceForClass(className);
+
+    this.getClassName = function(){
+        return className;
+    }
+
+    this.setPersistence = function(persistenceName){
+        this.persistence = BasePersistence.prototype.getPersistenceByName(persistenceName);
     }
 }

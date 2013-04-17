@@ -11,7 +11,7 @@ function ShapeEvents(){
     this.PROPERTY_CHANGE = "PropertyChange";
     this.URL_CHANGE = "UrlChange";
     this.CLICK = "Click";
-    this.OBJECT_CHANGE = "ObjectChange";
+    this.DOCUMENT_CHANGE = "DocumentChange";
 }
 
 SHAPE = new ShapeConstants();

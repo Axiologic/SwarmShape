@@ -15,7 +15,7 @@ function LocalPersistence(spaceName){
     function updateIndexCache(className, newId, deleteId){
         var cache = classIndexCache[className];
         if(cache == undefined){
-            cache = $.localStorage(createKey(className));
+            cache = Html5LocalStorage(createKey(className));
             if(cache == undefined){
                 cache = {};
             }
@@ -24,11 +24,11 @@ function LocalPersistence(spaceName){
         if(newId){
             if(deleteId){
                 delete cache[newId];
-                $.localStorage(createKey(className), cache);
+                Html5LocalStorage(createKey(className), cache);
             } else{
                 if(!cache[newId]){
                     cache[newId] = newId;
-                    $.localStorage(createKey(className), cache);
+                    Html5LocalStorage(createKey(className), cache);
                 }
             }
         }
@@ -39,13 +39,13 @@ function LocalPersistence(spaceName){
     delete object
      */
     this.delete = function(obj){
-        $.localStorage(createKey(obj.getClassName(),obj.getPK()), "");
+        Html5LocalStorage(createKey(obj.getClassName(),obj.getPK()), "");
         updateIndexCache(obj.getClassName(),obj.getPK(),true);
     }
 
     this.queryCounter = 0;
     //only called by query function
-    this.sendQuery = function(queryName, params){
+    this.query = function(queryName, params){
         this.queryCounter++;
         if(queryName == "*"){
             if(!params || params[0] == undefined){
@@ -64,20 +64,30 @@ function LocalPersistence(spaceName){
         return this.queryCounter;
     }
 
-    //called by ObjectRepository when an object with known PK should be loaded from server
-    this.requestRefresh = function(className,pk){
-        var jsonValue = $.localStorage(createKey(className,pk));
+    //send a persistence event towards server
+    this.sendPersistenceEvent = function(className,pk){
+        var jsonValue = Html5LocalStorage(createKey(className,pk));
         var ret = JSON.parse(jsonValue);
         this.onServerObjectRefresh(className, ret);
     }
 
-    //requested by ObjectRepository when an object can be changed
-    this.saveObject = function(obj){
-        $.localStorage(createKey(obj.getClassName(),obj.getPK()),obj);
-        updateIndexCache(obj.getClassName(),obj.getPK());
+    //event is a DocumentChange event
+    this.onLocalChange = function(event){
+        var obj;
+        var cause = event.causes[0];
+        if(cause.type == SHAPEEVENTS.PROPERTY_CHANGE){
+            obj = cause.model.__meta.owner;
+        } else{
+            obj = cause.collection.__meta.owner;
+        }
+        if(obj == null){
+            wprint("Something went wrong, can't persist wrong change event: " + J(event));
+            return ;
+        }
+        Html5LocalStorage(createKey(obj.getClassName(), obj.getPK()), obj.getInnerValues());
+        updateIndexCache(obj.getClassName(), obj.getPK());
     }
 }
 
 LocalPersistence.prototype = new BasePersistence();
-
 BasePersistence.prototype.registerPersistence("local",new LocalPersistence());

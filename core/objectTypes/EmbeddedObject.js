@@ -1,8 +1,8 @@
 shape.registerTypeBuilder("EmbeddedObject", {
     native : false,
-    initializer:function(type, value, args) {
-        /*var result;
-        if(memberDescription != undefined){
+    initializer:function(type, value, args, memberDescription, owner) {
+        var result = {};
+        /*if(memberDescription != undefined){
             var desc = memberDescription;
             if(memberDescription.type){
                 if(memberDescription.value===null||memberDescription.value=="null"){
@@ -17,6 +17,9 @@ shape.registerTypeBuilder("EmbeddedObject", {
                 dprint(err.message);
             }
         } */
+
+        result.__meta.owner =  owner;
+        makeEventEmitter(result);
         dprint("Not implemented");
         return result;
     },

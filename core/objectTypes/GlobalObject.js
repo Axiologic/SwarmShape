@@ -13,7 +13,8 @@ shape.registerTypeBuilder("GlobalObject", {
         }catch(err){
             dprint(err.message);
         }
-
+        result.__meta.owner =  result;
+        makeEventEmitter(result);
         return result;
     },
     encode:function(outerObject){
