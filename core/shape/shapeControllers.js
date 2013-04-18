@@ -35,6 +35,7 @@ function BaseController(ctrlName, parentCtrl){
     this.model = undefined;
     this.view  = undefined;
     this.__waitCounter = 1;
+    this.children = {};
 }
 
 
@@ -102,9 +103,13 @@ BaseController.prototype.onViewChanged = function(){
 }
 
 BaseController.prototype.changeModel = function(model){
-    if(this.isCWRoot && model == undefined){
-        dprint("This is wrong, not possible...");
+    if(this.isCWRoot){
+       /* if(this.model!==model){
+            dprint(this.ctrlName + " calling destroy");
+            this.destroyChildren();
+        }*/
     }
+
     this.model = model;
     this.modelInitialized = true;
     if(this.initialised){
@@ -134,11 +139,24 @@ BaseController.prototype.afterExpansion = function(caller){
         try2InitCtrl(this);
         this.afterChildExpansion(caller);
     }
+    this.children[caller] = caller;
 }
 
 BaseController.prototype.afterChildExpansion = function(caller){
     if(this.parentCtrl){
         this.parentCtrl.afterChildExpansion(this);
+    }
+}
+
+BaseController.prototype.destroyChildren = function(){
+    for(var i=0;i<this.changeWatchers.length; i++){
+        var watcherObj = this.changeWatchers[i];
+        watcherObj.watcher.release();
+    }
+    this.changeWatchers = [];
+
+    for(var children in this.children){
+        children.destroyChildren();
     }
 }
 
@@ -168,10 +186,30 @@ BaseController.prototype.modelAssign = function(value){
 
 BaseController.prototype.getContextName = function(){
     if(this.contextName){
+            if(!this.contextNameValue){
+                var contextExp = newShapeExpression(this.contextName);
+                if(contextExp){
+                    this.contextName = contextExp.tryToEvaluate(this.parentCtrl);
+                }
+                this.contextNameValue = true;
+            }
         return this.contextName;
     }
     if(this.parentCtrl != null){
         return this.parentCtrl.getContextName();
+    }
+}
+
+
+BaseController.prototype.autoExpand = function(){
+    if(this.view){
+        console.log("plec la plimbare");
+        this.view.innerHTML = "";
+         shape.getPerfectShape(this.model, this.getContextName(), function(newElem){
+         var ch = $(newElem);
+         $(this.view).append(ch);
+         shape.bindAttributes(this.view, this);
+         });
     }
 }
 

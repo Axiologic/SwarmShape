@@ -47,14 +47,8 @@ shape.registerAttribute("shape-context",{
         if(newValue){
             ctrl.contextName = newValue;
         }
-        if(ctrl.view){
-            ctrl.view.innerHTML = "";
-            shape.getPerfectShape(ctrl.model, ctrl.getContextName(), function(newElem){
-                var ch = $(newElem);
-                $(ctrl.view).append(ch);
-                shape.bindAttributes(ctrl.view, ctrl);
-            });
-        }
+
+        ctrl.autoExpand();
     },
     "expandHTMLTag"  : true
 });

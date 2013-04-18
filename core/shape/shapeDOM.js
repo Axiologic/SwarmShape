@@ -129,6 +129,14 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 getShapeContent(shapeName,callBack);
                 return true;
             }
+            var chains=name.split('.');
+            var shortName = chains[chains.length-1];
+
+            shapeName = name + "." + shortName;
+            if(shapeUrlRegistry[shapeName] != undefined){
+                getShapeContent(shapeName,callBack);
+                return true;
+            }
         }
         wprint("Could not find html view:" + shapeName);
         return false;
@@ -175,7 +183,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
         var context = $(domObj).attr("shape-context");
-
+       
         ctrlExist(ctrlName);
 
         if(parentCtrl && parentCtrl.isController == undefined){

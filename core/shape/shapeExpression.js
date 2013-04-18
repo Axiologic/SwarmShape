@@ -36,6 +36,12 @@ ShapeExpression=function(expression){
             return null;
         }
     }
+
+    this.tryToEvaluate = function(ctrl){
+      this.ctrl = ctrl;
+      return callhandler();
+    }
+
     this.bindToPlace = function(_ctrl, _onChangeHandler){
         this.ctrl = _ctrl;
         onChangeHandler = _onChangeHandler;

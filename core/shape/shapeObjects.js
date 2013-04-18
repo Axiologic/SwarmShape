@@ -310,6 +310,9 @@ if (!Object.prototype.bindableProperty) {
                             oldValue = this.getOuterValues()[prop];
                             if(value){
                                 var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
+                                if(encodeFun == undefined){
+                                    encodeFun = shape.getTypeBuilder(value.getClassName()).encode;
+                                }
                                 this.getInnerValues()[prop] = encodeFun(value);
                             } else {
                                 delete this.getInnerValues()[prop];
