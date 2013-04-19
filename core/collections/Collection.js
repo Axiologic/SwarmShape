@@ -167,6 +167,7 @@ Collection.prototype.removeWatcher = function(fctRef,callBack,filter){
  */
 shape.registerModel(SHAPE.COLLECTION, {
     length : {
-        type : "int"
+        type : "int",
+        transient : true
     }
 },true);

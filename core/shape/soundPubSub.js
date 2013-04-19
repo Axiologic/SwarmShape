@@ -196,11 +196,16 @@ function SoundPubSub(){
     }
 
     this.unsub = function(target, callBack, filter){
+        var gotit = false;
         for(var i = 0; i < channelSubscribers[target].length;i++){
             var subscriber =  channelSubscribers[target][i];
             if(subscriber.callBack == callBack && (filter == undefined || subscriber.filter == filter )){
+                gotit = true;
                 subscriber.forDelete = true;
             }
+        }
+        if(!gotit){
+          console.log("Unable to unsubscribe a callback that was not subscribed!");
         }
       }
 

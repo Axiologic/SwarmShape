@@ -1,26 +1,20 @@
+
 shape.registerCtrl("DynamicController",{
-    duringExpansion:false,
-    refreshDuringExpansion:false,
+
     beginExpansion:function(){
-        var ctxt = this.getContextName();
-        if(this.oldModel != this.model || this.oldContext  != ctxt){
-            if(!this.duringExpansion){
-                this.duringExpansion = true;
-               this.oldModel = this.model;
-                this.oldContext  = ctxt;
-                var self = this;
-                this.expander(function(){
+        var self = this;
+        if(!this.fence){
+            this.__defineGetter__("dynamicContext",function(){
+                return self.getContextName();
+            });
+
+            this.fence = new PropertiesFence(this, ["model","dynamicContext"], function(){
+                self.expander(function(){
                     self.afterExpansion(self);
-                    self.duringExpansion = false;
-                    if(self.refreshDuringExpansion){
-                        self.refreshDuringExpansion = false;
-                        self.beginExpansion();
-                    }
                 });
-            } else{
-                this.refreshDuringExpansion = true;
-            }
+            });
         }
+        this.fence.acquire();
     },
     init:function(){
         this.isCWRoot = true;
@@ -32,9 +26,13 @@ shape.registerCtrl("DynamicController",{
                 this.oldModelClass=className;*/
 
                 var self = this;
-                shape.getPerfectShape(this.model, this.getContextName(), function(newElem){
+                shape.getPerfectShape(undefined, this.model, this.getContextName(), function(newElem){
                     var ch = $(newElem);
-                    self.view.innerHTML = "";
+                    if(self.view){
+                        self.view.innerHTML = "";
+                    }else{
+                        return;
+                    }
                     $(self.view).append(ch);
                     shape.bindAttributes(self.view, self);
                     callback();

@@ -123,6 +123,7 @@ function ChangeWatcher(model, chain, handler){
         var model          = model;
         var chain          = chain;
         var handler        = handler;
+        var deleted        = false;
         var chainValues    = [];
         var callBackRefs   = [];
         var args           = chain.split(".");
@@ -139,22 +140,34 @@ function ChangeWatcher(model, chain, handler){
         function getWatcherClosure (pos, isCollection){
 
             return function(changedModel, property, value, oldValue ){
+                if(deleted){
+                    console.log("e ok ca nu ma mai apelez??!");
+                    return;
+                }
+                try{
+                    var myOldValue = chainValues[endOfChain];
+                    var oldParent  = chainValues[endOfChain-1];
+                    rebuildWatchers(pos);
+                    var newValue  = chainValues[endOfChain];
+                    var newParent = chainValues[endOfChain-1];
 
-                var myOldValue = chainValues[endOfChain];
-                var oldParent  = chainValues[endOfChain-1];
-                rebuildWatchers(pos);
-                var newValue  = chainValues[endOfChain];
-                var newParent = chainValues[endOfChain-1];
+                    if(isCollection || myOldValue != newValue || newParent != oldParent){
 
-                if(isCollection || myOldValue != newValue || newParent != oldParent){
-
-                    if(myOldValue != newValue && isBindableCollection(newValue)){
-                        if(isBindableCollection(myOldValue)){
-                            myOldValue.removeWatcher(callBackRefs[endOfChain]);
+                        if(myOldValue != newValue && isBindableCollection(newValue)){
+                            if(isBindableCollection(myOldValue)){
+                                myOldValue.removeWatcher(callBackRefs[endOfChain]);
+                            }
+                            callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
                         }
-                        callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
+                        try{
+                            handler(newParent,args[endOfChain-1],newValue);
+                        }catch(err){
+                            console.log(err);
+                        }
+
                     }
-                    handler(newParent,args[endOfChain-1],newValue);
+                }   catch(err){
+                    console.log(err);
                 }
             }
         }
@@ -198,12 +211,15 @@ function ChangeWatcher(model, chain, handler){
         }*/
 
         this.release  = function(){
+            deleted = true;
+            return true;
             for(var i=0; i < callBackRefs.length; i++) {
-                ref = callBackRefs[i];
+                var ref = callBackRefs[i];
                 if(ref != null){
-                    removeWatcher(this.chainValues[i],args[i],ref);
+                    removeWatcher(chainValues[i],args[i],ref);
                 }
-                this.chainValues[i] = null;
+                chainValues[i] = null;
+                callBackRefs[i] = null;
             }
         }
 
@@ -213,7 +229,12 @@ function ChangeWatcher(model, chain, handler){
         if(isBindableCollection(newValue)){
             callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
         }
-        handler(newParent,args[endOfChain-1],newValue);
+        try{
+            handler(newParent,args[endOfChain-1],newValue);
+        }catch(err){
+            console.log(err);
+        }
+
 
 
     function addWatcher(model,property, nw){
@@ -344,8 +365,8 @@ if (!Object.prototype.bindableProperty) {
                             , configurable: true
                         });
                     }
-                        /*
-                        //use savedObject if the previous values was allready created
+
+                        //use savedValue if the previous values was already created
                         if(classDesc){
                             if(propDesc && !classDesc.isTransientMember(prop)){
                                 this.getOuterValues()[prop] = savedValue;
@@ -354,7 +375,7 @@ if (!Object.prototype.bindableProperty) {
                             }
                         } else {
                             this.getTransientValues()[prop] = savedValue;
-                        } */
+                        }
             }
         }
     });
@@ -370,7 +391,7 @@ Object.prototype.toString = function(){
                 typeName = "string:";
             }
             else {
-                typeName = "obj:"
+                typeName = "obj:";
             }
         }
         else{

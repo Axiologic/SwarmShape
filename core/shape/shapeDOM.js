@@ -39,20 +39,30 @@ ShapeUtil.prototype.initDOMHandling = function(){
         shapeUrlRegistry[viewName] = url;
     }
 
-    Shape.prototype.getController = function (ctrlName, parentCtrl){
+    Shape.prototype.getController = function (ctrlName, parentCtrl, isCWRoot){
         //dprint("Creating controller " + ctrlName);
         var newCtrl         = new BaseController(ctrlName, parentCtrl);
         var base =  shapeControllers[ctrlName];
+
+        function getSafeFunction(funct){
+            return  function(){
+                shapePubSub.blockCallBacks();
+                var args = ShapeUtil.prototype.mkArgs(arguments);
+                funct.apply(newCtrl,args);
+                shapePubSub.releaseCallBacks();
+            }
+        }
+
         if(base != undefined){
             for(var vn in base){
                 if(typeof base[vn] == 'function'){
-                    newCtrl[vn] = base[vn].bind(newCtrl);
+                    newCtrl[vn] =  getSafeFunction(base[vn]);
                 } else{
                     newCtrl[vn] = base[vn];
                 }
             }
         }
-
+        newCtrl.isCWRoot = isCWRoot;
         return newCtrl;
     }
 
@@ -95,14 +105,17 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
 
-    Shape.prototype.getPerfectShape = function(viewModel, usecase, callBack){
+    Shape.prototype.getPerfectShape = function(viewName,viewModel, usecase, callBack){
         if(viewModel==undefined||viewModel==""){
             callBack("");
             return;
         }
-        var name = ShapeUtil.prototype.getType(viewModel);
+        var name = viewName;
+        if(!name){
+            name = ShapeUtil.prototype.getType(viewModel);
+        }
         if(name==undefined){
-            name  = typeof(viewModel);
+            name  = typeof viewModel;
         }
         var result = this.getShapeByName(name, usecase, callBack);
         if(!result){
@@ -151,18 +164,14 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 ctrl.changeView(domObj);
             }else{
                 bindAttributes(domObj, parentCtrl);
-                parentCtrl.afterExpansion();
+                parentCtrl.afterExpansion(parentCtrl);
             }
         };
         if(parentCtrl){
-            if(ctrl){
-                parentCtrl.waitExpansion(1);
-            }else{
-                parentCtrl.waitExpansion(1);
-            }
+            parentCtrl.waitExpansion(1);
         }
-        if(viewName==undefined){
-            shape.getPerfectShape(ctrl.model, usecase, callBack);
+        if(viewName == undefined){
+            shape.getPerfectShape(viewName /* refactor to remove viewName from arguments!*/, ctrl.model, usecase, callBack);
         }else{
             shape.getShapeByName(viewName, usecase, callBack);
         }
@@ -183,7 +192,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
         var context = $(domObj).attr("shape-context");
-       
+        var isCWRoot = (rootModel != undefined);
+
+
         ctrlExist(ctrlName);
 
         if(parentCtrl && parentCtrl.isController == undefined){
@@ -216,10 +227,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
             if(ctrlName == undefined){
                 ctrlName = viewName;
             }
-
-            ctrl = shape.getController(ctrlName, parentCtrl);
+            ctrl = shape.getController(ctrlName, parentCtrl,isCWRoot);
+            ctrl.autoViewName = viewName;
             ctrl.hasTransparentModel = transparentModel;
-            ctrl.contextName = context;
 
             if(modelChain != undefined && !rootModel ){
                 if(ctrl.hasTransparentModel){
@@ -241,34 +251,52 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
 
                 if(rootModel != undefined){
-                    ctrl.isCWRoot = true;
+                    //ctrl.isCWRoot = true;
                     ctrl.changeModel(rootModel);
                 } else{
-                    // if(!ctrl.hasTransparentModel){
-                    ctrl.addChangeWatcher("",
-                        function(changedModel, modelProperty, value){
-                            if(ctrl.parentCtrl != null){
-                                ctrl.parentModel = changedModel;
-                                ctrl.parentModelProperty = modelProperty;
-                            }
-                            ctrl.changeModel(value);
+                    if(isCWRoot){
+                        var goodChain = ctrl.chain;
+                        if(goodChain == undefined){
+                            goodChain == "";
                         }
-                    );
-                    // }
+                        ctrl.parentCtrl.addChangeWatcher(goodChain ,
+                            function(changedModel, modelProperty, value){
+                                ctrl.changeModel(value);
+                            }
+                        );
+                    }    else{
+                        ctrl.addChangeWatcher("",
+                            function(changedModel, modelProperty, value){
+                                if(ctrl.parentCtrl != null){
+                                    ctrl.parentModel = changedModel;
+                                    ctrl.parentModelProperty = modelProperty;
+                                }
+                                ctrl.changeModel(value);
+                            }
+                        );
+                    }
                 }
             }
 
+            if(context){
+                BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
+            }
             loadInnerHtml(domObj,viewName,ctrl, parentCtrl);
         }
         return ctrl;
+    }
+
+    Shape.prototype.expandExistingDOM = function(domElem,parentCtrl,rootModel){
+        return expandHTMLElement(domElem,parentCtrl,rootModel,true);
     }
 
     function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
         var modelChain = $(domObj).attr("shape-model");
         var ctrlName  = $(domObj).attr("shape-ctrl");
         var context  = $(domObj).attr("shape-context");
-
+        var isCWRoot = (rootModel != undefined);
         ctrlExist(ctrlName);
+
 
 
         if(parentCtrl.isController == undefined){
@@ -291,13 +319,14 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(ctrlName == undefined){
             if(($(domObj).is('div')||$(domObj).is('span'))&&$(domObj).attr("shape-view")==undefined){
                 ctrlName = "DynamicController";
+                isCWRoot = true;
             }else{
                 ctrlName =  "base/" + domObj.nodeName.toLowerCase();
             }
         }
-        var ctrl = shape.getController(ctrlName, parentCtrl);
-        //cprint("New controller " + ctrl.ctrlName);
-        ctrl.contextName = context;
+        var ctrl = shape.getController(ctrlName, parentCtrl, isCWRoot);
+        ctrl.autoViewName = undefined;
+        ctrl.forbidAnotherExpansion = true;
 
         ctrl.hasTransparentModel   = transparentModel;
         ctrl.ctxtCtrl = parentCtrl.ctxtCtrl;
@@ -317,10 +346,20 @@ ShapeUtil.prototype.initDOMHandling = function(){
         }
 
         if(rootModel != undefined){
-            ctrl.isCWRoot = true;
             ctrl.changeModel(rootModel);
         } else {
-            //if(!ctrl.hasTransparentModel){
+            if(isCWRoot){
+                var goodChain = ctrl.chain;
+                if(goodChain == undefined){
+                    goodChain == "";
+                }
+                ctrl.parentCtrl.addChangeWatcher(goodChain,
+                    function(changedModel, modelProperty, value){
+                        ctrl.changeModel(value);
+                    }
+                );
+            }
+
             ctrl.addChangeWatcher("",
                 function(changedModel, modelProperty, value){
                     if(ctrl.parentCtrl != null){
@@ -333,17 +372,20 @@ ShapeUtil.prototype.initDOMHandling = function(){
             //}
         }
 
+        if(context){
+            BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
+        }
+
+        ctrl.waitExpansion(1);
+        ctrl.changeView(domObj);
         if(expandChilds == true){
             bindAttributes(domObj,ctrl);
         } else{
             ctrl.bindDirectAttributes(domObj,parentCtrl);
         }
-        ctrl.changeView(domObj);
-        return ctrl;
-    }
+        ctrl.afterExpansion(ctrl);
 
-    Shape.prototype.expandExistingDOM = function(domElem,parentCtrl,rootModel){
-        return expandHTMLElement(domElem,parentCtrl,rootModel,true);
+        return ctrl;
     }
 
     function elementIsShapeComponent(element){
