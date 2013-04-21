@@ -294,7 +294,7 @@ BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
     var ctrl = this;
     $(element.attributes).each (
         function() {
-            if(ctrl.remember(this.name)){
+            if(!ctrl.remember(this.name)){
                 ctrl.bindAttribute(ctrl, this, element, parentCtrl);
             }
         });
@@ -305,7 +305,7 @@ BaseController.prototype.remember = function (str){
     if(!this.rememberString){
         this.rememberString = [];
     }
-    console.log("remember "+this.rememberString[str]+" "+str);
+    //console.log("remember "+this.rememberString[str]+" "+str);
     var orig  = this.rememberString[str];
     this.rememberString[str] = str;
     return orig;
