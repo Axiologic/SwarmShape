@@ -35,6 +35,8 @@ function BaseController(ctrlName, parentCtrl){
     this.model = undefined;
     this.view  = undefined;
     this.__waitCounter = 1;
+    this.children = {};
+    makeBindable(this);
 }
 
 
@@ -60,6 +62,7 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
                 handler(null, null, ctrl.model);
             }else{
                 watcher = addChangeWatcher(ctrl.model,currChain,handler);
+                //dprint("Chain " + chain + "->"+currChain/*+" handler "+handler+" watcher "+watcher*/);
                 self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
             }
             return;
@@ -102,9 +105,13 @@ BaseController.prototype.onViewChanged = function(){
 }
 
 BaseController.prototype.changeModel = function(model){
-    if(this.isCWRoot && model == undefined){
-        dprint("This is wrong, not possible...");
+
+    if(this.isCWRoot){
+        if(this.model && this.model!==model){
+            this.destroyChildren();
+        }
     }
+
     this.model = model;
     this.modelInitialized = true;
     if(this.initialised){
@@ -134,11 +141,45 @@ BaseController.prototype.afterExpansion = function(caller){
         try2InitCtrl(this);
         this.afterChildExpansion(caller);
     }
+    if(caller==undefined){
+        console.log("caller undefined");
+        return;
+    }
+    var parentId = parseInt(this.toString());
+    var childId = parseInt(caller.toString());
+    if(parentId>childId){
+        console.log(this.ctrlName+" "+this.toString()+" has been announced by "+caller.ctrlName+" "+caller.toString());
+    }
+    if(caller!==this){
+        this.children[caller] = caller;
+    }
 }
 
 BaseController.prototype.afterChildExpansion = function(caller){
     if(this.parentCtrl){
         this.parentCtrl.afterChildExpansion(this);
+    }
+}
+
+BaseController.prototype.destroyChildren = function(){
+    for(var i=0;i<this.changeWatchers.length; i++){
+        var watcherObj = this.changeWatchers[i];
+        try{
+            watcherObj.watcher.release();
+        }catch(err){
+            console.log(err);
+        }
+    }
+    this.changeWatchers = [];
+
+    for(var childId in this.children){
+        try{
+            var child = this.children[childId];
+            delete this.children[childId];
+            child.destroyChildren();
+        }catch(errr){
+            console.log(errr);
+        }
     }
 }
 
@@ -168,10 +209,43 @@ BaseController.prototype.modelAssign = function(value){
 
 BaseController.prototype.getContextName = function(){
     if(this.contextName){
+        console.log("ContextName is " + this.contextName);
         return this.contextName;
     }
     if(this.parentCtrl != null){
         return this.parentCtrl.getContextName();
+    }
+}
+
+
+BaseController.prototype.autoExpand = function(){
+    if(this.forbidAnotherExpansion){
+        //wprint("Error:" + this.view + "an ordinary html tags is not allowed to have shape attributes that trigger DOM expansion. Use DIV or SPAN instead.");
+        /**
+         * can't complain because shape-context is inherited
+         * unfortunately is hiding some cases
+         */
+        return;
+    }
+    if(this.view){
+        var self = this;
+        if(!this.fence){
+            this.__defineGetter__("dynamicContext",function(){
+                return self.getContextName();
+            });
+            this.fence = new PropertiesFence(this, ["model","dynamicContext","autoViewName"], function(){
+                //self.expander(function(){
+                //self.afterExpansion(self);
+                //});
+                self.view.innerHTML = "";
+                shape.getPerfectShape(self.autoViewName, self.model, self.getContextName(), function(newElem){
+                    var ch = $(newElem);
+                    $(self.view).append(ch);
+                    shape.bindAttributes(self.view, self);
+                });
+            });
+        }
+        this.fence.acquire();
     }
 }
 
@@ -189,32 +263,50 @@ BaseController.prototype.applyHtmlAttribute = function(attributeName, element, v
     }
 }
 
+BaseController.prototype.bindAttribute = function(ctrl, attr, element, parentCtrl){
+    var attributeName = attr.name;
+    var value = attr.value;
+    ctrl.remember(attr.name);
+    if(shape.shapeKnowsAttribute(attributeName)){
+        //dprint("\tbindingAttribute:" + attributeName  + " value " + attr.value);
+        var exp = newShapeExpression(value);
+        if(exp){
+            exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                shape.applyAttribute(attributeName,element,value,ctrl);
+            });
+        }else{
+            shape.applyAttribute(attributeName, element, value,ctrl);
+        }
+    } else {
+        var exp = newShapeExpression(value);
+        if(exp){
+            exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
+                //$(element).attr(attributeName,value);
+                ctrl.applyHtmlAttribute(attributeName, element, value);
+            });
+        }else{
+            ctrl.applyHtmlAttribute(attributeName, element, value, true);
+        }
+    }
+}
+
 BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
     var ctrl = this;
     $(element.attributes).each (
         function() {
-            var attributeName = this.name;
-            var value = this.value;
-            if(shape.shapeKnowsAttribute(attributeName)){
-                //dprint("\tbindingAttribute:" + attributeName  + " value " + this.value);
-                var exp = newShapeExpression(value);
-                if(exp){
-                    exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
-                        shape.applyAttribute(attributeName,element,value,ctrl);
-                    });
-                }else{
-                    shape.applyAttribute(attributeName, element, value,ctrl);
-                }
-            } else {
-                var exp = newShapeExpression(value);
-                if(exp){
-                    exp.bindToPlace(parentCtrl, function(changedModel, modelProperty, value, oldValue ){
-                        //$(element).attr(attributeName,value);
-                        ctrl.applyHtmlAttribute(attributeName, element, value);
-                    });
-                }else{
-                    ctrl.applyHtmlAttribute(attributeName, element, value, true);
-                }
+            if(!ctrl.remember(this.name)){
+                ctrl.bindAttribute(ctrl, this, element, parentCtrl);
             }
         });
+    delete this.rememberString;
+}
+
+BaseController.prototype.remember = function (str){
+    if(!this.rememberString){
+        this.rememberString = [];
+    }
+    //console.log("remember "+this.rememberString[str]+" "+str);
+    var orig  = this.rememberString[str];
+    this.rememberString[str] = str;
+    return orig;
 }

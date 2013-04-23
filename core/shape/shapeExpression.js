@@ -31,11 +31,20 @@ ShapeExpression=function(expression){
 
     function callhandler(){
         try{
-            return handler();
+            var ret = handler();
+            console.log("Expression value " + ret);
+            return ret;
         }catch(err){
+            wprint("Expression error " + err);
             return null;
         }
     }
+
+    this.tryToEvaluate = function(ctrl){
+      this.ctrl = ctrl;
+      return callhandler();
+    }
+
     this.bindToPlace = function(_ctrl, _onChangeHandler){
         this.ctrl = _ctrl;
         onChangeHandler = _onChangeHandler;

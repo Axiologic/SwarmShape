@@ -17,7 +17,7 @@ function cprint(str, fullStack){
 }
 
 function xprint(str){
-    console.log(str);
+    //console.log(str);
 }
 
 function dprint(str, fullStack){
@@ -161,3 +161,57 @@ function Html5LocalStorage(key, value){
     }
     return ret;
 }
+
+
+function PropertiesFence(context, properties, callback){
+    var self                    = this;
+    var duringCallback         = false;
+    var refreshDuringCallback  = false;
+    var callLevel = 0;
+
+    function saveValues(){
+        for(var i=0;i<properties.length;i++){
+            self[properties[i]] = context[properties[i]];
+        }
+    }
+
+    function valuesChanged(){
+        for(var i=0;i<properties.length;i++){
+            if(self[properties[i]] != context[properties[i]]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    this.acquire = function (){
+        fuckingCallLevel++;
+        if(fuckingCallLevel >100){
+            console.log("Recursion detected! Preventing...");
+            fuckingCallLevel--;
+            return;
+        }
+        if(valuesChanged()){
+            if(duringCallback){
+                refreshDuringCallback = true;
+            } else{
+                duringCallback = true;
+                saveValues();
+                try{
+                    callback();
+                } catch(err){
+                    console.log("Fence error:" +  err);
+                }
+                duringCallback = false;
+                if(refreshDuringCallback){
+                    refreshDuringCallback = false;
+                    self.acquire();
+                }
+            }
+        }
+        fuckingCallLevel--;
+    }
+}
+
+fuckingCallLevel = 0;

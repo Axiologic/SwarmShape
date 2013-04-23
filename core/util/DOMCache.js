@@ -38,12 +38,14 @@ function DOMCache(){
             callBack(cache[model]);
             return;
         }
-        shape.getPerfectShape(model,parentCtrl.getContextName(),getComponentBinder(model, parentCtrl, callBack));
+        shape.getPerfectShape(undefined, model,parentCtrl.getContextName(),getComponentBinder(model, parentCtrl, callBack));
     }
 
     var refreshQueue = [];
     var duringRefresh = false;
     var self  = this;
+
+    //Optimisation: use the Fence class form shapeUtil...
 
     this.doRefresh = function(coll, parentCtrl, startF, itemF, endF ){
         if(duringRefresh){
