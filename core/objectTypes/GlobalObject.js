@@ -18,10 +18,10 @@ shape.registerTypeBuilder("GlobalObject", {
         return result;
     },
     encode:function(outerObject){
-        return outerObject.__meta.pk;
+        return outerObject.getPK();
     },
-    decode:function(innerValue){
-        return shape.lookup(innerValue,true,false);
+    decode:function(innerValue, propDesc){
+        return shape.lookup(propDesc.type, innerValue);
         /*outerObject.setTime(innerValue);*/
     }
 });

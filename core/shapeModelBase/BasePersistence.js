@@ -76,39 +76,80 @@ ShapeUtil.prototype.initPersistences = function(){
     var persistenceRegistry = {};
 
     /**
+     *  From Object.identical github project
+     * @param a
+     * @param b
+     * @param sortArrays
+     * @returns {boolean}
+     */
+    ShapeUtil.prototype.identical = function (a, b, sortArrays) {
+        function sort(object) {
+            if (sortArrays === true && Array.isArray(object)) {
+                return object.sort();
+            }
+            else if (typeof object !== "object" || object === null) {
+                return object;
+            }
+
+            return Object.keys(object).sort().map(function(key) {
+                return {
+                    key: key,
+                    value: sort(object[key])
+                };
+            });
+        }
+
+        return JSON.stringify(sort(a)) === JSON.stringify(sort(b));
+    };
+
+
+    /**
      * update target to new values
      * @param target
      * @param newValues
      */
     BasePersistence.prototype.server2local = function(target, newValues){
         function generatePC1Level(host, newValues){
-            var newVal;
+            var newVal, oldVal,oldOuterVal;
             var oldInner = host.getInnerValues();
             var oldOuter = host.getOuterValues();
 
             for(var prop in newValues){
-                newVal = newValues[prop];
+                newVal      = newValues[prop];
+                oldVal      = oldInner[prop];
+                oldOuterVal = oldOuter[prop];
 
-                if(newVal==undefined){
-                    var old = oldOuter[prop];
-                    if(old!=undefined){
+                if(newVal == undefined) {
+                    if(oldVal != undefined) {
                         delete oldOuter[prop];
-                        shapePubSub.pub(host, new PropertyChangeEvent(host, prop, undefined));
-                    }else{
-                        if(typeof newVal == "objects"){
-                            if(oldOuter[prop]!=undefined){
-                                generatePC1Level(oldOuter[prop], newValues[prop]);
-                            }
+                        shapePubSub.pub(host, new PropertyChangeEvent(host, prop, newVal));
+                    }
+                }  else {
+                    if(typeof newVal == "object"){
+                        if(oldOuterVal == undefined){
+                            shapePubSub.pub(host, new PropertyChangeEvent(host, prop,newVal));
                         } else {
-                            if(newVal !== oldInner[prop]){
+                            if(!ShapeUtil.prototype.identical(oldVal,newVal,false)){
                                 shapePubSub.pub(host, new PropertyChangeEvent(host, prop, newVal));
+                                delete oldOuter[prop];
                             }
+                        }
+                    } else {
+                        if(newVal !== oldVal){
+                            delete oldOuter[prop];
+                            shapePubSub.pub(host, new PropertyChangeEvent(host, prop, newVal));
                         }
                     }
                 }
             }
+
+            for(var prop in oldOuter){
+                delete oldOuter[prop];
+                shapePubSub.pub(host, new PropertyChangeEvent(host, prop, undefined));
+            }
         }
 
+        //TODO: patch newValues with existing ones
         shapePubSub.blockCallBacks();
         generatePC1Level(target, newValues);
         target.__meta.innerValues = newValues;
@@ -117,7 +158,7 @@ ShapeUtil.prototype.initPersistences = function(){
 
     Shape.prototype.getPersistenceForClass = function(className){
         var csdsc = shape.getClassDescription(className);
-        var persistenceName = "NULL";
+        var persistenceName = "null";
         if(csdsc.meta != undefined ){
             if(csdsc.meta.persitence != ""){
                 persistenceName = classDesc.meta.persitence;

@@ -140,14 +140,24 @@ ShapeUtil.prototype.initRepositories = function(){
 }
 
 function ObjectRepository(className){
-
-    this.persistence = shape.getPersistenceForClass(className);
-
-    this.getClassName = function(){
-        return className;
+    try{
+        this.persistence = shape.getPersistenceForClass(className);
+        if(pers == null){
+            wprint("No persistence for " + className);
+        }
+        this.getClassName = function(){
+            return className;
+        }
+    } catch(err){
+        wprint("Invalid class description for " + className + " " + err);
     }
+}
 
-    this.setPersistence = function(persistenceName){
-        this.persistence = BasePersistence.prototype.getPersistenceByName(persistenceName);
+ObjectRepository.prototype.setPersistence = function(persistenceName){
+    var pers = BasePersistence.prototype.getPersistenceByName(persistenceName);
+    if(pers == null){
+        pers = BasePersistence.prototype.getPersistenceByName("null");
+        console.log("Unknown persistence " + persistenceName + " defaulting to 'null' persistence");
     }
+    this.persistence = pers;
 }

@@ -23,4 +23,4 @@ function LocalPersistence(){
 }
 
 LocalPersistence.prototype = new BasePersistence();
-BasePersistence.prototype.registerPersistence("NULL",new LocalPersistence());
+BasePersistence.prototype.registerPersistence("null",new LocalPersistence());
