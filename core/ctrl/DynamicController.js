@@ -39,6 +39,9 @@ shape.registerCtrl("DynamicController",{
                 });
             /*}*/
         }else{
+            if(this.view){
+                this.view.innerHTML = "";
+            }
             callback();
         }
     },
