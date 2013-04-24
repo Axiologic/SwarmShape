@@ -58,12 +58,13 @@ ShapeUtil.prototype.initRepositories = function(){
         return res;
     }
 
+    /*
     Shape.prototype.newEmbedded = function(className){
         var args = ShapeUtil.prototype.mkArgs(arguments,1);
         var res =  Shape.prototype.newRawObject(className,args);
         res.__meta.pk = "l://"+res.__meta.__localId;
         return res;
-    }
+    }*/
 
     Shape.prototype.newEntity = function(typeName){
         var args = ShapeUtil.prototype.mkArgs(arguments,1);
@@ -109,21 +110,19 @@ ShapeUtil.prototype.initRepositories = function(){
      * @param args
      * @returns {*}
      */
-    Shape.prototype.newRawObject = function(className, args){
+    Shape.prototype.newRawObject = function(className, args,memberDesc,owner){
         var res;
         shapePubSub.blockCallBacks();
-
         try{
-            var callFunc = shape.getTypeBuilder(className).initializer;
+            var callFunc = shape.getTypeBuilder(className).factory;
             if(callFunc){
-                res = callFunc(className, undefined, args);
+                res = callFunc(className, args, memberDesc, owner);
             } else {
                 wprint("Can't create object with type " + className);
             }
         } catch(err){
             eprint("Creating object (or Ctor code) failed for " + className +"\n>>>Err:", err);
         }
-        res.__meta.pk = "local:" + res.__meta.__localId;
         shapePubSub.releaseCallBacks();
         return res;
     }
@@ -142,7 +141,7 @@ ShapeUtil.prototype.initRepositories = function(){
 function ObjectRepository(className){
     try{
         this.persistence = shape.getPersistenceForClass(className);
-        if(pers == null){
+        if(this.persistence == null){
             wprint("No persistence for " + className);
         }
         this.getClassName = function(){

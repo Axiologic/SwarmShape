@@ -1,4 +1,9 @@
 shape.registerModel("TestViewModel",{
+    ctor:function(){
+        this.createMember("tests");
+        this.createMember("passedTests");
+        this.createMember("failedTests");
+    },
     tests:{
         type:"collection",
         contains:"TestDescription"

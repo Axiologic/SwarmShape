@@ -1,12 +1,16 @@
 shape.registerTypeBuilder("collection",{
     native : false,
-    initializer:function(type, value, args, memberDescription, owner){
-        if(value == "null" || value === null){
+    initializer:function(type, args, memberDescription, owner){
+        if(args || (memberDescription && memberDescription.value)){
+               console.log("Collection initialisation not implemented");
+        } else {
             return null;
         }
+    },
+    factory:function(type, args, memberDescription, owner){
         var res = new Collection();
         res.__meta.owner =  owner;
-        if(args != undefined || value != undefined){
+        if(args != null || (memberDescription && memberDescription.value)){
             wprint("Collection initialisation not implemented");
         }
         if(memberDescription){

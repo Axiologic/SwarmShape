@@ -123,6 +123,10 @@ ShapeUtil.prototype.initUtil = function(){
         if(!from){
             from = 0;
         }
+
+        if(myArguments.length <= from){
+            return null;
+        }
         var args = [];
         for(var i = from; i<myArguments.length;i++){
             args.push(myArguments[i]);

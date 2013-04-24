@@ -3,8 +3,6 @@ registerTest("Testing Base Persistence",
         this.theFirstOne = shape.lookup("SpaghettiMonster", "theFirstOne");
         this.father = shape.lookup("SpaghettiMonster", "father");
         this.uncle = shape.lookup("SpaghettiMonster", "uncle");
-
-        this.theFirstOne.family.push(this.uncle);
         this.theFirstOne.father = this.uncle;
         console.log("LOOOOG:" + JSON.stringify(this.theFirstOne.getInnerValues()));
         this.startTesting(4,100);

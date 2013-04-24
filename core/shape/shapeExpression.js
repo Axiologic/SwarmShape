@@ -32,10 +32,10 @@ ShapeExpression=function(expression){
     function callhandler(){
         try{
             var ret = handler();
-            console.log("Expression value " + ret);
+            //console.log("Expression value " + ret);
             return ret;
         }catch(err){
-            wprint("Expression error " + err);
+            //wprint("Expression error " + err);
             return null;
         }
     }

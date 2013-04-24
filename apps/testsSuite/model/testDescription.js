@@ -69,13 +69,31 @@ shape.registerModel("TestDescription",{
         this.clean = clean;
         this.assert = {};
         this.assert.runningTest = this;
+        this.failedTests = this.newObject("collection");
+
+        // Assert functions
         this.assert.equal = function(expectedValue, testedValue , text){
             if(expectedValue != testedValue){
                 var logText = "Failed equal assert between "+ expectedValue+ " and " + testedValue + " at:\n" + shape__prettyStack();
                 if(text){
                     logText = text + "\n" + logText;
                 }
-                this.failed.push(logText);
+                this.failedTests.push(logText);
+                console.log("Failed " + logText);
+            } else{
+                this.passed++;
+                console.log("Passed");
+            }
+            //assertEndTestVerification(this);
+        }.bind(this);
+
+        this.assert.identical = function(expectedValue, testedValue , text){
+            if(!ShapeUtil.prototype.identical(expectedValue,testedValue)){
+                var logText = "Failed identity assert between "+ expectedValue+ " and " + testedValue + " at:\n" + shape__prettyStack();
+                if(text){
+                    logText = text + "\n" + logText;
+                }
+                this.failedTests.push(logText);
                 console.log("Failed " + logText);
             } else{
                 this.passed++;

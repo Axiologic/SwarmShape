@@ -1,19 +1,22 @@
+
+
 shape.registerTypeBuilder("GlobalObject", {
     native : false,
-    initializer:function(type, value, args, memberDesc) {
-        var result;
-        if(value === null || value == "null"){
+    initializer:function(type, args, memberDesc) {
+        if(memberDesc && memberDesc.value){
+            console.log("Initialisation of a global object member is not implemented");
+        } else {
             return null;
         }
-
-        var desc = shape.getClassDescription(type);
-        result = {};
-        try{
-            desc.attachClassDescription(result, args);
-        }catch(err){
-            dprint(err.message);
-        }
+    },
+    factory: function(type,args,memberDesc,owner){
+        var result = new ModelObject(type, args);
         result.__meta.owner =  result;
+
+        if(!owner){
+            owner = result;
+        }
+
         makeEventEmitter(result);
         return result;
     },

@@ -28,7 +28,7 @@ Collection.prototype.announceChange = function(changeType){
     var colChange = new CollectionChangeEvent(this, changeType);
     shapePubSub.pub(this, colChange);
     if(this.__meta.owner){
-        shapePubSub.pub(this.__meta.owner, new DocumentChangeEvent(pcev));
+        shapePubSub.pub(this.__meta.owner, new DocumentChangeEvent(colChange));
     }
 }
 

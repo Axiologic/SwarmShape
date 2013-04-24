@@ -41,10 +41,23 @@ function QSClassDescription(declaration, qsName){
         return undefined;
     }
 
-    this.attachClassDescription = function(model, ctorArgs){
 
+    function newMember (memberDesc){
+        var res;
+        var callFunc = shape.getTypeBuilder(memberDesc.type).initializer;
+        if(callFunc){
+            res = callFunc(memberDesc.type,undefined, memberDesc );
+        }else{
+            wprint("Can't create object with type "+memberDesc.type);
+        }
+        return res;
+    }
+
+
+    this.attachClassDescription = function(model, ctorArgs, owner){
         makeBindable(model);
         setMetaAttr(model,SHAPE.CLASS_DESCRIPTION ,this);
+        model.__meta.owner = owner;
 
         var n;
         for(n in functions){
@@ -55,7 +68,7 @@ function QSClassDescription(declaration, qsName){
             var m = members[n];
             model.bindableProperty(n);
             try{
-                model[n] = shape.newMember(m);
+                model[n] = newMember(m);
             }catch(err){
                 wprint(err.message);
             }
@@ -297,18 +310,44 @@ ShapeUtil.prototype.initSchemaSupport = function(){
         return false;
     }
 
-    Shape.prototype.newMember = function(memberDesc){
-        var res;
-        var callFunc = typeBuilderRegistry[memberDesc.type].initializer;
-        if(callFunc){
-            res = callFunc(memberDesc.type,memberDesc.value,undefined, memberDesc );
-        }else{
-            wprint("Can't create object with type "+memberDesc.type);
+}
+
+
+function ModelObject(type,args, owner){
+    var desc = shape.getClassDescription(type);
+    this.repository = {};
+    try{
+        if(!owner){
+            owner = this;
         }
-        return res;
+        desc.attachClassDescription(this, args, owner);
+    }catch(err){
+        dprint(err.message);
+    }
+    this.__meta.pk = "temporary:" + this.__meta.__localId;
+    return this;
+}
+
+ModelObject.prototype.createMember = function(memberName){
+    try{
+        var args = ShapeUtil.prototype.mkArgs(arguments,1);
+        var classDesc   = this.getClassDescription();
+        var memberDesc  = classDesc.getMemberDescription(memberName);
+        var res = shape.newRawObject(memberDesc.type,args,memberDesc,this.__meta.owner);
+        this[memberName] = res;
+    } catch(err){
+        console.log(err);
     }
 }
 
+ModelObject.prototype.newObject = function(typeName){
+    var args = ShapeUtil.prototype.mkArgs(arguments,1);
+    return shape.newRawObject(typeName,args,null,this.__meta.owner);
+}
+
+ModelObject.prototype.lookup = function(type, key){
+
+}
 
 
 

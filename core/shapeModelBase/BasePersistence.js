@@ -99,7 +99,9 @@ ShapeUtil.prototype.initPersistences = function(){
             });
         }
 
-        return JSON.stringify(sort(a)) === JSON.stringify(sort(b));
+        var val1 = JSON.stringify(sort(a));
+        var val2 = JSON.stringify(sort(b));
+        return  val1 == val2;
     };
 
 

@@ -3,8 +3,11 @@ shape.registerModel("todo",{
             persistence:"none"
         },
         ctor:function(){
-          this.current = this.all;
-          this.autoSelection = false;
+            this.createMember("active");
+            this.createMember("completed");
+            this.createMember("all");
+            this.current = this.all;
+            this.autoSelection = false;
         },
         all:{
             type:"collection",
@@ -19,16 +22,13 @@ shape.registerModel("todo",{
             contains:"task"
         },
         current:{
-            type:"collection",
-            value:"null",
-            transient:true
+            type:"collection"
         },
         newTitle:{
             type:"string"
         },
         recentTask:{
-            type:"task",
-            value:"null"
+            type:"task"
         },
         todoCount:{
             chains:"active.length",
