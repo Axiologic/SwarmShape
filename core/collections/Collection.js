@@ -45,6 +45,16 @@ Collection.prototype.push = function(elem){
     return val;
 }
 
+Collection.prototype.merge = function(elem){
+    if ( elem instanceof Array || elem instanceof Collection) {
+        for ( var item in elem) {
+            this.push(item);
+        }
+    } else {
+        this.push(elem);
+    }
+}
+
 Collection.prototype.removeAll = function(){
     this.container = [];
     this.announceChange("removeAll");
