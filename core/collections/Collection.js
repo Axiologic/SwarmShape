@@ -14,19 +14,46 @@ isBindableCollection = function (obj){
     return false;
 }
 
-
 function Collection(){
     makeBindable(this);
+    this.__meta.innerValues = [];
     this.__meta.bindableCollection = true;
     this.container = [];
     this.length = this.container.length;
     setMetaAttr(this, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
+    makeEventEmitter(this);
+
+    var self = this;
+    function updateInner(){
+        var o,r;
+        self.__meta.innerValues.length = 0;
+        for(var i=0; i< self.container.length; i++ ){
+            o = self.container[i];
+            if(typeof o == "object"){
+                if(o.__meta != undefined && o.__meta.encodeFunction != undefined){
+                    r = o.__meta.encodeFunction(o);
+                } else {
+                    r = o;
+                }
+            } else if(typeof o == "Collection"){
+                r = o.__meta.innerValues;
+            }
+            else {
+                r = o;
+            }
+            self.__meta.innerValues.push(r);
+        }
+    };
+
+    this.on(SHAPEEVENTS.COLLECTION_CHANGE,updateInner);
+
 }
 
 Collection.prototype.announceChange = function(changeType){
     this.length = this.container.length;
     var colChange = new CollectionChangeEvent(this, changeType);
-    shapePubSub.pub(this, colChange);
+    this.emit(colChange);
+    //updateInner();
     if(this.__meta.owner){
         shapePubSub.pub(this.__meta.owner, new DocumentChangeEvent(colChange));
     }
@@ -160,6 +187,22 @@ Collection.prototype.addWatcher = function(callBack, filter){
 Collection.prototype.removeWatcher = function(fctRef,callBack,filter){
     shapePubSub.unsub(this,callBack,filter);
 }
+
+Collection.prototype.setDirectOwner = function(owner, property){
+    if(this.__meta.owner == undefined){
+        this.__meta.directOwner             = owner;
+        this.__meta.directOwnerProperty     = property;
+        var myOwner = owner;
+        while(myOwner != myOwner.__meta.owner){
+            myOwner = myOwner.__meta.directOwner;
+        }
+        this.__meta.owner = myOwner;
+        owner.__meta.innerValues[property] = this.__meta.innerValues;
+    } else{
+        wprint("It is wrong to assign an embedded collection as persistent member of another object!");
+    }
+}
+
 
 /**
  * because now chains are checked before watchers are created we need to register a fake model that has length property

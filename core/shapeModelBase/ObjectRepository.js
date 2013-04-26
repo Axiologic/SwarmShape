@@ -117,6 +117,7 @@ ShapeUtil.prototype.initRepositories = function(){
             var callFunc = shape.getTypeBuilder(className).factory;
             if(callFunc){
                 res = callFunc(className, args, memberDesc, owner);
+                res.__meta.encodeFunction = shape.getTypeBuilder(className).encode;
             } else {
                 wprint("Can't create object with type " + className);
             }

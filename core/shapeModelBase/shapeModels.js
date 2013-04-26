@@ -313,41 +313,6 @@ ShapeUtil.prototype.initSchemaSupport = function(){
 }
 
 
-function ModelObject(type,args, owner){
-    var desc = shape.getClassDescription(type);
-    this.repository = {};
-    try{
-        if(!owner){
-            owner = this;
-        }
-        desc.attachClassDescription(this, args, owner);
-    }catch(err){
-        dprint(err.message);
-    }
-    this.__meta.pk = "temporary:" + this.__meta.__localId;
-    return this;
-}
-
-ModelObject.prototype.createMember = function(memberName){
-    try{
-        var args = ShapeUtil.prototype.mkArgs(arguments,1);
-        var classDesc   = this.getClassDescription();
-        var memberDesc  = classDesc.getMemberDescription(memberName);
-        var res = shape.newRawObject(memberDesc.type,args,memberDesc,this.__meta.owner);
-        this[memberName] = res;
-    } catch(err){
-        console.log(err);
-    }
-}
-
-ModelObject.prototype.newObject = function(typeName){
-    var args = ShapeUtil.prototype.mkArgs(arguments,1);
-    return shape.newRawObject(typeName,args,null,this.__meta.owner);
-}
-
-ModelObject.prototype.lookup = function(type, key){
-
-}
 
 
 

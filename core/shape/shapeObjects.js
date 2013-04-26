@@ -330,6 +330,9 @@ if (!Object.prototype.bindableProperty) {
                         } else {
                             oldValue = this.getOuterValues()[prop];
                             if(value){
+                                if(propDesc.transient != true){
+                                    value.setDirectOwner(this, prop);
+                                }
                                 var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
                                 if(encodeFun == undefined){
                                     encodeFun = shape.getTypeBuilder(value.getClassName()).encode;
@@ -365,7 +368,6 @@ if (!Object.prototype.bindableProperty) {
                             , configurable: true
                         });
                     }
-
                         //use savedValue if the previous values was already created
                         if(classDesc){
                             if(propDesc && !classDesc.isTransientMember(prop)){

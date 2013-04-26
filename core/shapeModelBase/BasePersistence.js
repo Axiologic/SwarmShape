@@ -159,16 +159,16 @@ ShapeUtil.prototype.initPersistences = function(){
     }
 
     Shape.prototype.getPersistenceForClass = function(className){
-        var csdsc = shape.getClassDescription(className);
+        var classDesc = shape.getClassDescription(className);
         var persistenceName = "null";
-        if(csdsc.meta != undefined ){
-            if(csdsc.meta.persitence != ""){
+        if(classDesc.meta != undefined ){
+            if(classDesc.meta.persitence != ""){
                 persistenceName = classDesc.meta.persitence;
             }
         }
         var persistence = persistenceRegistry[persistenceName];
         if(!persistence){
-            xprint("Can't find persistence " + persistenceName + " for class " + csdsc.className);
+            xprint("Can't find persistence " + persistenceName + " for class " + classDesc.className);
             return null;
         }
         return persistence;

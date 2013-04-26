@@ -9,14 +9,8 @@ shape.registerTypeBuilder("GlobalObject", {
             return null;
         }
     },
-    factory: function(type,args,memberDesc,owner){
-        var result = new ModelObject(type, args);
-        result.__meta.owner =  result;
-
-        if(!owner){
-            owner = result;
-        }
-
+    factory: function(type,args,memberDesc){
+        var result = new ModelObject(type, args,false);
         makeEventEmitter(result);
         return result;
     },

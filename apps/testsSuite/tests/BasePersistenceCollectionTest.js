@@ -11,12 +11,12 @@ registerTest("Testing Base Persistence for collections",
         this.theFirstOne.family.push(this.grandFather);
         this.theFirstOne.family.push(this.uncle);
 
-        console.log("LOOOOG:" + JSON.stringify(this.theFirstOne.getInnerValues()));
+        console.log("LOG:" + JSON.stringify(this.theFirstOne.getInnerValues()));
         this.startTesting(1,100);
     },
     function(){
         var inner = this.theFirstOne.getInnerValues();
-        this.assert.identical((inner.family, ["father","uncle", "grandFather"]));
+        this.assert.identical(inner.family, ["father","grandFather", "uncle"]);
 
         /*this.assert.equal(this.theFirstOne.father,this.uncle);
         var json = {"name":"theFirstOne","father":"father"} ;
