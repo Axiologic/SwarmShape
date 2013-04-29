@@ -137,10 +137,10 @@ BaseController.prototype.waitExpansion = function(number){
 
 BaseController.prototype.afterExpansion = function(caller){
     this.__waitCounter--;
-    if(this.__waitCounter==0){
+    //if(this.__waitCounter==0){
         try2InitCtrl(this);
         this.afterChildExpansion(caller);
-    }
+    //}
     if(caller==undefined){
         console.log("caller undefined");
         return;

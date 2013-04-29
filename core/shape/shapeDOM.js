@@ -48,8 +48,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
             return  function(){
                 shapePubSub.blockCallBacks();
                 var args = ShapeUtil.prototype.mkArgs(arguments);
-                funct.apply(newCtrl,args);
+                var result = funct.apply(newCtrl,args);
                 shapePubSub.releaseCallBacks();
+                return result;
             }
         }
 
