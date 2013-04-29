@@ -141,7 +141,7 @@ function ChangeWatcher(model, chain, handler){
 
             return function(changedModel, property, value, oldValue ){
                 if(deleted){
-                    console.log("e ok ca nu ma mai apelez??!");
+                    console.log("calling a deleted watcher");
                     return;
                 }
                 try{
@@ -212,7 +212,6 @@ function ChangeWatcher(model, chain, handler){
 
         this.release  = function(){
             deleted = true;
-            return true;
             for(var i=0; i < callBackRefs.length; i++) {
                 var ref = callBackRefs[i];
                 if(ref != null){
@@ -331,7 +330,9 @@ if (!Object.prototype.bindableProperty) {
                             oldValue = this.getOuterValues()[prop];
                             if(value){
                                 if(propDesc.transient != true){
-                                    value.setDirectOwner(this, prop);
+                                    if(value.setDirectOwner){
+                                        value.setDirectOwner(this, prop);
+                                    }
                                 }
                                 var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
                                 if(encodeFun == undefined){

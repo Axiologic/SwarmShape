@@ -181,7 +181,7 @@ function PropertiesFence(context, properties, callback){
 
     function valuesChanged(){
         for(var i=0;i<properties.length;i++){
-            if(self[properties[i]] != context[properties[i]]) {
+            if(self[properties[i]] !== context[properties[i]]) {
                 return true;
             }
         }
@@ -192,7 +192,6 @@ function PropertiesFence(context, properties, callback){
     this.acquire = function (){
         fuckingCallLevel++;
         if(fuckingCallLevel >100){
-            console.log("Recursion detected! Preventing...");
             fuckingCallLevel--;
             return;
         }
@@ -205,7 +204,8 @@ function PropertiesFence(context, properties, callback){
                 try{
                     callback();
                 } catch(err){
-                    console.log("Fence error:" +  err);
+                    console.log("Fence error:");
+                    console.log(err);
                 }
                 duringCallback = false;
                 if(refreshDuringCallback){

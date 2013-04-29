@@ -37,6 +37,11 @@ function BaseController(ctrlName, parentCtrl){
     this.__waitCounter = 1;
     this.children = {};
     makeBindable(this);
+    setTimeout(function(){
+       if(!this.initialised){
+            console.log("Ctrl "+this.ctrlName+" isn't initialiazed! "+this.__waitCounter);
+       }
+    }.bind(this),3000);
 }
 
 
@@ -209,7 +214,6 @@ BaseController.prototype.modelAssign = function(value){
 
 BaseController.prototype.getContextName = function(){
     if(this.contextName){
-        console.log("ContextName is " + this.contextName);
         return this.contextName;
     }
     if(this.parentCtrl != null){
@@ -266,7 +270,7 @@ BaseController.prototype.applyHtmlAttribute = function(attributeName, element, v
 BaseController.prototype.bindAttribute = function(ctrl, attr, element, parentCtrl){
     var attributeName = attr.name;
     var value = attr.value;
-    ctrl.remember(attr.name);
+    ctrl.remember(attr.name, element);
     if(shape.shapeKnowsAttribute(attributeName)){
         //dprint("\tbindingAttribute:" + attributeName  + " value " + attr.value);
         var exp = newShapeExpression(value);
@@ -294,19 +298,19 @@ BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
     var ctrl = this;
     $(element.attributes).each (
         function() {
-            if(!ctrl.remember(this.name)){
+            if(!ctrl.remember(this.name, element)){
                 ctrl.bindAttribute(ctrl, this, element, parentCtrl);
             }
         });
-    delete this.rememberString;
+    delete element.rememberString;
 }
 
-BaseController.prototype.remember = function (str){
-    if(!this.rememberString){
-        this.rememberString = [];
+BaseController.prototype.remember = function (str, element){
+    if(!element.rememberString){
+        element.rememberString = [];
     }
     //console.log("remember "+this.rememberString[str]+" "+str);
-    var orig  = this.rememberString[str];
-    this.rememberString[str] = str;
+    var orig  = element.rememberString[str];
+    element.rememberString[str] = str;
     return orig;
 }

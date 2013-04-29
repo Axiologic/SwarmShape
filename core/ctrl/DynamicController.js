@@ -4,11 +4,11 @@ shape.registerCtrl("DynamicController",{
     beginExpansion:function(){
         var self = this;
         if(!this.fence){
-            this.__defineGetter__("dynamicContext",function(){
+            this.__defineGetter__("computedContext",function(){
                 return self.getContextName();
             });
 
-            this.fence = new PropertiesFence(this, ["model","dynamicContext"], function(){
+            this.fence = new PropertiesFence(this, ["model", "view", "computedContext"], function(){
                 self.expander(function(){
                     self.afterExpansion(self);
                 });
@@ -31,6 +31,7 @@ shape.registerCtrl("DynamicController",{
                     if(self.view){
                         self.view.innerHTML = "";
                     }else{
+                        console.log("no view yet!");
                         return;
                     }
                     $(self.view).append(ch);

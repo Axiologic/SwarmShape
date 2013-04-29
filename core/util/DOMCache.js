@@ -16,6 +16,7 @@
 
 function DOMCache(){
     var cache = {};
+    var ctrlCache = {};
 
     function getComponentBinder(model, parentCtrl, callBack){
         return function(content){
@@ -27,7 +28,7 @@ function DOMCache(){
                 default:
                     wprint("Something is wrong... component should have only one root!!! "+content);
             }
-            shape.expandExistingDOM(newElem, parentCtrl, model);
+            ctrlCache[model]=shape.expandExistingDOM(newElem, parentCtrl, model);
             cache[model] = newElem;
             callBack(newElem);
         }
@@ -36,6 +37,7 @@ function DOMCache(){
     function createDOMForModel(model, parentCtrl, callBack){
         if(cache[model] != undefined){
             callBack(cache[model]);
+            ctrlCache[model].toView();
             return;
         }
         shape.getPerfectShape(undefined, model,parentCtrl.getContextName(),getComponentBinder(model, parentCtrl, callBack));
