@@ -185,6 +185,7 @@ function SoundPubSub(){
         //var fctRef = new FunctionReference(callBack);
         if(!callBack && typeof callBack != "function"){
             wprint("Can't subscribe to an invalid callback!");
+            return;
         }
         var subscriber = {"callBack":callBack, "filter":filter};
         var arr = channelSubscribers[target];
@@ -196,16 +197,18 @@ function SoundPubSub(){
     }
 
     this.unsub = function(target, callBack, filter){
-        var gotit = false;
-        for(var i = 0; i < channelSubscribers[target].length;i++){
-            var subscriber =  channelSubscribers[target][i];
-            if(subscriber.callBack == callBack && (filter == undefined || subscriber.filter == filter )){
-                gotit = true;
-                subscriber.forDelete = true;
+        if(callBack){
+            var gotit = false;
+            for(var i = 0; i < channelSubscribers[target].length;i++){
+                var subscriber =  channelSubscribers[target][i];
+                if(subscriber.callBack == callBack && (filter == undefined || subscriber.filter == filter )){
+                    gotit = true;
+                    subscriber.forDelete = true;
+                }
             }
-        }
-        if(!gotit){
-          console.log("Unable to unsubscribe a callback that was not subscribed!");
+            if(!gotit){
+                console.log("Unable to unsubscribe a callback that was not subscribed!");
+            }
         }
       }
 
@@ -217,9 +220,31 @@ function SoundPubSub(){
     this.releaseCallBacks = function(){
         level--;
         //hack/optimisation to not fill the stack in extreme cases (many events caused by loops in collections,etc)
-        while(level == 0 && dispatchNext(true) ){
-            // nothing,feed the best for a greater good :)
+        while( level == 0 && dispatchNext(true)){
+           //nothing
         }
+
+        while(level == 0 && callAfterAllEvents()){
+
+        }
+    }
+
+    var afterEventsCalls =  [];
+
+    this.afterAllEvents = function(callBack){
+        afterEventsCalls.push(callBack);
+        this.blockCallBacks();
+        this.releaseCallBacks();
+    }
+
+    function callAfterAllEvents (){
+      if(afterEventsCalls.length){
+          var callBack = afterEventsCalls[0];
+          afterEventsCalls.shift();
+          //do not catch exceptions here..
+              callBack();
+      }
+      return afterEventsCalls.length;
     }
 
     this.registerCompactor(SHAPEEVENTS.PROPERTY_CHANGE, function(newEvent, oldEvent){

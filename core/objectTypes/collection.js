@@ -1,15 +1,14 @@
 shape.registerTypeBuilder("collection",{
     native : false,
-    initializer:function(type, args, memberDescription, owner){
+    initializer:function(type, args, memberDescription){
         if(args || (memberDescription && memberDescription.value)){
                console.log("Collection initialisation not implemented");
         } else {
             return null;
         }
     },
-    factory:function(type, args, memberDescription, owner){
+    factory:function(type, args, memberDescription){
         var res = new Collection();
-        res.__meta.owner =  owner;
         if(args != null || (memberDescription && memberDescription.value)){
             wprint("Collection initialisation not implemented");
         }
@@ -20,10 +19,10 @@ shape.registerTypeBuilder("collection",{
         return res;
     },
     encode:function(outerObject){
-        xprint("Collection serialisation not implemented");
+        return outerObject.__meta.innerValues;
 
     },
     decode:function(innerValue){
-        xprint("Collection deserialisation not implemented");
+        dprint("Collection deserialisation not implemented");
     }
 });

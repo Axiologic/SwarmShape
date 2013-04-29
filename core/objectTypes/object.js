@@ -1,6 +1,6 @@
 shape.registerTypeBuilder("object",{
         native : true,
-        initializer:function(type, value, args){
+        initializer:function(type, args, memberDesc){
             if(value){
                 return eval(value);
             }else{

@@ -19,7 +19,7 @@ shape.registerModel("TestViewModel",{
     currentSelection:{
         type:"collection",
         contains:"TestDescription",
-        value:null
+        transient:true
     },
     currentIndex:{
         type:"int"

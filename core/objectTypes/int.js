@@ -1,8 +1,8 @@
 shape.registerTypeBuilder("int",{
     native : true,
-    initializer:function(type, value, args){
-            if(value){
-                return parseInt(value);
+    initializer:function(type, args, memberDesc){
+            if(memberDesc && memberDesc.value){
+                return parseInt(memberDesc.value);
             }else{
                 return 0;
             }

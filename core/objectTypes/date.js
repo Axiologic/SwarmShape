@@ -1,11 +1,8 @@
 shape.registerTypeBuilder("date",{
         native : false,
-        initializer:function(type, value, args){
-            if(value != undefined){
-                if(value === null || value == "null"){
-                    return null;
-                }
-                return new Date(objectDescription.value);
+        initializer:function(type, args, memberDesc){
+            if(memberDesc && memberDesc.value){
+                return new Date(memberDesc.value);
             } else {
                 return new Date();
             }

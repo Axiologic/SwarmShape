@@ -20,11 +20,13 @@ function runNextTest(){
     var runningTest = testRegistry.tests.getAt(testRegistry.currentIndex);
     if(runningTest){
         try{
+            shapePubSub.blockCallBacks();
             runningTest.prepare();
+            shapePubSub.releaseCallBacks();
             runningTest.__timer = setTimeout(function(){
                 assertEndTestVerification(runningTest);
             },runningTest.timeout);
-            runningTest.run();
+            shapePubSub.afterAllEvents(runningTest.run.bind(runningTest));
         } catch(error){
             assertEndTestVerification(runningTest, "Unknown exception:"+ error)
         }
@@ -117,7 +119,7 @@ shape.registerModel("TestDescription",{
     },
     testPassed:{
         type:"boolean",
-        value:"undefined"
+        value:undefined
     },
     prepare:{
         type:"function"
