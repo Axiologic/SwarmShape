@@ -70,6 +70,7 @@ function QSClassDescription(declaration, qsName){
             try{
                 model[n] = newMember(m);
             }catch(err){
+                console.log(err);
                 wprint(err.message);
             }
             //addChangeWatcher(model,n,changeCallBack)

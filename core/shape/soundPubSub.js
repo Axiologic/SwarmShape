@@ -249,7 +249,7 @@ function SoundPubSub(){
 
     this.registerCompactor(SHAPEEVENTS.PROPERTY_CHANGE, function(newEvent, oldEvent){
         if(newEvent.type ==  oldEvent.type && newEvent.property == oldEvent.property ){
-            newEvent.newValue = oldEvent.newValue;
+            oldEvent.newValue = newEvent.newValue;
             return oldEvent;
         }
         return newEvent;
