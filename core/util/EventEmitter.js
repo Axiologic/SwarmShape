@@ -13,8 +13,16 @@ function makeEventEmitter(obj, parent){
         if(event.type == undefined){
             wprint("Who will catch an event without a type? Directly use \"pub\" for this. "+J(event));
         }
-        if(!shapePubSub.pub(obj,event)&&parent){
+        if(!shapePubSub.pub(obj,event)&&parent&&!obj.isController){
             parent.emit(event);
+            return;
+        }
+
+        if(obj.isController&&!shapePubSub.pub(obj,event)){
+            var domParentCtrl = obj.findDOMParentCtrl(obj.view);
+            if(domParentCtrl){
+                domParentCtrl.emit(event);
+            }
         }
     }
 }

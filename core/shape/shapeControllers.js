@@ -132,8 +132,21 @@ BaseController.prototype.beginExpansion = function(){
 
 BaseController.prototype.changeView = function(view, ignore){
     this.view = view;
+    view.shapeCtrl = this;
     this.beginExpansion();
 
+}
+
+BaseController.prototype.findDOMParentCtrl = function (domObj){
+    var domParent = $(domObj).parent().get(0);
+    if(domParent!=undefined&&domParent!=domObj){
+        if(domParent.shapeCtrl){
+            return domParent.shapeCtrl;
+        }else{
+            return this.findDOMParentCtrl(domParent);
+        }
+    }
+    return null;
 }
 
 BaseController.prototype.waitExpansion = function(number){
