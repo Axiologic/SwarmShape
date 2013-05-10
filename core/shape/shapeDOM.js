@@ -67,21 +67,21 @@ ShapeUtil.prototype.initDOMHandling = function(){
         return newCtrl;
     }
 
-    function ajaxCall(url, callBack){
-        if(shapePubSub.hasChannel(url))
+    function ajaxCall(key, url, callBack){
+        if(shapePubSub.hasChannel(key))
         {
             var subCall = function(response){
-                shapePubSub.unsub(url, subCall);
+                shapePubSub.unsub(key, subCall);
                 callBack(response.response);
             };
-            shapePubSub.sub(url, subCall);
+            shapePubSub.sub(key, subCall);
         }else{
-            shapePubSub.addChannel(url);
+            shapePubSub.addChannel(key);
             /*var stack = printStackTrace();*/
             $.get(url, function(response){
                 /*stack;*/
                 callBack(response);
-                shapePubSub.pub(url, {"response":response});
+                shapePubSub.pub(key, {"response":response});
             });
         }
     }
@@ -92,7 +92,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if( content == undefined){
             var fileName = shapeUrlRegistry[shapeName];
             if(fileName != undefined) {
-                ajaxCall(fileName, function(newContent){
+                ajaxCall(shapeName,fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
                     shapeRegistry[requestedShapeName] = newContent;
                     callBack(newContent);
