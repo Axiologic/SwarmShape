@@ -174,10 +174,10 @@ function SoundPubSub(){
         if(channelSubscribers[target] != undefined){
             compactAndStore(target, message);
             dispatchNext();
-            return channelSubscribers[target].length;
+            return channelSubscribers[target];
         } else{
             /*wprint("No one is subscribed to "+ J(target));*/
-            return 0;
+            return null;
         }
     }
 
