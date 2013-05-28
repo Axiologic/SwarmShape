@@ -38,7 +38,7 @@ function DbPersistence(spaceName) {
             } catch (e) {
             }
         }
-        self.emit({type: 'REFRESH', data: data});
+        self.emit({type: 'RESULT', data: data});
     }
 
 

@@ -383,6 +383,76 @@ if (!Object.prototype.bindableProperty) {
         }
     });
 }
+// _defineSetter_ and _defineGetter_ for IE
+try {
+    if (!Object.prototype.__defineGetter__ &&
+        Object.defineProperty({},"x",{get: function(){return true}}).x) {
+
+        // Setter
+        Object.defineProperty(
+            Object.prototype,
+            "__defineSetter__",
+            {
+                enumerable: false,
+                configurable: true,
+                value: function(name,func){
+                    Object.defineProperty(this,name,{set:func,enumerable: true,configurable: true});
+
+                    // Adding the property to the list (for __lookupSetter__)
+                    if(!this.setters) this.setters = {};
+                    this.setters[name] = func;
+                }
+            }
+        );
+
+        // Lookupsetter
+        Object.defineProperty(
+            Object.prototype,
+            "__lookupSetter__",
+            {
+                enumerable: false,
+                configurable: true,
+                value: function(name){
+                    if(!this.setters) return false;
+                    return this.setters[name];
+                }
+            }
+        );
+
+        // Getter
+        Object.defineProperty(
+            Object.prototype,
+            "__defineGetter__",
+            {
+                enumerable: false,
+                configurable: true,
+                value: function(name,func){
+                    Object.defineProperty(this,name,{get:func,enumerable: true,configurable: true});
+
+                    // Adding the property to the list (for __lookupSetter__)
+                    if(!this.getters) this.getters = {};
+                    this.getters[name] = func;
+                }
+            }
+        );
+
+        // Lookupgetter
+        Object.defineProperty(
+            Object.prototype,
+            "__lookupGetter__",
+            {
+                enumerable: false,
+                configurable: true,
+                value: function(name){
+                    if(!this.getters) return false;
+                    return this.getters[name];
+                }
+            }
+        );
+
+    }
+} catch(defPropException) {/*Do nothing if an exception occurs*/};
+
 
 // when possible returns the "local id" instead of useless [Object]
 var defaultToString = Object.prototype.toString;
