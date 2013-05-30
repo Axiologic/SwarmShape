@@ -13,26 +13,18 @@ function makeEventEmitter(obj, parent){
         if(event.type == undefined){
             wprint("Who will catch an event without a type? Directly use \"pub\" for this. "+J(event));
         }
-        var subscribers = shapePubSub.pub(obj,event);
-        var arrSubscribers = null;
-        if(arrSubscribers){
-                for(var i=0; i<arrSubscribers.length; i++){
-                    var val = arrSubscribers[i];
-                    if(val.type && val.type == event.type){
-                        arrSubscribers = subscribers;
-                        break;
-                    }
-                }
-        }
 
-        if(!arrSubscribers && parent && !obj.isController){
+        shapePubSub.pub(obj,event);
+
+        if(parent && !obj.isController){
             parent.emit(event);
             return;
         }
 
-        if(obj.isController && !shapePubSub.pub(obj,event)){
+        if(obj.isController){
             var domParentCtrl = obj.findDOMParentCtrl(obj.view);
             if(domParentCtrl){
+                delete event.__transmisionIndex;
                 domParentCtrl.emit(event);
             }
         }
