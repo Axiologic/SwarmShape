@@ -182,8 +182,8 @@ ShapeUtil.prototype.initPersistences = function () {
     }
 
     BasePersistence.prototype.remember = function (obj) {
-        //obj.on(SHAPEEVENTS.DOCUMENT_CHANGE, this.onLocalChange);
-        shapePubSub.sub(obj, this.onLocalChange)
+        obj.on(SHAPEEVENTS.DOCUMENT_CHANGE, this.onLocalChange);
+        //shapePubSub.sub(obj, this.onLocalChange)
     }
 
     //event is a DocumentChange event
