@@ -71,6 +71,10 @@ function LocalPersistence(spaceName){
         this.onServerObjectRefresh(className, ret);
     }
 
+
+
+
+
     //event is a DocumentChange event
     this.onLocalChange = function(event){
         var obj;

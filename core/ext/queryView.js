@@ -1,4 +1,4 @@
-function queryView(className){
+function QueryView(className){
     makeBindable(this);
     this.__meta.bindableCollection = true;
     this.container = [];
@@ -7,7 +7,7 @@ function queryView(className){
     makeEventEmitter(this);
 
     this.query = function (queryName){
-        var args = shapeUtil.mkArgs(arguments,1);
+        var args = ShapeUtil.prototype.mkArgs(arguments,1);
         var persistence = shape.getPersistenceForClass(className);
         this.container = [];
         var queryUID = persistence.query(queryName, args);
