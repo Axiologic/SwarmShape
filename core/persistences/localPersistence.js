@@ -45,7 +45,7 @@ function LocalPersistence(spaceName){
 
     this.queryCounter = 0;
     //only called by query function
-    this.query = function(queryName, params){
+    this.query = function(queryName, params, queryUid){
         this.queryCounter++;
         if(queryName == "*"){
             if(!params || params[0] == undefined){
@@ -56,8 +56,9 @@ function LocalPersistence(spaceName){
             var cache = updateIndexCache(className);
 
             for(var v in cache){
-                this.refresh(className);
+                shapePubSub.pub(queryUid,v);
             }
+            shapePubSub.pub(queryUid,"end");
         }   else {
             wprint("Query in local storage is not implemented");
         }
@@ -70,10 +71,6 @@ function LocalPersistence(spaceName){
         var ret = JSON.parse(jsonValue);
         this.onServerObjectRefresh(className, ret);
     }
-
-
-
-
 
     //event is a DocumentChange event
     this.onLocalChange = function(event){

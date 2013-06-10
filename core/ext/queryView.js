@@ -1,3 +1,6 @@
+
+var globalQueryViewInstanceCounter = 0;
+
 function QueryView(className){
     makeBindable(this);
     this.__meta.bindableCollection = true;
@@ -7,25 +10,26 @@ function QueryView(className){
     makeEventEmitter(this);
 
     this.query = function (queryName){
+        globalQueryViewInstanceCounter++;
+        var queryUid = "QueryView"+globalQueryViewInstanceCounter;
         var args = ShapeUtil.prototype.mkArgs(arguments,1);
         var persistence = shape.getPersistenceForClass(className);
         this.container = [];
-        var queryUID = persistence.query(queryName, args);
-        persistence.on("update", function(obj){
-            var metaInQuery = getMetaAttr(obj,"inQuery");
-            if(metaInQuery[queryUID] == queryUID ){
-                this.push(obj);
-            }
-        });
+        var queryUID = persistence.query(queryName, args,queryUid );
+        var self = this;
 
-        persistence.on("end",function(){
-           this.emit("end",queryUID);
+        shapePubSub.sub(queryUid, function(obj){
+            if(obj == "end"){
+                this.emit("end",queryUID);
+            } else{
+                self.push(obj);
+            }
         });
     return queryUID;
     }
 }
 
-queryView.prototype = Collection.prototype;
+QueryView.prototype = Collection.prototype;
 
 shape.registerModel(SHAPE.QUERY_VIEW, {
     length : {
