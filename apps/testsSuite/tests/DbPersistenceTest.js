@@ -78,7 +78,7 @@
             }
         });
 
-        testContext.startTesting(1, 5000);
+        testContext.startTesting(1, 100);
     }
 
     var cleanFunction = function () {
