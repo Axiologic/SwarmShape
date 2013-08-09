@@ -36,6 +36,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     Shape.prototype.registerShapeURL = function(viewName,url){
+        viewName = viewName.replace(/\/|\ /,".");
         shapeUrlRegistry[viewName] = url;
     }
 
@@ -87,6 +88,8 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function getShapeContent(shapeName, callBack){
+        shapeName = shapeName.replace(/\/|\ /,".");
+
         var requestedShapeName = shapeName;
         var content = shapeRegistry[shapeName];
         if( content == undefined){

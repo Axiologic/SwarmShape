@@ -2,7 +2,7 @@
     default button controller
  */
 
-shape.registerCtrl("base/button",{
+shape.registerCtrl("button",{
     model:null,
     init:function(){
         $(this.view).on("click", this.onClick);

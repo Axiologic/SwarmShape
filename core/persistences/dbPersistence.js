@@ -123,4 +123,4 @@ function DbPersistence(spaceName) {
 }
 
 DbPersistence.prototype = new BasePersistence();
-BasePersistence.prototype.registerPersistence("db", new DbPersistence());
+//BasePersistence.prototype.registerPersistence("db", new DbPersistence());

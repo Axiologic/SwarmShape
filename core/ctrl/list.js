@@ -1,8 +1,9 @@
 /**
- obsolete controller for ul, list should be used instead
+ default list controller.. takes as model a collection adds a set of elements in current element
+ //warning: duplicates ul controller that is now obsolete
  */
 
-shape.registerCtrl("base/ul",{
+shape.registerCtrl("list",{
     beginExpansion:function(){
         this.domCache = new DOMCache();
         var self = this;

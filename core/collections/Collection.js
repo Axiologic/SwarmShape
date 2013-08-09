@@ -216,7 +216,7 @@ Collection.prototype.setDirectOwner = function(owner, property){
 
 /**
  * because now chains are checked before watchers are created we need to register a fake model that has length property
- * so when "collection.length" chain it's checked every thing it's allright
+ * so when "collection.length" chain it's checked every thing it's all right
  */
 shape.registerModel(SHAPE.COLLECTION, {
     length : {
