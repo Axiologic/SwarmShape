@@ -52,3 +52,31 @@ shape.registerAttribute("shape-context",{
     },
     "expandHTMLTag"  : true
 });
+
+
+shape.registerAttribute("shape-value",{
+    "applyAttribute" : function(dom, newValue, ctrl){
+        if(newValue){
+            var d = $(dom);
+            if(d.is("img")){
+                d.attr("src", newValue);
+            }
+        }
+    },
+    "expandHTMLTag"  : false
+});
+
+shape.registerAttribute("shape-action",{
+    "applyAttribute" : function(dom, newValue, ctrl){
+        if(newValue){
+            var d = $(dom);
+            if(newValue == "none"){
+                d.attr("action", "javascript:void(0);");
+            } else{
+                d.attr("action", newValue);
+            }
+        }
+    },
+    "expandHTMLTag"  : false
+});
+

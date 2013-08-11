@@ -18,7 +18,8 @@ function shapeEventsFactory(){
 
 function ClickEvent(userAction, viewModel){
     this.type = SHAPEEVENTS.CLICK;
-    this.userAction = userAction;
+    //this.userAction = userAction;
+    this.type = userAction;
     this.viewModel = viewModel;
 }
 
@@ -37,7 +38,7 @@ function PropertyChangeEvent(model,property,newValue, oldValue){
     this.oldValue   = oldValue;
 }
 
-/**
+/**                                                                        „
  *
  * @param model object
  * @cause property is a PropertyChangeEvent,CollectionChangeEvent

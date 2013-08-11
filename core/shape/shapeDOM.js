@@ -321,7 +321,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
 
         if(ctrlName == undefined){
-            if(($(domObj).is('div')||$(domObj).is('span'))&&$(domObj).attr("shape-view")==undefined){
+            if( ($(domObj).is('div') || $(domObj).is('span') ) && $(domObj).attr("shape-view") == undefined && !transparentModel){
                 ctrlName = "DynamicController";
                 isCWRoot = true;
             }else{

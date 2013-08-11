@@ -162,12 +162,12 @@ function ChangeWatcher(model, chain, handler){
                         try{
                             handler(newParent,args[endOfChain-1],newValue);
                         }catch(err){
-                            console.log(err);
+                            console.log("Error: " + err.message);
                         }
 
                     }
                 }   catch(err){
-                    console.log(err);
+                    console.log("Error: " + err.message);
                 }
             }
         }
@@ -231,7 +231,7 @@ function ChangeWatcher(model, chain, handler){
         try{
             handler(newParent,args[endOfChain-1],newValue);
         }catch(err){
-            console.log(err);
+            console.log("Syntax error in handler: ", err.message);
         }
 
 
@@ -241,7 +241,7 @@ function ChangeWatcher(model, chain, handler){
         var chainLink = shape.checkChain(model, property);
         if(chainLink)
         {
-            wprint("Unknown property "+property+" in model "+model.getClassName()+ " while evaluating chain "+chain);
+            wprint("Unknown property "+property+" in model "+model.getClassName()+ " while evaluating chain " + chain);
         }else{
             model.bindableProperty(property);
             shapePubSub.sub(model,nw, function(event){

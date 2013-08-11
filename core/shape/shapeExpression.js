@@ -1,6 +1,6 @@
 ShapeExpression=function(expression){
     var expression = expression;
-
+    //console.log(expression);
     var chains = expression.match(/(@(?:[^\W]+\.{1})*[^\W]*)/g);
     var interpretedExpress = expression;
     if(chains){
