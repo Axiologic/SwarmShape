@@ -13,6 +13,9 @@ shape.registerCtrl("base/input",{
     toView:function(){
         if(this.model != undefined && this.model != null){
             this.view.value = this.model;
+            $(this.view).removeAttr("disabled");
+        } else{
+            $(this.view).attr("disabled","disabled");
         }
     },
     onChange:function(){

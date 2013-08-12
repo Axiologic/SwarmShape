@@ -21,14 +21,14 @@ function QSClassDescription(declaration, qsName){
            functions[a] = declaration[a];
         }
         else
+        if(declaration[a].chains != undefined ){
+            expressions[a] = declaration[a];
+        }
+        else
         if(declaration[a].type != undefined ){
             var m = declaration[a];
             members[a] = m;
         }
-        else
-            if(declaration[a].chains != undefined ){
-                expressions[a] = declaration[a];
-            }
          else if(declaration[a].lang != undefined ){
                 queries[a] = declaration[a];
             }
@@ -292,7 +292,7 @@ ShapeUtil.prototype.initSchemaSupport = function(){
                 }
             }else{
                 var interfaceDesc = shape.getInterfaceDescription(m.type);
-                //if i find an Interface in chain a have to stop checking
+                //if an Interface is found in chain, stop checking
                 if(interfaceDesc){
                     break;
                 }

@@ -285,7 +285,10 @@ ShapeUtil.prototype.initDOMHandling = function(){
             if(context){
                 BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
             }
+
+            var debugInfo="ViewName " + viewName + "ctrl: " + ctrlName;
             loadInnerHtml(domObj,viewName,ctrl, parentCtrl);
+            $(domObj).attr("shape-debug",debugInfo);
         }
         return ctrl;
     }
@@ -388,6 +391,9 @@ ShapeUtil.prototype.initDOMHandling = function(){
             ctrl.bindDirectAttributes(domObj,parentCtrl);
         }
         ctrl.afterExpansion(ctrl);
+
+        var debugInfo = "ctrl: " + ctrlName;
+        $(domObj).attr("shape-debug",debugInfo);
 
         return ctrl;
     }

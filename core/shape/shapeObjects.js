@@ -229,6 +229,7 @@ function ChangeWatcher(model, chain, handler){
             callBackRefs[endOfChain] = newValue.addWatcher(getWatcherClosure(endOfChain,true));
         }
         try{
+            //console.log("Retrigering handler " + chain);
             handler(newParent,args[endOfChain-1],newValue);
         }catch(err){
             console.log("Syntax error in handler: ", err.message);

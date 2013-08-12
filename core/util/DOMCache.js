@@ -47,20 +47,32 @@ function DOMCache(){
     var duringRefresh = false;
     var self  = this;
 
+    var oldColl;
+    var oldColl_length = 0;
+
     //Optimisation: use the Fence class form shapeUtil...
 
     this.doRefresh = function(coll, parentCtrl, startF, itemF, endF ){
+
         if(duringRefresh){
-            refreshQueue.push({"coll":coll,
-                            "parentCtrl":parentCtrl,
-                            "startF":startF,
-                            "itemF":itemF,
-                            "endF":endF
-                            });
-            dprint("Pending...");
+            var relevant = true;
+            if(oldColl === coll && oldColl_length == coll.length ){
+                relevant = false;
+            }
+            if(relevant){
+                refreshQueue.push({"coll":coll,
+                    "parentCtrl":parentCtrl,
+                    "startF":startF,
+                    "itemF":itemF,
+                    "endF":endF
+                });
+                dprint("Pending...");
+            }
             return;
         }
 
+        oldColl = coll;
+        oldColl_length = coll.length;
         var endCounter = coll.length;
         startF();
         if(endCounter != 0){

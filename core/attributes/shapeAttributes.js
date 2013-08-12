@@ -80,3 +80,28 @@ shape.registerAttribute("shape-action",{
     "expandHTMLTag"  : false
 });
 
+
+shape.registerAttribute("shape-block",{
+    "applyAttribute" : function(dom, newValue, ctrl){
+            var d = $(dom);
+            if(newValue){
+                d.block({ message: "disabled" })
+            } else{
+                d.unblock();
+            }
+    },
+    "expandHTMLTag"  : false
+});
+
+shape.registerAttribute("shape-disable",{
+    "applyAttribute" : function(dom, newValue, ctrl){
+        var d = $(dom);
+        if(newValue){
+
+        } else {
+            d.removeAttribute("disabled");
+        }
+    },
+    "expandHTMLTag"  : false
+});
+

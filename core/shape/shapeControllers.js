@@ -90,7 +90,7 @@ function try2InitCtrl(ctrl){
         if(ctrl.modelInitialized && ctrl.view != undefined){
             ctrl.initialised = true;
             ctrl.init();
-            ctrl.onModelChanged();
+            ctrl.onModelChanged(this.model);
             ctrl.onViewChanged();
             ctrl.toView();
             if(ctrl.parentCtrl){
@@ -101,8 +101,16 @@ function try2InitCtrl(ctrl){
 
 }
 
-BaseController.prototype.onModelChanged = function(){
-
+BaseController.prototype.onModelChanged = function(oldModel){
+    //console.log("model changed");
+    if(oldModel !== this.model){
+        var oldcw = this.changeWatchers;
+        this.changeWatchers = [];
+        for(var i = 0; i< oldcw.length; i++){
+            oldcw[i]["watcher"].release();
+            this.addChangeWatcher(oldcw[i].chain,oldcw[i].handler);
+        }
+    }
 }
 
 BaseController.prototype.onViewChanged = function(){
@@ -110,7 +118,7 @@ BaseController.prototype.onViewChanged = function(){
 }
 
 BaseController.prototype.changeModel = function(model){
-
+     var oldModel = this.model;
     if(this.isCWRoot){
         if(this.model && this.model!==model){
             this.destroyChildren();
@@ -120,7 +128,7 @@ BaseController.prototype.changeModel = function(model){
     this.model = model;
     this.modelInitialized = true;
     if(this.initialised){
-        this.onModelChanged();
+        this.onModelChanged(oldModel);
         this.toView();
     } else{
         try2InitCtrl(this);
