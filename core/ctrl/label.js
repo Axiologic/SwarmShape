@@ -4,25 +4,18 @@
 
 shape.registerCtrl("base/label",{
     init:function(){
-        this.label = this.view;
-        /*if(this.view.attr("shape-view") == "label"){
-            this.label = this.view.find("label")[0];
-        }*/
-        this.useValue = $(this.view).attr("value") == undefined ? false : true;
-        /*this.toView();*/
+        this.label = $(this.view);
+
+        this.useValue = this.label.attr("value") == undefined ? false : true;
     },
     toView:function(){
         if(!this.useValue&&this.model != undefined){
-            this.label.innerText = this.model;
-            //textContent for firefox ONLY!!!
-            this.label.textContent = this.model;
+            this.label.text(this.model);
         }
     },
     applyHtmlAttribute:function(attributeName, element, value, overrideDefault){
         if(attributeName=="value"){
-            element.innerText = value;
-            //textContent for firefox ONLY!!!
-            element.textContent = value;
+            $(element).text(value);
         }else{
             BaseController.prototype.applyHtmlAttribute(attributeName, element, value, overrideDefault)
         }

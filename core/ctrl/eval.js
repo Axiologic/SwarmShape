@@ -12,12 +12,10 @@ shape.registerCtrl("eval",{
     },
     toView:function(){
         if(this.expression == null){
-            var element = this.view;
-            this.expression = newShapeExpression(element.innerText );
+            var element = $(this.view);
+            this.expression = newShapeExpression(element.text() );
             this.expression.bindToPlace(this, function(m, p , value, oldValue){
-                element.innerText = value;
-                //textContent for firefox ONLY!!!
-                element.textContent = value;
+                element.text(value);
             });
         }
     }
