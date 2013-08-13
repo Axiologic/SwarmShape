@@ -280,11 +280,10 @@ BaseController.prototype.setParentCtrl = function(parent){
 }
 
 BaseController.prototype.applyHtmlAttribute = function(attributeName, element, value, overrideDefault){
-    if(overrideDefault==undefined){
-        try{
-            $(element).attr(attributeName,value);
-        }catch(err){
-        }
+    try{
+        Shape.prototype.applyAttribute(attributeName, element, value,this);
+    }catch(err){
+        wprint("Failing to assign value " + value + " for attribute " + attributeName + " DOM element:" + $(element).get(0));
     }
 }
 

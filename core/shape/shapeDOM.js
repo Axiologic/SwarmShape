@@ -30,9 +30,12 @@ ShapeUtil.prototype.initDOMHandling = function(){
         return false;
     }
 
-    Shape.prototype.applyAttribute = function(name, dom,value,ctrl){
-        var attr = shapeAttributes[name];
+    Shape.prototype.applyAttribute = function(attributeName, dom,value,ctrl){
+        var attr = shapeAttributes[attributeName];
         if(attr) attr.applyAttribute(dom,value,ctrl);
+        else {
+            $(dom).attr(attributeName,value);
+        }
     }
 
     Shape.prototype.registerShapeURL = function(viewName,url){

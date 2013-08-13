@@ -14,9 +14,9 @@ function ShapeAttribute(attributeName, description){
 shape.registerAttribute("shape-visible",{
    "applyAttribute":function(dom, newValue, ctrl){
        if(newValue == undefined || newValue == null || newValue == false || newValue == 0 || newValue == "false"){
-           $(dom).css('display', 'none');
+           $(dom).css('visibility', 'hidden');
        } else {
-           $(dom).css('display', 'inline');
+           $(dom).css('visibility', 'visible');
        }
    },
    "expandHTMLTag":false
