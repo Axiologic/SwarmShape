@@ -34,7 +34,10 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var attr = shapeAttributes[attributeName];
         if(attr) attr.applyAttribute(dom,value,ctrl);
         else {
-            $(dom).attr(attributeName,value);
+            if($(dom).attr(attributeName) != value){
+                $(dom).attr(attributeName,value);
+            }
+            //$(dom).setAttribute(attributeName,value);
         }
     }
 

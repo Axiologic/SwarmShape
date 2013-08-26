@@ -87,6 +87,11 @@ Collection.prototype.removeAll = function(){
     this.announceChange("removeAll");
 }
 
+Collection.prototype.replaceInnerArray = function(arr){
+    this.container = arr;
+    this.announceChange("refreshAll");
+}
+
 Collection.prototype.indexOf = function(item,startIndex){
      return this.container.indexOf(item,startIndex);
 }
