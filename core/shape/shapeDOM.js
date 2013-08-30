@@ -55,7 +55,11 @@ ShapeUtil.prototype.initDOMHandling = function(){
             return  function(){
                 shapePubSub.blockCallBacks();
                 var args = ShapeUtil.prototype.mkArgs(arguments);
-                var result = funct.apply(newCtrl,args);
+                try{
+                    var result = funct.apply(newCtrl,args);
+                }   catch(err){
+                    eprint("Error in handler " + funct + "\nError:\n", err);
+                }
                 shapePubSub.releaseCallBacks();
                 return result;
             }

@@ -25,7 +25,7 @@ addChangeWatcher = function(model, chain, handler){
     if(!wrongLink){
         return new ChangeWatcher(model, chain, handler);
     }else{
-        wprint("Found wrong link '"+wrongLink+"' from chain '"+chain+"' in model with type '"+ model.getClassName()+"'!");
+        wprint("Found wrong link (misspelling?) '"+wrongLink+"' from chain '"+chain+"' in model with type '"+ model.getClassName()+"'!");
     }
 }
 
@@ -162,12 +162,12 @@ function ChangeWatcher(model, chain, handler){
                         try{
                             handler(newParent,args[endOfChain-1],newValue);
                         }catch(err){
-                            console.log("Error: " + err.message);
+                            console.log("Handler error: " + err.message + "\n" + handler);
                         }
 
                     }
                 }   catch(err){
-                    console.log("Error: " + err.message);
+                    console.log("Binding error: " + err.message);
                 }
             }
         }

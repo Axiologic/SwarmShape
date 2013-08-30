@@ -82,8 +82,16 @@ function QSClassDescription(declaration, qsName){
 
         function getTriggerFunction(targetChain,myTrigger,myProperty){
             return   function(){
-                model[myProperty] = myTrigger.code.call(model);
-                //console.log("Calling chain " + targetChain + " " + model[myProperty]+ " " + myProperty);
+                try{
+                    if(model){
+                        model[myProperty] = myTrigger.code.call(model);
+                    }
+                    else {
+                        console.log("Calling chain with null model ");
+                    }
+                } catch(err){
+                    console.log("Unknown error in trigger code" + err + " code:\n"+ myTrigger.code);
+                }
             }
         }
 
