@@ -72,6 +72,13 @@ Collection.prototype.push = function(elem){
     return val;
 }
 
+Collection.prototype.addToSet = function(elem){
+    var index = this.container.indexOf(elem,0);
+    if(index == -1){
+        this.push(elem);
+    }
+}
+
 Collection.prototype.merge = function(elem){
     if ( elem instanceof Array || elem instanceof Collection) {
         for ( var item in elem) {
