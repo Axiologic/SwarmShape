@@ -278,6 +278,10 @@ function haveToExpandProperty(obj, prop){
     }
 }
 
+function objectIsShapeSerializable(obj){
+    return obj && obj.__meta != undefined;
+}
+
 
 if (!Object.prototype.bindableProperty) {
     Object.defineProperty(Object.prototype, "bindableProperty", {
