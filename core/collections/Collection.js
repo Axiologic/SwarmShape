@@ -120,7 +120,7 @@ Collection.prototype.removeAt = function(index){
     this.announceChange("removeAt");
 }
 
-Collection.prototype.insertAt = function(elem, index){
+Collection.prototype.setAt = function(elem, index){
     this.canJoin(elem);
     this.container[index] = elem;
     this.announceChange("insert", index);
@@ -178,6 +178,9 @@ Collection.prototype.unshift = function(value){
     this.announceChange("unshift");
     return first;
 }
+
+Collection.prototype.insertFront = Collection.prototype.unshift;
+Collection.prototype.removeFront = Collection.prototype.shift;
 
 Collection.prototype.reverse = function(){
     this.container.reverse();
