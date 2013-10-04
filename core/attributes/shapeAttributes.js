@@ -13,7 +13,6 @@ function ShapeAttribute(attributeName, description){
 
 shape.registerAttribute("shape-visible",{
    "applyAttribute":function(dom, newValue, ctrl){
-       console.log("attribute:" + newValue);
        if(newValue == undefined || newValue == null || newValue == false || newValue == 0 || newValue == "false"){
            $(dom).css('visibility', 'hidden');
            $(dom).css('display', 'none');

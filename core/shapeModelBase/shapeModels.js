@@ -80,11 +80,11 @@ function QSClassDescription(declaration, qsName){
             model.ctor.apply (model,ctorArgs);
         }
 
-        function getTriggerFunction(targetChain,myTrigger,myProperty){
-            return   function(){
+        function getTriggerFunction(targetChain,myTrigger,myProperty, chain){
+            return   function(newParent,property,newValue, chain){
                 try{
                     if(model){
-                        model[myProperty] = myTrigger.code.call(model);
+                        model[myProperty] = myTrigger.code.call(model, chain);
                     }
                     else {
                         console.log("Calling chain with null model ");
