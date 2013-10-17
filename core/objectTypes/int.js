@@ -9,3 +9,15 @@ shape.registerTypeBuilder("int",{
         }
     }
 );
+
+shape.registerTypeBuilder("integer",{
+        native : true,
+        initializer:function(type, args, memberDesc){
+            if(memberDesc && memberDesc.value){
+                return parseInt(memberDesc.value);
+            }else{
+                return 0;
+            }
+        }
+    }
+);
