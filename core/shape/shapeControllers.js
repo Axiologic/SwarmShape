@@ -42,6 +42,7 @@ function BaseController(ctrlName, parentCtrl){
             console.log("Ctrl "+this.ctrlName+" isn't initialiazed! "+this.__waitCounter);
        }
     }.bind(this),3000);
+    //console.log("Creating controller " + ctrlName + " as " + this);
 }
 
 

@@ -51,6 +51,12 @@ function DocumentChangeEvent(cause){
     this.causes.push(cause);
 }
 
+function ShapeEvent(type, cause){
+    this.type    = type;
+    this.causes   = [];
+    this.causes.push(cause);
+}
+
 /*
  function ObjectChangeEvent(className, pk, chain, newValue, oldValue){
     this.type = SHAPEEVENTS.OBJECT_CHANGE;
