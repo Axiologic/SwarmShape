@@ -118,6 +118,7 @@ function SoundPubSub(){
                     }
                     var subscriber = channelSubscribers[channelName][message.__transmisionIndex];
                     if(subscriber == undefined){
+                        delete message.__transmisionIndex;
                         channelsStorage[channelName].shift();
                     } else{
                         if(subscriber.filter == undefined || subscriber.filter(message)){
@@ -204,6 +205,8 @@ function SoundPubSub(){
                 if(subscriber.callBack == callBack && (filter == undefined || subscriber.filter == filter )){
                     gotit = true;
                     subscriber.forDelete = true;
+                    subscriber.callBack = null;
+                    subscriber.filter = null;
                 }
             }
             if(!gotit){

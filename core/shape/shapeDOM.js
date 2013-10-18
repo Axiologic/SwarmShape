@@ -4,6 +4,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
     var shapeUrlRegistry = {};
     var shapeRegistry = {};
     var shapeAttributes = {};
+
     Shape.prototype.registerCtrl = function (name,functObj){
         //console.log("Registering controller " + name);
         shapeControllers[name] = functObj;
