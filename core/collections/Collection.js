@@ -79,6 +79,13 @@ Collection.prototype.addToSet = function(elem){
     }
 }
 
+Collection.prototype.addToSetFront = function(elem){
+    var index = this.container.indexOf(elem,0);
+    if(index == -1){
+        this.unshift(elem);
+    }
+}
+
 Collection.prototype.merge = function(elem){
     if ( elem instanceof Array || elem instanceof Collection) {
         for ( var item in elem) {
