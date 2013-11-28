@@ -7,15 +7,20 @@ shape.registerCtrl("base/input",{
     isCheckbox:false,
     init:function(){
         this.isCheckbox = ($(this.view).attr("type") == "checkbox");
-        $(this.view).on("change",this.onChange);
-        //$(this.view).keyup(this.onChange);
+        this.isOnKey = ($(this.view).attr("shape-param") == "eachKey");
+        if(!this.isOnKey){
+            $(this.view).on("change",this.onChange);
+        } else {
+            $(this.view).keyup(this.onChange);
+            $(this.view).focus();
+        }
     },
     toView:function(){
         if(this.model != undefined && this.model != null){
             this.view.value = this.model;
-            $(this.view).removeAttr("disabled");
-        } else{
-            $(this.view).attr("disabled","disabled");
+            //$(this.view).removeAttr("disabled");
+        } else {
+            //$(this.view).attr("disabled","disabled");
         }
     },
     onChange:function(){

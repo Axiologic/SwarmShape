@@ -268,18 +268,19 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 if(rootModel != undefined){
                     //ctrl.isCWRoot = true;
                     ctrl.changeModel(rootModel);
-                } else{
-                    if(isCWRoot){
+                } else {
+                    if(ctrl.isCWRoot){
                         var goodChain = ctrl.chain;
                         if(goodChain == undefined){
                             goodChain == "";
                         }
+                        console.log("Watching " + goodChain);
                         ctrl.parentCtrl.addChangeWatcher(goodChain ,
                             function(changedModel, modelProperty, value){
                                 ctrl.changeModel(value);
                             }
                         );
-                    }    else{
+                    }    else {
                         ctrl.addChangeWatcher("",
                             function(changedModel, modelProperty, value){
                                 if(ctrl.parentCtrl != null){
@@ -294,7 +295,15 @@ ShapeUtil.prototype.initDOMHandling = function(){
             }
 
             if(context){
-                BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
+                if(!ctrl.contextExpression){
+                    ctrl.contextExpression = newShapeExpression(context);
+                    if(!ctrl.contextExpression){
+                        ctrl.contextName = context;
+                    }
+                } else {
+                    console.log("Ëxpanding multiple times!?");
+                }
+                //BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
             }
 
             var debugInfo="ViewName " + viewName + "ctrl: " + ctrlName;
@@ -366,32 +375,41 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(rootModel != undefined){
             ctrl.changeModel(rootModel);
         } else {
-            if(isCWRoot){
+            if(ctrl.isCWRoot){
                 var goodChain = ctrl.chain;
                 if(goodChain == undefined){
                     goodChain == "";
                 }
+                console.log("Watching " + goodChain);
                 ctrl.parentCtrl.addChangeWatcher(goodChain,
                     function(changedModel, modelProperty, value){
                         ctrl.changeModel(value);
                     }
                 );
             }
-
-            ctrl.addChangeWatcher("",
-                function(changedModel, modelProperty, value){
-                    if(ctrl.parentCtrl != null){
-                        ctrl.parentModel = changedModel;
-                        ctrl.parentModelProperty = modelProperty;
+              else {
+                ctrl.addChangeWatcher("",
+                    function(changedModel, modelProperty, value){
+                        if(ctrl.parentCtrl != null){
+                            ctrl.parentModel = changedModel;
+                            ctrl.parentModelProperty = modelProperty;
+                        }
+                        ctrl.changeModel(value);
                     }
-                    ctrl.changeModel(value);
-                }
-            );
-            //}
+                );
+            }
         }
 
         if(context){
-            BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
+            if(!ctrl.contextExpression){
+                ctrl.contextExpression = newShapeExpression(context);
+                if(!ctrl.contextExpression){
+                    ctrl.contextName = context;
+                }
+            } else {
+                console.log("Ëxpading multiple times!?");
+            }
+           //BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
         }
 
         ctrl.waitExpansion(1);

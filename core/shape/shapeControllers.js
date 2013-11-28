@@ -235,6 +235,10 @@ BaseController.prototype.modelAssign = function(value){
 }
 
 BaseController.prototype.getContextName = function(){
+    if(this.contextExpression ){
+        this.contextName = this.contextExpression.tryToEvaluate(this.parentCtrl);
+    }
+
     if(this.contextName){
         return this.contextName;
     }

@@ -8,7 +8,9 @@ shape.registerCtrl("todo",{
     init:function(){
         this.addChangeWatcher("newTitle", this.addNewTitle);
         this.on(SHAPEEVENTS.URL_CHANGE, this.hashResponse);
-        this.on(SHAPEEVENTS.CLICK, this.clickResponse);
+        this.on("completedToggle", this.clickResponse);
+        this.on("completedToggle", this.clickResponse);
+        this.on("remove", this.clickRemove);
         watchHashEvent(this);
     },
     addNewTitle :function(){
@@ -37,8 +39,12 @@ shape.registerCtrl("todo",{
             }
         }
     },
+    clickRemove:function(event){
+        var model = event.viewModel;
+            this.model.remove(model);
+    },
     clickResponse:function(event){
-        var action = event.userAction;
+        var action = event.type;
         var model = event.viewModel;
         if(action == "completedToggle"){
             this.model.toggle(model);

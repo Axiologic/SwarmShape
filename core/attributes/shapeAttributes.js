@@ -44,6 +44,7 @@ shape.registerAttribute("shape-model",{
     "expandHTMLTag"  : true
 });
 
+/*
 shape.registerAttribute("shape-context",{
     "applyAttribute" : function(dom, newValue, ctrl){
         if(newValue){
@@ -54,7 +55,7 @@ shape.registerAttribute("shape-context",{
     },
     "expandHTMLTag"  : true
 });
-
+*/
 
 shape.registerAttribute("shape-value",{
     "applyAttribute" : function(dom, newValue, ctrl){

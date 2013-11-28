@@ -5,7 +5,6 @@
 shape.registerCtrl("base/label",{
     init:function(){
         this.label = $(this.view);
-
         this.useValue = this.label.attr("value") == undefined ? false : true;
     },
     toView:function(){
@@ -16,7 +15,7 @@ shape.registerCtrl("base/label",{
     applyHtmlAttribute:function(attributeName, element, value, overrideDefault){
         if(attributeName=="value"){
             $(element).text(value);
-        }else{
+        } else {
             BaseController.prototype.applyHtmlAttribute(attributeName, element, value, overrideDefault)
         }
     }
