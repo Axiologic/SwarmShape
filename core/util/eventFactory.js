@@ -17,7 +17,7 @@ function shapeEventsFactory(){
 }*/
 
 function ClickEvent(userAction, viewModel){
-    this.type = SHAPEEVENTS.CLICK;
+    //this.type = SHAPEEVENTS.CLICK;
     //this.userAction = userAction;
     this.type = userAction;
     this.viewModel = viewModel;
