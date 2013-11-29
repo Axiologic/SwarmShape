@@ -23,14 +23,20 @@ shape.registerCtrl("ViewCacheCtrl",{
         this.fence.acquire();
     },
     init:function(){
-        this.isCWRoot = true;
         this.cache = {};
+
+    },
+    watchModelChanges:function(){
+        this.isCWRoot = true;
         var self = this;
         this.parentCtrl.addChangeWatcher(this.chain,
             function(changedModel, modelProperty, value){
                 self.changeModel(value);
             }
         );
+    },
+     canDestroyChildren : function(children){
+        return false;
     },
     expander:function(callback){
         if(this.model){
@@ -47,9 +53,7 @@ shape.registerCtrl("ViewCacheCtrl",{
             } else {
                 var self = this;
                 var model = this.model;    // don't relay on this.model in callback
-                console.log("Creating view for " + this.model);
                 shape.getPerfectShape(undefined, this.model, this.getContextName(), function(newElem){
-                    console.log(newElem);
                     self.lastInserted = $(newElem);
                     $(self.view).append(self.lastInserted);
                     shape.bindAttributes(self.view, self);
@@ -58,14 +62,14 @@ shape.registerCtrl("ViewCacheCtrl",{
                 });
             }
        }
-// else{
-//            if(this.view){
-//                if(this.lastInserted){
-//                    this.lastInserted.detach();
-//                }
-//            }
-//            callback();
-//        }
+        else{
+                    if(this.view){
+                        if(this.lastInserted){
+                            this.lastInserted.detach();
+                        }
+                    }
+                    callback();
+                }
     },
     toView:function(){
         this.beginExpansion();

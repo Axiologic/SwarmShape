@@ -52,7 +52,7 @@ ShapeExpression=function(expression){
             for(var i=0; i<chains.length;i++){
                 this.ctrl.addChangeWatcher(chains[i].slice(1), function(model, prop, value, oldValue){
                     _onChangeHandler(model, prop, callhandler(), oldValue);
-                });
+                }, "Binding Expression "+expression + " :" );
             }
         }else{
             _onChangeHandler(this.ctrl.model, null, callhandler(), null);

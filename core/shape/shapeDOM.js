@@ -269,28 +269,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
                     //ctrl.isCWRoot = true;
                     ctrl.changeModel(rootModel);
                 } else {
-                    if(ctrl.isCWRoot){
-                        var goodChain = ctrl.chain;
-                        if(goodChain == undefined){
-                            goodChain == "";
-                        }
-                        console.log("Watching " + goodChain);
-                        ctrl.parentCtrl.addChangeWatcher(goodChain ,
-                            function(changedModel, modelProperty, value){
-                                ctrl.changeModel(value);
-                            }
-                        );
-                    }    else {
-                        ctrl.addChangeWatcher("",
-                            function(changedModel, modelProperty, value){
-                                if(ctrl.parentCtrl != null){
-                                    ctrl.parentModel = changedModel;
-                                    ctrl.parentModelProperty = modelProperty;
-                                }
-                                ctrl.changeModel(value);
-                            }
-                        );
-                    }
+                    ctrl.watchModelChanges();
                 }
             }
 
@@ -346,7 +325,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(ctrlName == undefined){
             if( ($(domObj).is('div') || $(domObj).is('span') ) && $(domObj).attr("shape-view") == undefined && !transparentModel){
                 ctrlName = "DynamicController";
-                isCWRoot = true;
+                //isCWRoot = true;
             }else{
                 ctrlName =  "base/" + domObj.nodeName.toLowerCase();
             }
@@ -375,29 +354,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(rootModel != undefined){
             ctrl.changeModel(rootModel);
         } else {
-            if(ctrl.isCWRoot){
-                var goodChain = ctrl.chain;
-                if(goodChain == undefined){
-                    goodChain == "";
-                }
-                console.log("Watching " + goodChain);
-                ctrl.parentCtrl.addChangeWatcher(goodChain,
-                    function(changedModel, modelProperty, value){
-                        ctrl.changeModel(value);
-                    }
-                );
-            }
-              else {
-                ctrl.addChangeWatcher("",
-                    function(changedModel, modelProperty, value){
-                        if(ctrl.parentCtrl != null){
-                            ctrl.parentModel = changedModel;
-                            ctrl.parentModelProperty = modelProperty;
-                        }
-                        ctrl.changeModel(value);
-                    }
-                );
-            }
+            ctrl.watchModelChanges();
         }
 
         if(context){

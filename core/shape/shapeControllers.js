@@ -58,7 +58,7 @@ BaseController.prototype.getCtxtCtrl = function(){
  hasTransparentModel - doesn't have his own model,inherits the same wih he first non transparentModel
     isCWRoot = all change watchers will be relative to this ctrl, breaks the whole chain from context controller
 */
-BaseController.prototype.addChangeWatcher = function(chain,handler){
+BaseController.prototype.addChangeWatcher = function(chain,handler, cause){
     var self = this;
     function createCW(ctrl, currChain){
         if(ctrl.parentCtrl == null || ctrl.isCWRoot){
@@ -68,7 +68,13 @@ BaseController.prototype.addChangeWatcher = function(chain,handler){
                 handler(null, null, ctrl.model);
             }else{
                 watcher = addChangeWatcher(ctrl.model,currChain,handler);
-                //dprint("Chain " + chain + "->"+currChain/*+" handler "+handler+" watcher "+watcher*/);
+                /*if(cause == 'Watching model :'){
+                    if(ctrl.model && self.model ){
+                        console.log(cause, " new ChangeWatcher for Chain \'" + chain + "\' -> "+currChain, ctrl.model.toString(), " from ", self.model.toString());
+                    } else {
+                        console.log(cause, " *new ChangeWatcher for Chain \'" + chain + "\' -> "+currChain);
+                    }
+                }*/
                 self.changeWatchers.push({"chain":chain,"handler":handler, "watcher":watcher});
             }
             return;
@@ -102,16 +108,45 @@ function try2InitCtrl(ctrl){
 
 }
 
+
+BaseController.prototype.watchModelChanges = function(){
+    var self = this;
+    if(self.isCWRoot){
+        if(self.chain){
+            console.log("Watching " + self.chain);
+            self.parentCtrl.addChangeWatcher(self.chain,
+                function(changedModel, modelProperty, value){
+                    self.changeModel(value);
+                },
+                "Watching model cwroot:"
+            );
+        }
+    }
+        else
+        self.addChangeWatcher("",
+            function(changedModel, modelProperty, value){
+                if(self.parentCtrl != null){
+                    self.parentModel = changedModel;
+                    self.parentModelProperty = modelProperty;
+                }
+                self.changeModel(value);
+            },
+            "Watching model :"
+        );
+
+}
+
+
 BaseController.prototype.onModelChanged = function(oldModel){
     //console.log("model changed");
-    if(oldModel !== this.model){
+    /*if(oldModel !== this.model){
         var oldcw = this.changeWatchers;
         this.changeWatchers = [];
         for(var i = 0; i< oldcw.length; i++){
             oldcw[i]["watcher"].release();
             this.addChangeWatcher(oldcw[i].chain,oldcw[i].handler);
         }
-    }
+    } */
 }
 
 BaseController.prototype.onViewChanged = function(){
@@ -122,7 +157,9 @@ BaseController.prototype.changeModel = function(model){
      var oldModel = this.model;
     if(this.isCWRoot){
         if(this.model && this.model!==model){
-            this.destroyChildren();
+            if(this.canDestroyChildren()){
+                this.destroyChildren();
+            }
         }
     }
 
@@ -186,6 +223,10 @@ BaseController.prototype.afterChildExpansion = function(caller){
     if(this.parentCtrl){
         this.parentCtrl.afterChildExpansion(this);
     }
+}
+
+BaseController.prototype.canDestroyChildren = function(){
+    return true;
 }
 
 BaseController.prototype.destroyChildren = function(){

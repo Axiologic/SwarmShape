@@ -17,7 +17,16 @@ shape.registerCtrl("DynamicController",{
         this.fence.acquire();
     },
     init:function(){
+        //this.isCWRoot = true;
+    },
+    watchModelChanges:function(){
         this.isCWRoot = true;
+        var self = this;
+        this.parentCtrl.addChangeWatcher(this.chain,
+            function(changedModel, modelProperty, value){
+                self.changeModel(value);
+            }
+        );
     },
     expander:function(callback){
         if(this.model){
