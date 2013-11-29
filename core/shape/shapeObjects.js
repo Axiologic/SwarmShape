@@ -141,7 +141,11 @@ function ChangeWatcher(model, chain, handler){
 
             return function(changedModel, property, value, oldValue ){
                 if(deleted){
-                    console.log("calling a deleted watcher");
+                    console.log("calling a deleted watcher for " + model,chain);
+                    chainValues    = [];
+                    callBackRefs   = [];
+                    handler = null;
+                    model = null;
                     return;
                 }
                 try{
@@ -212,6 +216,7 @@ function ChangeWatcher(model, chain, handler){
 
         this.release  = function(){
             deleted = true;
+            //console.log("deleting changeWatcher " + this + " for model " + model + " chain " + chain );
             for(var i=0; i < callBackRefs.length; i++) {
                 var ref = callBackRefs[i];
                 if(ref != null){

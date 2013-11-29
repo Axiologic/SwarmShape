@@ -1,16 +1,14 @@
 shape.registerCtrl("testsSuiteCtrl",{
     init:function(){
        this.on(SHAPEEVENTS.URL_CHANGE, this.hashResponse);
-       this.on(SHAPEEVENTS.CLICK, this.runTestHandler);
+       this.on("runTests", this.runTestHandler);
        watchHashEvent(this);
     },
     toView:function(){
 
     },
     runTestHandler:function(event){
-       if(event.userAction=="runTests"){
            runTests();
-       }
     },
     hashResponse:function(event){
        var selection=event.selection;
