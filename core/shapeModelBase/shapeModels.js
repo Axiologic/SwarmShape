@@ -70,8 +70,7 @@ function QSClassDescription(declaration, qsName){
             try{
                 model[n] = newMember(m);
             }catch(err){
-                console.log(err);
-                wprint(err.message);
+                console.log("Error while initialising member " ,n, " in a model with type", this.className ,"\n",err.message);
             }
             //addChangeWatcher(model,n,changeCallBack)
         }

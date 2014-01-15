@@ -134,7 +134,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         }
         var result = this.getShapeByName(name, usecase, callBack);
         if(!result){
-            wprint("Unable to automatically detect a shape for type " + name);
+            wprint("Unable to automatically detect a shape for type " + name + " in context "+ usecase);
         }
         return result;
     }
@@ -166,7 +166,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
                 return true;
             }
         }
-        wprint("Could not find html view:" + shapeName);
+        wprint("Could not find html view for model:" + name + " and context " + usecase );
         return false;
     }
 
