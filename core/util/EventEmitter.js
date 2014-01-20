@@ -44,4 +44,13 @@ function makeEventEmitter(obj, parent){
             }
         }
     }
+    return obj ;
+}
+
+
+
+createPubSubChannel = function(name){
+    var o = {toString:function(){return name}};
+    makeEventEmitter(o);
+    return o;
 }
