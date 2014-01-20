@@ -10,8 +10,12 @@ shape.registerTypeBuilder("GlobalObject", {
         }
     },
     factory: function(type,args,memberDesc){
-        var result = new ModelObject(type, args,false);
-        makeEventEmitter(result);
+        try{
+            var result = new ModelObject(type, args,false);
+            makeEventEmitter(result);
+        } catch(err){
+            wprint("Exception when creating an object with type ",type,args);
+        }
         return result;
     },
     encode:function(outerObject){

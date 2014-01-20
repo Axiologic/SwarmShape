@@ -92,6 +92,8 @@ BaseController.prototype.addChangeWatcher = function(chain,handler, cause){
     createCW(this, chain);
 }
 
+BaseController.prototype.watch = BaseController.prototype.addChangeWatcher;
+
 function try2InitCtrl(ctrl){
     if(!ctrl.initialised){
         if(ctrl.modelInitialized && ctrl.view != undefined){

@@ -219,3 +219,10 @@ function PropertiesFence(context, properties, callback){
 }
 
 fuckingCallLevel = 0;
+
+
+var counterUUID = 0;
+function generateShapeUUID(){
+    counterUUID++;
+    return "SHAPE_UUID_" + counterUUID;
+}
