@@ -89,7 +89,7 @@ function QSClassDescription(declaration, qsName){
                         console.log("Calling chain with null model ");
                     }
                 } catch(err){
-                    console.log("Unknown error in trigger code" + err + " code:\n"+ myTrigger.code);
+                    eprint("Unknown error in trigger code:\n"+ myTrigger.code, err);
                 }
             }
         }

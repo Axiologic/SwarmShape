@@ -29,7 +29,11 @@ function wprint (str,fullStack){
 }
 
 function eprint(str, err){
-    shape__linePrint("Error:", str+" "+err.message, err.stack);
+    shape__linePrint("Error:", str+" : "+err.message);
+}
+
+function esprint(str, err){
+    shape__linePrint("Error:", str+" : "+err.message, err.stack);
 }
 
 //pretty print for bindable objects, donn't print __meta stuff
