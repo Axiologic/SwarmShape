@@ -199,6 +199,11 @@ Collection.prototype.shuffle = function(){
     this.announceChange("shuffle");
 }
 
+Collection.prototype.insertAt = function(item,index){
+    this.container.splice(index, 0, item);
+    this.announceChange("insert");
+}
+
 Collection.prototype.clone = function(){
     var clone = new Collection();
     clone.container = this.container.slice(0);
