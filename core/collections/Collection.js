@@ -133,6 +133,22 @@ Collection.prototype.setAt = function(elem, index){
     this.announceChange("insert", index);
 }
 
+Collection.prototype.map = function(callBack, myThis){
+    return this.container.map(callBack, myThis);
+}
+
+Collection.prototype.forEach = function(callBack, myThis){
+    if(myThis){
+        return this.container.forEach(callBack, myThis);
+    } else {
+        return this.container.forEach(callBack);
+    }
+}
+
+Collection.prototype.reduce = function(callBack, initialValue){
+    return this.container.reduce(callBack, initialValue);
+}
+
 Collection.prototype.size = function(){
      return this.container.length;
 }
