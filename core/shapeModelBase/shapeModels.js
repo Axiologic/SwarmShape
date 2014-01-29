@@ -75,9 +75,15 @@ function QSClassDescription(declaration, qsName){
             //addChangeWatcher(model,n,changeCallBack)
         }
 
-        if(model.ctor != undefined && typeof model.ctor == "function"){
-            model.ctor.apply (model,ctorArgs);
+        try{
+            if(model.ctor != undefined && typeof model.ctor == "function"){
+                model.ctor.apply (model,ctorArgs);
+            }
+        } catch(err){
+            wprint("ctor code unknown error for "+  this.className, err);
         }
+
+
 
         function getTriggerFunction(targetChain,myTrigger,myProperty, chain){
             return   function(newParent,property,newValue, chain){

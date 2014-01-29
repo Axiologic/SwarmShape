@@ -9,7 +9,7 @@ function ModelObject(type,args, owner){
         }
         desc.attachClassDescription(this, args, owner);
     } catch(err) {
-        eprint("Unknown error when attaching class description to an object with ctor "+ type, err);
+        eprint("Unknown instantiating a new object with type " + type, err);
     }
     this.__meta.pk = "temporary:" + this.__meta.__localId;
     return this;

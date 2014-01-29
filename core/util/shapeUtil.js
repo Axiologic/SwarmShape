@@ -271,26 +271,30 @@ function dumpArgs(args){
         if(typeof o == "string"){
             return o;
         }
-        if(o && typeof o == "object"){
-            if(o.__meta) {
-                return  "{"+obj.getClassName + o.getPK()+"}";
-            }
-            var ret = "";
-            var first = true;
-            for(var i in o){
-                if(first){
-                    first = false;
-                    ret +=  "{ ";
-                } else {
-                    ret +=  ", ";
-                }
-                ret +=  i;
-                ret +=  ":";
-                ret +=  stringify(o[i]);
 
+        try{
+            return J(o);
+        }   catch(err){
+            if(o && typeof o == "object"){
+                if(o.__meta) {
+                    return  "{"+obj.getClassName + o.getPK()+"}";
+                }
+                var ret = "";
+                var first = true;
+                for(var i in o){
+                    if(first){
+                        first = false;
+                        ret +=  "{ ";
+                    } else {
+                        ret +=  ", ";
+                    }
+                    ret +=  i;
+                    ret +=  ":";
+                    ret +=  stringify(o[i]);
+                }
+                ret+="}";
+                return ret
             }
-            ret+="}";
-            return ret
         }
     }
 
