@@ -157,7 +157,7 @@ ObjectRepository.prototype.setPersistence = function(persistenceName){
     var pers = BasePersistence.prototype.getPersistenceByName(persistenceName);
     if(pers == null){
         pers = BasePersistence.prototype.getPersistenceByName("null");
-        console.log("Unknown persistence " + persistenceName + " defaulting to 'null' persistence");
+        wprint("Unknown persistence " + persistenceName + " defaulting to 'null' persistence");
     }
     this.persistence = pers;
 }

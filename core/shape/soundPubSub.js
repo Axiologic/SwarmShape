@@ -210,7 +210,7 @@ function SoundPubSub(){
                 }
             }
             if(!gotit){
-                console.log("Unable to unsubscribe a callback that was not subscribed!");
+                wprint("Unable to unsubscribe a callback that was not subscribed!");
             }
         }
       }

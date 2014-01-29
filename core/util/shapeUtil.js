@@ -12,29 +12,47 @@ function ShapeUtil(){
 
 }
 
-function cprint(str, fullStack){
-    shape__linePrint("",str, fullStack);
+window.onerror = function(message, filename, lineno, colno, error){
+    alert(message);
+    if(error != null){
+        eprint(error);
+        //handle the error with stacktrace in error.stack
+    }
+    else{
+        cprint(message, filename, lineno);
+        //sadly only 'message', 'filename' and 'lineno' work here
+    }
+};
+
+
+function cprint(){
+    var str = dumpArgs(arguments);
+    console.log(str);
+    ShapeUtil.prototype.bufferConsole(str);
 }
 
-function xprint(str){
-    //console.log(str);
+function dprint(){
+    var str =   dumpArgs(arguments);
+    shape__linePrint("Debug:",str);
 }
 
-function dprint(str, fullStack){
-    shape__linePrint("Debug:",str,fullStack);
+function lprint(){
+    var str =   dumpArgs(arguments);
+    shape__linePrint("Log:",str, null, true);
 }
 
-function wprint (str,fullStack){
-    shape__linePrint("Warning:",str, fullStack);
+function wprint (){
+    shape__linePrint("Warning:",dumpArgs(arguments));
 }
 
 function eprint(str, err){
-    shape__linePrint("Error:", str+" : "+err.message);
+    shape__linePrint("Error:", str + " : "+err.message,err.stack);
 }
 
 function esprint(str, err){
     shape__linePrint("Error:", str+" : "+err.message, err.stack);
 }
+
 
 //pretty print for bindable objects, donn't print __meta stuff
 J = function(obj) {
@@ -50,13 +68,30 @@ J = function(obj) {
 //internal stuff
 var shape__linePrint_hasConsole = typeof console; // for IE...
 
-function shape__linePrint(prefix, text, fullStack){
+ShapeUtil.prototype.bigBuffer = [];
+ShapeUtil.prototype.bufferConsole = function(){
+    var line = "";
+    for(var i=0;i<arguments.length;i++){
+        line += " ";
+        line += arguments[i];
+    }
+
+    if(ShapeUtil.prototype.haveDebugConsole != false){
+        ShapeUtil.prototype.bigBuffer.push(line);
+    }
+
+}
+
+if (!shape__linePrint_hasConsole  || !console || !console.log || !console.error) {
+    console = {log: ShapeUtil.prototype.bufferConsole, error: ShapeUtil.prototype.bufferConsole};
+}
+
+function shape__linePrint(prefix, text, fullStack, noConsole){
     var text = shape__prettyStack(fullStack,3)+'>>\n'+text;
 
-    if(shape__linePrint_hasConsole == "undefined"){
-        console = prefix + text;
-    }else{
-        console.log(prefix + text);
+    ShapeUtil.prototype.bufferConsole(prefix + text);
+    if(shape__linePrint_hasConsole && !noConsole){
+       console.log(text);
     }
 }
 
@@ -229,4 +264,41 @@ var counterUUID = 0;
 function generateShapeUUID(){
     counterUUID++;
     return "SHAPE_UUID_" + counterUUID;
+}
+
+function dumpArgs(args){
+    function stringify(o){
+        if(typeof o == "string"){
+            return o;
+        }
+        if(o && typeof o == "object"){
+            if(o.__meta) {
+                return  "{"+obj.getClassName + o.getPK()+"}";
+            }
+            var ret = "";
+            var first = true;
+            for(var i in o){
+                if(first){
+                    first = false;
+                    ret +=  "{ ";
+                } else {
+                    ret +=  ", ";
+                }
+                ret +=  i;
+                ret +=  ":";
+                ret +=  stringify(o[i]);
+
+            }
+            ret+="}";
+            return ret
+        }
+    }
+
+    var str = "";
+    for(var i=0; i<args.length; i++) {
+        str += " ";
+        str += stringify(args[i]);
+    }
+
+    return str;
 }

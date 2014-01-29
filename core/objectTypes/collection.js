@@ -2,7 +2,7 @@ shape.registerTypeBuilder("collection",{
     native : false,
     initializer:function(type, args, memberDescription){
         if(args || (memberDescription && memberDescription.value)){
-               console.log("Collection initialisation not implemented");
+               wprint("Collection initialisation not implemented");
         } else {
             return null;
         }

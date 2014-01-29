@@ -39,15 +39,14 @@ function BaseController(ctrlName, parentCtrl){
     makeBindable(this);
     setTimeout(function(){
        if(!this.initialised){
-            console.log("Ctrl "+this.ctrlName+" isn't initialiazed! "+this.__waitCounter);
+            wprint("Ctrl "+this.ctrlName+" isn't initialiazed! "+this.__waitCounter);
        }
     }.bind(this),3000);
-    //console.log("Creating controller " + ctrlName + " as " + this);
 }
 
 
 BaseController.prototype.init = function(){
-   // wprint("Calling BaseController's init function is probably wrong (missing a proper controller) for " + this.ctrlName);
+
 }
 
 BaseController.prototype.getCtxtCtrl = function(){
@@ -115,7 +114,6 @@ BaseController.prototype.watchModelChanges = function(){
     var self = this;
     if(self.isCWRoot){
         if(self.chain){
-            console.log("Watching " + self.chain);
             self.parentCtrl.addChangeWatcher(self.chain,
                 function(changedModel, modelProperty, value){
                     self.changeModel(value);
@@ -208,13 +206,13 @@ BaseController.prototype.afterExpansion = function(caller){
         this.afterChildExpansion(caller);
     //}
     if(caller==undefined){
-        console.log("caller undefined");
+        wprint("Warning, After expansion, caller undefined");
         return;
     }
     var parentId = parseInt(this.toString());
     var childId = parseInt(caller.toString());
-    if(parentId>childId){
-        console.log(this.ctrlName+" "+this.toString()+" has been announced by "+caller.ctrlName+" "+caller.toString());
+    if(parentId > childId){
+        wprint(this.ctrlName+" "+this.toString()+" has been announced by "+caller.ctrlName+" "+caller.toString());
     }
     if(caller!==this){
         this.children[caller] = caller;
@@ -237,7 +235,7 @@ BaseController.prototype.destroyChildren = function(){
         try{
             watcherObj.watcher.release();
         }catch(err){
-            console.log(err);
+            eprint("destroyChildren:", err);
         }
     }
     this.changeWatchers = [];
@@ -248,7 +246,7 @@ BaseController.prototype.destroyChildren = function(){
             delete this.children[childId];
             child.destroyChildren();
         }catch(errr){
-            console.log(errr);
+            eprint("destroyChildren:", errr);
         }
     }
 }

@@ -70,7 +70,7 @@ function QSClassDescription(declaration, qsName){
             try{
                 model[n] = newMember(m);
             }catch(err){
-                console.log("Error while initialising member " ,n, " in a model with type", this.className ,"\n",err.message);
+                eprint("Error while initialising member " ,n, " in a model with type " + this.className, err);
             }
             //addChangeWatcher(model,n,changeCallBack)
         }
@@ -86,7 +86,7 @@ function QSClassDescription(declaration, qsName){
                         model[myProperty] = myTrigger.code.call(model, chain);
                     }
                     else {
-                        console.log("Calling chain with null model ");
+                        wprint("Calling chain with null model ");
                     }
                 } catch(err){
                     eprint("Unknown error in trigger code:\n"+ myTrigger.code, err);
@@ -256,7 +256,7 @@ ShapeUtil.prototype.initSchemaSupport = function(){
     Shape.prototype.verifyObjectAgainstInterface = function (object, propertyName, newValue){
         var csdsc = object.getClassDescription();
         if(!csdsc){
-            console.log("Warning:" + " unchecked assignment of property " + propertyName);
+            wprint("Warning:" + " unchecked assignment of property " + propertyName);
             return false;
         }
 
@@ -264,7 +264,7 @@ ShapeUtil.prototype.initSchemaSupport = function(){
         var newValueDesc = modelFields[propertyName];
         if(this.getInterfaceDescription(newValueDesc['type'])){
             if(!this.getInterfaceDescription(newValueDesc['type']).implementsYou(newValue)){
-                dprint("You are trying to assign wrong type of object! Should implement interface "+newValueDesc['type']);
+                wprint("You are trying to assign wrong type of object! Should implement interface " + newValueDesc['type']);
                 return false;
             }
         }

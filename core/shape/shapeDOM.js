@@ -280,7 +280,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
                         ctrl.contextName = context;
                     }
                 } else {
-                    console.log("Ëxpanding multiple times!?");
+                    wprint("Ëxpanding multiple times!?");
                 }
                 //BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
             }
@@ -364,7 +364,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
                     ctrl.contextName = context;
                 }
             } else {
-                console.log("Ëxpading multiple times!?");
+                wprint("Ëxpading multiple times!?");
             }
            //BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
         }

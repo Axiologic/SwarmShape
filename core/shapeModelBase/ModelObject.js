@@ -27,7 +27,7 @@ ModelObject.prototype.createMember = function(memberName){
         var res = shape.newRawObject(memberDesc.type, args, memberDesc, this.__meta.owner);
         this[memberName] = res;
     } catch(err){
-        console.log("Failed to create member " + memberName + " " + err );
+        eprint("Failed to create member " + memberName + " " ,  err );
     }
 }
 

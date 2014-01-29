@@ -141,7 +141,7 @@ function ChangeWatcher(model, chain, handler){
 
             return function(changedModel, property, value, oldValue ){
                 if(deleted){
-                    console.log("calling a deleted watcher for " + model,chain);
+                    wprint("calling a deleted watcher for " + model + chain);
                     chainValues    = [];
                     callBackRefs   = [];
                     handler = null;
@@ -166,12 +166,12 @@ function ChangeWatcher(model, chain, handler){
                         try{
                             handler(newParent,args[endOfChain-1],newValue, chain);
                         }catch(err){
-                            console.log("Handler error: " + err.message + "\n" + handler);
+                            wprint("Handler error: " + err.message + "\n" + handler);
                         }
 
                     }
                 }   catch(err){
-                    console.log("Binding error: " + err.message);
+                    wprint("Binding error: " + err.message, err);
                 }
             }
         }
@@ -237,7 +237,7 @@ function ChangeWatcher(model, chain, handler){
             //console.log("Retrigering handler " + chain);
             handler(newParent,args[endOfChain-1],newValue, chain);
         }catch(err){
-            console.log("Syntax error in handler: ", err.message);
+            eprint("Syntax error in handler: ", err);
         }
 
 

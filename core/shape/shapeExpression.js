@@ -12,7 +12,7 @@ ShapeExpression=function(expression){
                     var t = chains[i].slice(1);
                     interpretedExpress = interpretedExpress.replace(chains[i], "this.ctrl.model."+t);
                 }catch(e){
-                    console.log(e);
+                    eprint("Exception catches in expression " + expression, e);
                 }
 
             }
@@ -25,7 +25,6 @@ ShapeExpression=function(expression){
     var evalToDO = "var x = function(){\n" +
         "return " +interpretedExpress+";\n"+
         "}; \nx;\n";
-    //console.log(evalToDO);
     handler=eval(evalToDO);
     handler = handler.bind(this);
 
