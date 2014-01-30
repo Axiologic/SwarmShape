@@ -13,13 +13,13 @@ function ShapeUtil(){
 }
 
 window.onerror = function(message, filename, lineno, colno, error){
-    alert(message);
+    alert(message + error.stack);
     if(error != null){
-        eprint(error);
+        eprint("global error", error);
         //handle the error with stacktrace in error.stack
     }
     else{
-        cprint(message, filename, lineno);
+        lprint(message, filename, lineno);
         //sadly only 'message', 'filename' and 'lineno' work here
     }
 };
