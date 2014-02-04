@@ -6,12 +6,14 @@ shape.registerCtrl("base/input",{
     model:null,
     isCheckbox:false,
     init:function(){
+
         this.isCheckbox = ($(this.view).attr("type") == "checkbox");
         this.isOnKey = ($(this.view).attr("shape-param") == "eachKey");
         if(!this.isOnKey){
             $(this.view).on("change",this.onChange);
         } else {
             $(this.view).keyup(this.onChange);
+            $(this.view).on("click",this.onChange);
             $(this.view).focus();
         }
     },
@@ -29,6 +31,7 @@ shape.registerCtrl("base/input",{
         } else{
             this.model = this.view.value;
         }
+        console.log("time "+this.view.value);
         this.modelAssign(this.model);
     }
 });
