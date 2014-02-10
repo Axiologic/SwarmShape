@@ -2,16 +2,16 @@
 =====================================================
 
 Why another JS MVVM framework?
-  Simple, other JS frameworks are not elegant and powerfull enough: 
+  Simple, other JS frameworks are not elegant and powerful enough: 
 
 * minimal framework conventions, reduce boilerplate 
-* very gentle learning curve to become effective (a few hours, days)
-* few, natural concepts: bindable chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
+* very gentle learning curve to become effective (a few days for beginner programmers without JS and JQuery experience)
+* few, natural concepts: models, controllers, bind-able chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
-* is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes, mutiple views)
+* is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and attributes, multiple views)
 * TYPED models using an internal JavaScript DSL. Offers dynamic view injection and better error handling
-* clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behaviour)
-* inversion of control in a declarative way: automaticaly insert views in DOM using the type of the model
+* clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behavior)
+* inversion of control in a declarative way: automatically insert views in DOM using the type of the model
 
 * dynamic controllers: dynamic view injection, you can have multiple views for a model using shape-context attributes 
 
@@ -40,17 +40,17 @@ Why another JS MVVM framework?
     
 
 * each view and each controller have a model
-* automatic persistence for models (to JSON) with embeded or transient properties
+* automatic persistence for models (to JSON) with embedded or transient properties
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * if you know JQuery, you learn to create a new controller in 10 minutes
-* clear arhitecture, you start from views and models and discover your code
+* clear architecture, you start from views and models and discover your code
 * automatically creates controllers as declared in views
-* events model that get transmited in the controlers hieracy that mimics the DOM structure
-* intuitive event model for autocomputed properties in models and for chains. Compact multiple,related events for speed and soundness.
-* VERY GOOD error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
+* events model that get transmitted in the controllers hierarchy that mimics the DOM structure
+* intuitive event model for auto-computed properties in models and for chains. Compact multiple,related events for speed and soundness.
+* VERY GOOD error handling, showing stack info, type information,etc (wprint, eprint, esprint, etc)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
-Guide: start looking in views first and next models, controllers. How they are working toghether should be visible from views and models.
+Guide: start looking in views first and next models, controllers. How they are working together should be visible from views and models.
 
    SwarmShape : JS MVVM framework for REST and Swarms 
 =====================================================
@@ -71,41 +71,12 @@ SwarmShape:
 * Portals, RIA, single page applications)
 * Type checking in Java Script (only for models)
 * If you know HTML, you know SwarmShape 
-* Rest APIs or SwarmESB for backend
+* Rest APIs or SwarmESB for back-end
 * Goals: simplicity, programming discipline, reusable components, component layouts, themes
 
 
 Examples:
 For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server is required) 
-
-SwarmShape priciples/features:
-  - declarative when possible
-  - based on inversion of control
-  - reusability of controllers (mainly) and models
-  - html tags will magically become components if you put shape-ctrl or shape-view attributes
-  - clean separation of models, views, controllers
-  - fat models
-  - models with type checking (types, interfaces)
-  - use computed properties (expression computed from properties chains) to describe self contained models
-  - explicitly put as much as possible from your specific logic in models (code and data) and not in behaviors/controllers,views, helper classes
-  - everything else get reusable (components, views, controllers, helpers, style, layouts)
-  - model objects can be
-      - "global" (persistent objects, saved on server, have a global identity)
-      - transient (exist only once, don't have an identity)
-      - embedded  (embedded in a global object that can be seen as an (JSON) "document", hae only local identity)
-
-  - have magic (like bindings, ChangeWatchers for chains, componentisation) but have as few APIs and concepts as possible
-  - when possible, let conventions discover a proper controller or a model for a HTML tags
-  - add your custom attributes to any html tag to enhance code readability and do more magic
-
-Main features:
-- MVC (MVVM) with clean and simple architecture
-- bindable/observable chains and collections
-- ui component oriented (yes,you can create reusable components with HTML!)
-- client side Pub/Sub channels (safe and sound against asynchronous weirdness in computed values/expressions from  models or in callbacks for other messages/events)
-- views are build by direct DOM element manipulation and not with templates (string manipulation)
-- reusable layouts (wip)
-- works with Ajax and swarms (SwarmESB) for backend (wip)
 
 
 Quick Code Example:
@@ -173,8 +144,34 @@ Quick Code Example:
       // create a model (a task), expand that component and bind to the model
       model = shape.newObject("task");
       //insert shape view in DOM based on a root model 
-      shape.expandShapeComponent(document.getElementById("main"),null, model)
+      shape.expandShapeComponent(document.getElementById("main"),null, model) 
 
 
 
+Summary, SwarmShape principles/features:
+  - declarative when possible
+  - based on inversion of control
+  - re-usability of controllers (mainly) and models
+  - html tags will magically become components if you put shape-ctrl or shape-view attributes
+  - clean separation of models, views, controllers
+  - fat models
+  - models with type checking (types, interfaces)
+  - use computed properties (expression computed from properties chains) to describe self contained models
+  - explicitly put as much as possible from your specific logic in models (code and data) and not in behaviors/controllers,views, helper classes
+  - everything else get reusable (components, views, controllers, helpers, style, layouts)
+  - model objects can be
+      - "global" (persistent objects, saved on server, have a global identity)
+      - transient (exist only once, don't have an identity)
+      - embedded  (embedded in a global object that can be seen as an (JSON) "document", hae only local identity)
 
+  - use magic to hide complexity and redundancy (like bindings, change watchers for chains, controllers are basically components) but have as few APIs and concepts as possible
+  - when possible, let conventions discover a proper controller or a model for a HTML tags
+  - add your custom attributes to any html tag to enhance code readability and do more magic
+
+Main features:
+- MVC (MVVM) with clean and simple architecture
+- bindable/observable chains and collections
+- UI component oriented (yes,you can create reusable components with HTML!)
+- client side Pub/Sub channels (safe and sound against asynchronous weirdness in computed values/expressions from  models or in callbacks for other messages/events)
+- views are build by direct DOM element manipulation and not with templates (string manipulation)
+- works with Ajax and swarms (SwarmESB) for back-end (wip)
