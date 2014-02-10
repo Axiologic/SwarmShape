@@ -52,32 +52,7 @@ Why another JS MVVM framework?
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
 Guide: start looking in views first and next models, controllers. How they are working together should be visible from views and models.
 
-   SwarmShape : JS MVVM framework for REST and Swarms 
-=====================================================
-
-SwarmShape is part of "Swarm" project and provides UI components and client side architecture for "Swarmified" applications 
-* SwarmESB (https://github.com/salboaie/SwarmESB)  is an Enterprise Service Bus: orchestrates services (REST APIs, or functions)
-* SwarmShape is open and extensible. Combined with SwarmESB is powerfull but it can be used with custom servers (your own CRUD, web services)
-* SwarmShape is a modern Java Script and HTML5 development framework
- 
-License: LGPL
-
-Release:  1.0(beta) 
-Planned stable release: 1.0
-
-SwarmShape:
-* Created for big enterprise projects 
-* Real time web applications
-* Portals, RIA, single page applications)
-* Type checking in Java Script (only for models)
-* If you know HTML, you know SwarmShape 
-* Rest APIs or SwarmESB for back-end
-* Goals: simplicity, programming discipline, reusable components, component layouts, themes
-
-
-Examples:
-For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server is required) 
-
+  
 
 Quick Code Example:
 ===============
@@ -145,6 +120,29 @@ Quick Code Example:
       model = shape.newObject("task");
       //insert shape view in DOM based on a root model 
       shape.expandShapeComponent(document.getElementById("main"),null, model) 
+
+
+ SwarmShape : JS MVVM framework for REST and Swarms 
+=====================================================
+
+SwarmShape is part of "Swarm" project and provides UI components and client side architecture for "Swarmified" applications 
+* SwarmESB (https://github.com/salboaie/SwarmESB)  is an Enterprise Service Bus: orchestrates services (REST APIs, or functions)
+* SwarmShape is open and extensible. Combined with SwarmESB is powerfull but it can be used with custom servers (your own CRUD, web services)
+* SwarmShape is a modern Java Script and HTML5 development framework
+ 
+License: LGPL
+
+Release:  1.0(beta) 
+Planned stable release: 1.0
+
+SwarmShape:
+* Created for big enterprise projects 
+* Real time web applications
+* Portals, RIA, single page applications)
+* Type checking in Java Script (only for models)
+* Rest APIs or SwarmESB for back-end
+* Goals: simplicity, programming discipline, reusable components, component layouts, themes
+
 
 
 
