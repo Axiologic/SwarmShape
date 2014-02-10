@@ -17,7 +17,7 @@ Why?
       
 * clear arhitecture, you start from views and models and discover your code
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
-* 
+
       <div shape-model="@user.manager.name" ></div> 
 
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
