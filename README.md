@@ -9,7 +9,7 @@ Why another framework?
 * is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes, mutiple views)
 * typed models using an internal JavaScript DSL
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
-* inversion of control: automaticaly links view on model types 
+* inversion of control in a delcarative way: automaticaly insert views in DOM using the type of the model
 
 * automatic persistence for models (to JSON) with embeded or transient proprties
 * dunamic ocntrollers: you can have multiple views for a model using shape-context attributes 
