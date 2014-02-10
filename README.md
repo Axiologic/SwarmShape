@@ -28,9 +28,9 @@ Why another JS MVVM framework?
 
 
          <!-- instantiate a dynamic controller that automatically change the view at any change in the model 
-         eg chain: user.manager.adress -->
+         eg chain: user.manager.address -->
          
-         <div shape-model="@user.manager.adress" ></div> 
+         <div shape-model="@user.manager.address" ></div> 
 
 * to create a list you just create a collection and declare an ul bindined to this colection
 
@@ -40,11 +40,11 @@ Why another JS MVVM framework?
     
 
 * each view and each controller have a model
-* automatic persistence for models (to JSON) with embedded or transient properties
+* automatic persistence for models (to JSON) with control: embedded or transient properties
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * if you know JQuery, you learn to create a new controller in 10 minutes
 * clear architecture, you start from views and models and discover your code
-* automatically creates controllers as declared in views
+* automatically insantiate controllers (declared in views)
 * events model that get transmitted in the controllers hierarchy that mimics the DOM structure
 * intuitive event model for auto-computed properties in models and for chains. Compact multiple,related events for speed and soundness.
 * VERY GOOD error handling, showing stack info, type information,etc (wprint, eprint, esprint, etc)
