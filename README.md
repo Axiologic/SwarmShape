@@ -1,17 +1,18 @@
    SwarmShape 1.0 (beta): JS MVVM framework 
 =====================================================
 
-Why another framework?
-* real MVVM, no other JS framework is elegant enough 
-* very gentle learning curve to become effective. 
-* very few concepts: bindable chains, watch chains from controllers, html views with bindings and shape-model, shape-ctrl, shape-context, models, controllers, expressions, custom attributes. 
+Why another JS MVVM framework?
+  Simple, other JS frameworks are not elegant and powerfull enough: 
+
+* minimal framework conventions, reduce boilerplate 
+* very gentle learning curve to become effective (a few hours, days)
+* few, natural concepts: bindable chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
 * is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes, mutiple views)
-* typed models using an internal JavaScript DSL
-* clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
-* inversion of control in a delcarative way: automaticaly insert views in DOM using the type of the model
+* TYPED models using an internal JavaScript DSL. Offers dynamic view injection and better error handling
+* clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behaviour)
+* inversion of control in a declarative way: automaticaly insert views in DOM using the type of the model
 
-* automatic persistence for models (to JSON) with embeded or transient proprties
 * dunamic ocntrollers: you can have multiple views for a model using shape-context attributes 
 
 
@@ -31,19 +32,20 @@ Why another framework?
          
          <div shape-model="@user.manager.adress" ></div> 
 
-* to create a list you just create a model 
+* to create a list you just create a collection and declare an ul bindined to this colection
 
 
          <!-- this create html to display a list of results in 'readonly' context -->
          <ul shape-model="@searchResult.list" shape-context="readonly"/>
     
 
+* automatic persistence for models (to JSON) with embeded or transient properties
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * clear arhitecture, you start from views and models and discover your code
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
-Guide: start looking in views first and next models, controllers. How they are connectd should be visible from views.
+Guide: start looking in views first and next models, controllers. How they are working toghether should be visible from views and models.
 
    SwarmShape : JS MVVM framework for REST and Swarms 
 =====================================================
