@@ -8,12 +8,12 @@ Why another JS MVVM framework?
 * very gentle learning curve to become effective (a few days for beginner programmers without JS and JQuery experience)
 * few, natural concepts: models, controllers, bind-able chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
-* is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and attributes, multiple views)
+* is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and attributes) 
 * TYPED models using an internal JavaScript DSL. Offers dynamic view injection and better error handling
 * clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behavior)
 * inversion of control in a declarative way: automatically insert views in DOM using the type of the model
 
-* dynamic controllers: dynamic view injection, you can have multiple views for a model using shape-context attributes 
+* dynamic controllers: dynamic view injection, you can have multiple views for a model using shape-context  attribute 
 
 
          <!-- declare a dynamic controller (the view will be injected on the type of model)
@@ -21,8 +21,6 @@ Why another JS MVVM framework?
          default view for user model if the context view doesn't exist -->
          
          <div shape-model="@user" shape-context="notLoggedIn" ></div> 
-      
-* cached dynamic controllers:  like dynamic controllers but preserves the views for quick switches (tabs, etc)
       
 * watch and bind chains (@ means bind relative to current model)
 
@@ -47,6 +45,7 @@ Why another JS MVVM framework?
 * automatically insantiate controllers (declared in views)
 * events model that get transmitted in the controllers hierarchy that mimics the DOM structure
 * intuitive event model for auto-computed properties in models and for chains. Compact multiple,related events for speed and soundness.
+* cached dynamic controllers:  like dynamic controllers but preserves the views for quick switches (tabs, etc)
 * VERY GOOD error handling, showing stack info, type information,etc (wprint, eprint, esprint, etc)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
