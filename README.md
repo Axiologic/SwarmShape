@@ -13,11 +13,13 @@ Why another framework?
 * multiple views for a model using shape-context attributes 
 
 
+
       <div shape-model="@user" shape-context="notLoggedIn" ></div> 
       
       
 * clear arhitecture, you start from views and models and discover your code
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
+
 
 
       <div shape-model="@user.manager.name" ></div> 
