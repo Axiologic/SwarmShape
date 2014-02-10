@@ -42,7 +42,8 @@ Why another framework?
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
-For todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo/view/todo
+For todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
+Guide: start looking in views first and next models, controllers. How they are connectd should be visible from views.
 
    SwarmShape : JS MVVM framework for REST and Swarms 
 =====================================================
