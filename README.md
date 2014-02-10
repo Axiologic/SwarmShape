@@ -5,7 +5,7 @@ Why another JS MVVM framework?
   Simple, other JS frameworks are not elegant and powerful enough: 
 
 * minimal framework conventions, reduce boilerplate 
-* very gentle learning curve to become effective (a few days for beginner programmers without JS and JQuery experience)
+* very gentle learning curve  ( our experiments show that beginner programmers without JS and JQuery experience become effective in a few days)
 * few, natural concepts: models, controllers, bind-able chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
 * is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and attributes) 
