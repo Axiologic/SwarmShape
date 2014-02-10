@@ -143,6 +143,7 @@ Quick Code Example:
        </div>
 
    Controller:
+
       
       //will take as model a "task"
       shape.registerCtrl("todo/taskLine",{
@@ -167,10 +168,11 @@ Quick Code Example:
    And, finally, somewhere in your app: 
 
       <!-- instantiate a component named "task.render" -->
-     <span id="myTask" shape-view="task.render" ></span>
+     <span id="myTask" shape-context="render" ></span>
       ...
       // create a model (a task), expand that component and bind to the model
-      model = shape.newObject("task")
+      model = shape.newObject("task");
+      //insert shape view in DOM based on a root model 
       shape.expandShapeComponent(document.getElementById("main"),null, model)
 
 
