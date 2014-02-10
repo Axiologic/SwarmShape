@@ -1,16 +1,17 @@
    SwarmShape 1.0 (beta): JS MVVM framework 
 =====================================================
 
-Why?
-* real MVVM 
+Why another framework?
+* real MVVM, no other JS framework is elegant enough 
 * declarative, produce disciplined code for big projects
-* very gentle learning curve to become really effective
-* Angular like in some aspects but real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
+* very gentle learning curve to become effective
+* is likeAngular in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
 * typed models using an internal JavaScript DSL
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
 * inversion of control: automaticaly links view on model types (dynamic controllers, cached dynamic controllers)
 * automatic persistence for models (to JSON) with embeded or transient proprties
 * multiple views for a model using shape-context attributes 
+
 
       <div shape-model="@user" shape-context="notLoggedIn" ></div> 
       
@@ -18,7 +19,9 @@ Why?
 * clear arhitecture, you start from views and models and discover your code
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
 
+
       <div shape-model="@user.manager.name" ></div> 
+
 
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
