@@ -46,7 +46,8 @@ Why another JS MVVM framework?
 * events model that get transmitted in the controllers hierarchy that mimics the DOM structure
 * intuitive event model for auto-computed properties in models and for chains. Compact multiple,related events for speed and soundness.
 * cached dynamic controllers:  like dynamic controllers but preserves the views for quick switches (tabs, etc)
-* VERY GOOD error handling, showing stack info, type information,etc (wprint, eprint, esprint, etc)
+* ATTENTION for error handling, showing stack info, type information,etc (wprint, eprint, esprint, etc)
+* allready used in projects (the main core is stable by 1 year)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
 Guide: start looking in views first and next models, controllers. How they are working together should be visible from views and models.
