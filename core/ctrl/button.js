@@ -21,6 +21,7 @@ shape.registerCtrl("button",{
     },
     onClick:function(objectId){
         var action;
+        console.log("Click action: ", this.shape_action );
         if(this.isBindedProperty){
             action = this.model[this.shape_action];
         } else {

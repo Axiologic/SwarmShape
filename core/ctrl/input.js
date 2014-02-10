@@ -31,7 +31,6 @@ shape.registerCtrl("base/input",{
         } else{
             this.model = this.view.value;
         }
-        console.log("time "+this.view.value);
         this.modelAssign(this.model);
     }
 });

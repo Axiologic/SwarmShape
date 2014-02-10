@@ -14,7 +14,9 @@ function ShapeUtil(){
 
 window.onerror = function(message, filename, lineno, colno, error){
     alert(message + error.stack);
+    dprint(message, filename, lineno, colno, error);
     if(error != null){
+
         eprint("global error", error);
         //handle the error with stacktrace in error.stack
     }
@@ -45,12 +47,12 @@ function wprint (){
     shape__linePrint("Warning:",dumpArgs(arguments));
 }
 
-function eprint(str, err){
+function esprint(str, err){
     shape__linePrint("Error:", str + " : "+err.message,err.stack);
 }
 
-function esprint(str, err){
-    shape__linePrint("Error:", str+" : "+err.message, err.stack);
+function eprint(str, err){
+    shape__linePrint("Error:", str + " : " + err.message, err.stack);
 }
 
 
@@ -87,7 +89,7 @@ if (!shape__linePrint_hasConsole  || !console || !console.log || !console.error)
 }
 
 function shape__linePrint(prefix, text, fullStack, noConsole){
-    var text = shape__prettyStack(fullStack,3)+'>>\n'+text;
+    var text = shape__prettyStack(fullStack,3)+'>>'+text;
 
     ShapeUtil.prototype.bufferConsole(prefix + text);
     if(shape__linePrint_hasConsole && !noConsole){
@@ -96,7 +98,8 @@ function shape__linePrint(prefix, text, fullStack, noConsole){
 }
 
 function shape__prettyStack(fullStack, add){
-    var trace = printStackTrace();
+    var options = {e:fullStack};
+    var trace = printStackTrace(options);
     var strTrace;
     if(add==undefined){
         add=2;
@@ -114,7 +117,8 @@ function shape__prettyStack(fullStack, add){
         }
     }
     else{
-        strTrace = "\n\n" + trace.join("\n") + "\n";
+        var lines = trace[0].split("\n");
+        strTrace =  lines[1] + ":";
     }
     return strTrace;
 }
@@ -268,7 +272,7 @@ function generateShapeUUID(){
 
 function dumpArgs(args){
     function stringify(o){
-        if(typeof o == "string"){
+        if(typeof o == "string" || typeof o == "number"){
             return o;
         }
 
@@ -305,4 +309,9 @@ function dumpArgs(args){
     }
 
     return str;
+}
+
+
+function isString(s) {
+    return typeof(s) === 'string' || s instanceof String;
 }

@@ -1,13 +1,25 @@
 
 ShapeUtil.prototype.initDOMHandling = function(){
     var shapeControllers = [];
+    var mapControllersModels = {};
+
     var shapeUrlRegistry = {};
     var shapeRegistry = {};
     var shapeAttributes = {};
 
-    Shape.prototype.registerCtrl = function (name,functObj){
+    Shape.prototype.registerCtrl = function (name,functObj, modelName){
         //console.log("Registering controller " + name);
         shapeControllers[name] = functObj;
+        if(modelName){
+            mapControllersModels[name] = modelName;
+        }
+    }
+
+    Shape.prototype.checkTypeModelForController = function(ctrlName, modelName){
+        var model = mapControllersModels[ctrlName];
+        if(model && model != modelName){ //allow null for really generic controllers...
+            wprint("Controllers with type ", ctrlName, " only accepts model with type ", model, " can't work with " + modelName );
+        }
     }
 
     Shape.prototype.registerAttribute = function (name,functObj){
@@ -52,14 +64,14 @@ ShapeUtil.prototype.initDOMHandling = function(){
         var newCtrl         = new BaseController(ctrlName, parentCtrl);
         var base =  shapeControllers[ctrlName];
 
-        function getSafeFunction(funct){
+        function getSafeFunction(funct , name){
             return  function(){
                 shapePubSub.blockCallBacks();
                 var args = ShapeUtil.prototype.mkArgs(arguments);
                 try{
                     var result = funct.apply(newCtrl,args);
                 }   catch(err){
-                    eprint("Error in handler " + funct + "\nError:\n", err);
+                    eprint("Exception/Error from function " + ctrlName + "." + name , err);
                 }
                 shapePubSub.releaseCallBacks();
                 return result;
@@ -69,7 +81,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(base != undefined){
             for(var vn in base){
                 if(typeof base[vn] == 'function'){
-                    newCtrl[vn] =  getSafeFunction(base[vn]);
+                    newCtrl[vn] =  getSafeFunction(base[vn], vn);
                 } else{
                     newCtrl[vn] = base[vn];
                 }

@@ -110,6 +110,11 @@ ShapeUtil.prototype.initPersistences = function () {
      * @param newValues
      */
     BasePersistence.prototype.server2local = function (target, newValues) {
+        if(isString(newValues)){
+            wprint("BasePersistence.prototype.server2local: second argument should be an object not a string. JSON.parse can help?");
+            return;
+        }
+
         function generatePC1Level(host, newValues) {
             var newVal, oldVal, oldOuterVal;
             var oldInner = host.getInnerValues();
