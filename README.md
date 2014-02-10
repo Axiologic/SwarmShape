@@ -115,16 +115,16 @@ Quick Code Example:
 
       //declaration of a task class definition
       shape.registerModel("task",{
-              meta:{
-                  table:"Task", //where to save
-                  pk:"id"       // primary key field
+              meta:{             // optional
+                  table:"Task", //where to save, not implemented!
+                  pk:"id"       // optional, primary key field
               },
               id:{
                   type:"int"
               },
               description:{
                   type:"string",
-                  value:""
+                  value:"no description yet"
               },
               completed:{
                   type:"boolean",
