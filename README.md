@@ -46,7 +46,7 @@ Why another JS MVVM framework?
 * clear arhitecture, you start from views and models and discover your code
 * automatically creates controllers as declared in views
 * events model that get transmited in the controlers hieracy that mimics the DOM structure
-* event model for autocomputed properies and chains. COmpact events for speed and soundness.
+* intuitive event model for autocomputed properties in models and for chains. Compact multiple,related events for speed and soundness.
 * VERY GOOD error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
