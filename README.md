@@ -24,7 +24,7 @@ Why another JS MVVM framework?
       
 * cached dynamic controllers:  like dynamic controllers but preserves the views for quick switches (tabs, etc)
       
-* watch and bind chains (@ means bind relative to current model, each view and controller have a model)
+* watch and bind chains (@ means bind relative to current model)
 
 
          <!-- instantiate a dynamic controller that automatically change the view at any change in the model 
@@ -39,10 +39,12 @@ Why another JS MVVM framework?
          <ul shape-model="@searchResult.list" shape-context="readonly"/>
     
 
+* each view and each controller have a model
 * automatic persistence for models (to JSON) with embeded or transient properties
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * if you know JQuery, you learn to create a new controller in 10 minutes
 * clear arhitecture, you start from views and models and discover your code
+* automatically creates controllers as declared in views
 * events model that get transmited in the controlers hieracy that mimics the DOM structure
 * event model for autocomputed properies and chains. COmpact events for speed and soundness.
 * VERY GOOD error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
