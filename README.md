@@ -3,17 +3,16 @@
 
 Why another framework?
 * real MVVM, no other JS framework is elegant enough 
-* very gentle learning curve to become effective
+* very gentle learning curve to become effective. 
+* very few concepts: bindable chains, watch chains from controllers, html views with bindings and shape-model, shape-ctrl, shape-context, models, controllers, expressions, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
-* is likeAngular in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
+* is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes, mutiple views)
 * typed models using an internal JavaScript DSL
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
 * inversion of control: automaticaly links view on model types 
-** dynamic controllers
-** cached dynamic controllers:  like modes
 
 * automatic persistence for models (to JSON) with embeded or transient proprties
-* you can have multiple views for a model using shape-context attributes 
+* dunamic ocntrollers: you can have multiple views for a model using shape-context attributes 
 
 
          <!-- declare a dynamic controller (the view will be injected on the type of model)
@@ -22,8 +21,8 @@ Why another framework?
          
          <div shape-model="@user" shape-context="notLoggedIn" ></div> 
       
+* cached dynamic controllers:  like dynamic controllers but preserves the views for quick switches (tabs, etc)
       
-* clear arhitecture, you start from views and models and discover your code
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
 
 
@@ -40,9 +39,10 @@ Why another framework?
     
 
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
+* clear arhitecture, you start from views and models and discover your code
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
-For todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
+Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
 Guide: start looking in views first and next models, controllers. How they are connectd should be visible from views.
 
    SwarmShape : JS MVVM framework for REST and Swarms 
