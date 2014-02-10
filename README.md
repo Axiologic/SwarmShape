@@ -8,22 +8,32 @@ Why another framework?
 * is likeAngular in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
 * typed models using an internal JavaScript DSL
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
-* inversion of control: automaticaly links view on model types (dynamic controllers, cached dynamic controllers)
+* inversion of control: automaticaly links view on model types 
+** dynamic controllers
+** cached dynamic controllers:  like modes
+
 * automatic persistence for models (to JSON) with embeded or transient proprties
 * multiple views for a model using shape-context attributes 
 
 
-
-      <div shape-model="@user" shape-context="notLoggedIn" ></div> 
+         //declare and dynamic controller (the view will be injected on the type of model)
+         //choose the view with name of the context or injects default view if doesn't exist
+         <div shape-model="@user" shape-context="notLoggedIn" ></div> 
       
       
 * clear arhitecture, you start from views and models and discover your code
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
 
 
+         //
+         <div shape-model="@user.manager.name" ></div> 
 
-      <div shape-model="@user.manager.name" ></div> 
+* to create a list you just create a model 
 
+
+         // this create html to display a list of results in 'readonly' context
+         <ul shape-model="@searchResult.list" shape-context="readonly"/>
+    
 
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
