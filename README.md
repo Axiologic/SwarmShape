@@ -1,5 +1,4 @@
 
-
    SwarmShape 1.0 (beta): JS MVVM framework 
 =====================================================
 
@@ -12,7 +11,8 @@ Why?
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
 * inversion of control: automaticaly links view on model types (dynamic controllers, cached dynamic controllers)
 * automatic persistence for models (to JSON) with embeded or transient proprties
-* multiple views for a model ( <div shape-model="@user" shape-context="notLoggedIn" ></div> )
+* multiple views for a model 
+      <div shape-model="@user" shape-context="notLoggedIn" ></div> 
 * clear arhitecture, you start from views and models and discover your code
 * watch and bind with chains( @user.manager.name)
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
@@ -142,4 +142,4 @@ Quick Code Example:
 
 
 
-Links: https://github.com/salboaie/SwarmESB
+
