@@ -1,3 +1,24 @@
+
+
+   SwarmShape 1.0 (beta): JS MVVM framework 
+=====================================================
+
+Why?
+* real MVVM 
+* declarative, produce disciplined code for big projects
+* very gentle learning curve to become really effective
+* Angular like in some aspects but real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
+* typed models using an internal JavaScript DSL
+* clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
+* inversion of control: automaticaly links view on model types (dynamic controllers, cached dynamic controllers)
+* automatic persistence for models (to JSON) with embeded or transient proprties
+* multiple views for a model ( <div shape-model="@user" shape-context="notLoggedIn" ></div> )
+* clear arhitecture, you start from views and models and discover your code
+* watch and bind with chains( @user.manager.name)
+* add arbitrary expressions in html attributes:  value="@user.name == 'John'"
+* good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
+
+
    SwarmShape : JS MVVM framework for REST and Swarms 
 =====================================================
 
@@ -9,7 +30,7 @@ SwarmShape is part of "Swarm" project and provides UI components and client side
 License: LGPL
 
 Release:  1.0(beta) 
-Planned stable release: 1.0, the first stable release in May 2013
+Planned stable release: 1.0
 
 SwarmShape:
 * Created for big enterprise projects 
@@ -21,7 +42,7 @@ SwarmShape:
 * Goals: simplicity, programming discipline, reusable components, component layouts, themes
 
 
-Example:
+Examples:
 For the classical TODO example commonly created to show JS frameworks,just checkout this project and point your browser to apps/todo/index.php (php is not really required but an web server is required) 
 
 SwarmShape priciples/features:
