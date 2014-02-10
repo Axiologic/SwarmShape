@@ -3,8 +3,8 @@
 
 Why another framework?
 * real MVVM, no other JS framework is elegant enough 
-* declarative, produce disciplined code for big projects
 * very gentle learning curve to become effective
+* DECLARATIVE: produce disciplined, encapsulated code 
 * is likeAngular in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and atributes)
 * typed models using an internal JavaScript DSL
 * clear separation between models (bindable properties), views (declarative html) and controllers (modify DOM elements, binds)
@@ -13,11 +13,13 @@ Why another framework?
 ** cached dynamic controllers:  like modes
 
 * automatic persistence for models (to JSON) with embeded or transient proprties
-* multiple views for a model using shape-context attributes 
+* you can have multiple views for a model using shape-context attributes 
 
 
-         //declare and dynamic controller (the view will be injected on the type of model)
-         //choose the view with name of the context or injects default view if doesn't exist
+         <!-- declare a dynamic controller (the view will be injected on the type of model)
+         Choose the view using the name of the context (shape-context attribute) or injects 
+         default view for user model if the context view doesn't exist -->
+         
          <div shape-model="@user" shape-context="notLoggedIn" ></div> 
       
       
@@ -25,19 +27,22 @@ Why another framework?
 * watch and bind chains (@ means bind relative to current model, each view and controller have a model)
 
 
-         //
-         <div shape-model="@user.manager.name" ></div> 
+         <!-- instantiate a dynamic controller that automatically change the view at any change in the model 
+         eg chain: user.manager.adress -->
+         
+         <div shape-model="@user.manager.adress" ></div> 
 
 * to create a list you just create a model 
 
 
-         // this create html to display a list of results in 'readonly' context
+         <!-- this create html to display a list of results in 'readonly' context -->
          <ul shape-model="@searchResult.list" shape-context="readonly"/>
     
 
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
 * good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
+For todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo/view/todo
 
    SwarmShape : JS MVVM framework for REST and Swarms 
 =====================================================
