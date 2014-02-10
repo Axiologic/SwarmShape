@@ -13,7 +13,7 @@ Why another JS MVVM framework?
 * clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behaviour)
 * inversion of control in a declarative way: automaticaly insert views in DOM using the type of the model
 
-* dunamic ocntrollers: you can have multiple views for a model using shape-context attributes 
+* dynamic controllers: dynamic view injection, you can have multiple views for a model using shape-context attributes 
 
 
          <!-- declare a dynamic controller (the view will be injected on the type of model)
@@ -41,8 +41,11 @@ Why another JS MVVM framework?
 
 * automatic persistence for models (to JSON) with embeded or transient properties
 * add arbitrary expressions in html attributes:  value="@user.name == 'John'"
+* if you know JQuery, you learn to create a new controller in 10 minutes
 * clear arhitecture, you start from views and models and discover your code
-* good error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
+* events model that get transmited in the controlers hieracy that mimics the DOM structure
+* event model for autocomputed properies and chains. COmpact events for speed and soundness.
+* VERY GOOD error handling, showing stack info, type informations,etc (wprint, eprint, esprint, etc)
 
 Todo example: https://github.com/salboaie/SwarmShape/tree/master/apps/todo
 Guide: start looking in views first and next models, controllers. How they are working toghether should be visible from views and models.
