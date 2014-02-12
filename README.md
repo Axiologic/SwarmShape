@@ -14,7 +14,7 @@ Why another JS MVVM framework?
 * clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behavior)
 * inversion of control in a declarative way: automatically insert views in DOM using the type of the model
 
-* dynamic controllers: dynamic view injection, you can have multiple views for a model using shape-context  attribute 
+* dynamic controllers: dynamic view injection, you can have multiple views for a single model instance, using shape-context attributes 
 
 
          <!-- declare a dynamic controller (the view will be injected on the type of model)
