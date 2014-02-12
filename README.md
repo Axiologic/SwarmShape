@@ -9,6 +9,7 @@ Why another JS MVVM framework?
 * few, natural concepts: models, controllers, bind-able chains, watch chains from controllers, html views with bindings and specific attributes like shape-model, shape-ctrl, shape-context, custom attributes. 
 * DECLARATIVE: produce disciplined, encapsulated code 
 * is like Angular.js in some aspects but provides real MVVM (modify DOM not strings, extend HTML with controllers and attributes) 
+* inspired by Adobe Flex for binding implementation (chains, PropertyChange, CollectionChange events)
 * TYPED models using an internal JavaScript DSL. Offers dynamic view injection and better error handling
 * clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behavior)
 * inversion of control in a declarative way: automatically insert views in DOM using the type of the model
