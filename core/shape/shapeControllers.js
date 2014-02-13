@@ -96,9 +96,17 @@ BaseController.prototype.watch = BaseController.prototype.addChangeWatcher;
 function try2InitCtrl(ctrl){
     if(!ctrl.initialised){
         if(ctrl.modelInitialized && ctrl.view != undefined){
+
+            var debugInfo = "ctrl: " + ctrl.ctrlName;
+
             if(this.model && this.model.meta){
                 var modelName = this.model.getClassName();
+                debugInfo+= " Type of model:";
+                debugInfo+= modelName;
             }
+
+            $(ctrl.view).attr("shape-debug",debugInfo);
+
             Shape.prototype.checkTypeModelForController(this.ctrlName,modelName);
             ctrl.initialised = true;
             ctrl.init();

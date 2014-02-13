@@ -101,6 +101,9 @@ Collection.prototype.removeAll = function(){
     this.announceChange("removeAll");
 }
 
+Collection.prototype.deleteAll  = Collection.prototype.removeAll;
+Collection.prototype.mkEmpty    = Collection.prototype.removeAll;
+
 Collection.prototype.replaceInnerArray = function(arr){
     this.container = arr;
     this.announceChange("refreshAll");

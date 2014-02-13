@@ -133,7 +133,8 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
 
     Shape.prototype.getPerfectShape = function(viewName,viewModel, usecase, callBack){
-        if(viewModel==undefined||viewModel==""){
+        if(viewModel==undefined || viewModel==""){
+            wprint("Can't display an undefined view model. Use case hint: ", usecase);
             callBack("");
             return;
         }
@@ -298,6 +299,10 @@ ShapeUtil.prototype.initDOMHandling = function(){
             }
 
             var debugInfo="ViewName " + viewName + "ctrl: " + ctrlName;
+            if(rootModel){
+                debugInfo+= " Type of model:";
+                debugInfo+= rootModel.getClassName();
+            }
             loadInnerHtml(domObj,viewName,ctrl, parentCtrl);
             $(domObj).attr("shape-debug",debugInfo);
         }
@@ -389,9 +394,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
             ctrl.bindDirectAttributes(domObj,parentCtrl);
         }
         ctrl.afterExpansion(ctrl);
-
-        var debugInfo = "ctrl: " + ctrlName;
-        $(domObj).attr("shape-debug",debugInfo);
 
         return ctrl;
     }
