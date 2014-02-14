@@ -394,7 +394,6 @@ ShapeUtil.prototype.initDOMHandling = function(){
             ctrl.bindDirectAttributes(domObj,parentCtrl);
         }
         ctrl.afterExpansion(ctrl);
-
         return ctrl;
     }
 
