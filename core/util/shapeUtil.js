@@ -315,3 +315,13 @@ function dumpArgs(args){
 function isString(s) {
     return typeof(s) === 'string' || s instanceof String;
 }
+
+
+function parseInt0(v){
+    if(!v) return 0;
+     var nv = parseInt(v);
+    if(isNaN(nv)){
+        return 0;
+    }
+    return nv;
+}

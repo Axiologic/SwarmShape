@@ -80,7 +80,7 @@ function QSClassDescription(declaration, qsName){
                 model.ctor.apply (model,ctorArgs);
             }
         } catch(err){
-            wprint("ctor code unknown error for "+  this.className, err);
+            wprint("ctor code unknown error for "+  this.className, err.message);
         }
 
 
