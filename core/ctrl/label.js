@@ -6,6 +6,7 @@ shape.registerCtrl("base/label",{
     init:function(){
         this.label = $(this.view);
         this.useValue = this.label.attr("value") == undefined ? false : true;
+        var txt = $(this.view).text();
     },
     toView:function(){
         if(!this.useValue&&this.model != undefined){

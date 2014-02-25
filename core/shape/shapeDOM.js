@@ -419,6 +419,38 @@ ShapeUtil.prototype.initDOMHandling = function(){
             } else {
                 ctrl.bindDirectAttributes(element, ctrl);
             }
+
+            if($(element).children().length == 0){
+                var ctrlAttribute = $(element).attr("shape-ctrl");
+                var ignoreText = (ctrlAttribute == "eval");
+
+                if(!ignoreText){
+                    var nodeName = $(element)[0].nodeName;
+                    if(nodeName){
+                        nodeName = nodeName.toLowerCase();
+                        if(nodeName == "label"){
+                            var modelAttribute = $(element).attr("shape-model");
+                            if(modelAttribute || ctrlAttribute){
+                                ignoreText = true;
+                            }
+                        }
+                    }
+                }
+
+                if(!ignoreText){
+                    var txt = $(element).text().trim();
+                    if(txt != ""){
+                        var res = shape.getLocaleKey(txt);
+                        if(res){
+                            $(element).text(res);
+                        } else{
+                            if(shape.languageDebug && txt.length>1){
+                                console.log("No localisation for: " + txt);
+                            }
+                        }
+                    }
+                }
+            }
         });
         for (var i=0; i< forExpand.length; i++){
             //console.log("Element " + forExpand[i] + " get expanded" );

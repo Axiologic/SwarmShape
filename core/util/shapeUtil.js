@@ -146,20 +146,6 @@ function objectToFragment(obj){
     return encodeURI(frag);
 }
 
-function mergeInRepository(repo, key, newValues){
-    if(repo[key]==undefined){
-        repo[key] = {};
-    }
-
-    for(var newKey in newValues){
-        if(repo[key][newKey]!=undefined){
-            wprint("Overwriting key "+newKey);
-        }
-        //in some cases a full cloning could be more appropriate
-        repo[key][newKey] = newValues[newKey];
-    }
-}
-
 
 ShapeUtil.prototype.initUtil = function(){
     ShapeUtil.prototype.mkArgs = function(myArguments, from){

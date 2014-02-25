@@ -22,6 +22,21 @@ function Shape(){
     ShapeUtil.prototype.initPersistences();
 
 
+    function mergeInRepository(repo, key, newValues){
+        if(repo[key]==undefined){
+            repo[key] = {};
+        }
+
+        for(var newKey in newValues){
+            if(repo[key][newKey]!=undefined){
+                wprint("Overwriting key "+ newKey);
+            }
+            //in some cases a full cloning could be more appropriate
+            repo[key][newKey] = newValues[newKey];
+        }
+    }
+
+
     this.registerLocale = function(language, dictionary){
         mergeInRepository(shapeLocaleRegistry, language, dictionary);
     }
@@ -30,10 +45,15 @@ function Shape(){
         if(language==undefined){
             language = this.currentLanguage;
         }
-        return shapeLocaleRegistry[language][key];
+        var lang = shapeLocaleRegistry[language];
+        if(lang){
+            return lang[key];
+        }
+        return undefined;
     }
 
     this.currentLanguage ="en";
+    this.languageDebug   = false;
 
     /*
         Main public functions of shape are (not declared here but added by init functions):
@@ -94,6 +114,9 @@ L = function(key){
         //hoho
     }
     if(text==undefined){
+        if(shape.languageDebug){
+            console.log("No localisation for:", key);
+        }
         text = key;
     }
     return text;
