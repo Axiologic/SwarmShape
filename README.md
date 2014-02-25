@@ -13,6 +13,7 @@ Why another JS MVVM framework?
 * TYPED models using an internal JavaScript DSL. Offers dynamic view injection and better error handling
 * clear separation between models (bindable properties), views (declarative html) and controllers (allowed to modify DOM elements, implement bindings and custom behavior)
 * inversion of control in a declarative way: automatically insert views in DOM using the type of the model
+* simple localisation: write views (simple html) in english, register localisations dictionaries for other languages (for whole english texts, not keys), select a different language and everything get translated
 
 * dynamic controllers: dynamic view injection, you can have multiple views for a single model instance, using shape-context attributes 
 
@@ -170,7 +171,7 @@ Summary, SwarmShape principles/features:
 Main features:
 - MVC (MVVM) with clean and simple architecture
 - bindable/observable chains and collections
-- UI component oriented (yes,you can create reusable components with HTML!)
+- UI component oriented (yes,you can create reusable components (basically controllers)!)
 - client side Pub/Sub channels (safe and sound against asynchronous weirdness in computed values/expressions from  models or in callbacks for other messages/events)
 - views are build by direct DOM element manipulation and not with templates (string manipulation)
-- works with Ajax and swarms (SwarmESB) for back-end (wip)
+- works with Ajax and swarms (SwarmESB) for back-end
