@@ -319,3 +319,17 @@ function parseInt0(v){
     }
     return nv;
 }
+
+
+function encode_b64(s){
+  return window.btoa(s);
+}
+
+
+function decode_b64(s){
+    try{
+        return window.atob(s);
+    } catch(err){
+        return "";
+    }
+}
