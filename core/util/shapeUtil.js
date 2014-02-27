@@ -13,10 +13,10 @@ function ShapeUtil(){
 }
 
 window.onerror = function(message, filename, lineno, colno, error){
-    alert(message + error.stack);
-    dprint(message, filename, lineno, colno, error);
-    if(error != null){
 
+    if(error != null){
+        alert(message + error.stack);
+        dprint(message, filename, lineno, colno, error);
         eprint("global error", error);
         //handle the error with stacktrace in error.stack
     }
@@ -48,11 +48,19 @@ function wprint (){
 }
 
 function esprint(str, err){
-    shape__linePrint("Error:", str + " : "+err.message,err.stack);
+    if(err){
+        shape__linePrint("Error:", str + " : "+err.message,err.stack);
+    } else {
+        shape__linePrint("Error:", str);
+    }
 }
 
 function eprint(str, err){
-    shape__linePrint("Error:", str + " : " + err.message, err.stack);
+    if(err){
+        shape__linePrint("Error:", str + " : " + err.message, err.stack);
+    } else {
+        shape__linePrint("Error:", str);
+    }
 }
 
 
