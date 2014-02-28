@@ -22,6 +22,7 @@ function Collection(){
     this.length = this.container.length;
     setMetaAttr(this, SHAPE.CLASS_DESCRIPTION, shape.getClassDescription(SHAPE.COLLECTION));
     makeEventEmitter(this);
+    this.__meta.changeIdentityCounter = 0;
 
     var self = this;
     function updateInner(){
@@ -47,11 +48,28 @@ function Collection(){
 
     this.on(SHAPEEVENTS.COLLECTION_CHANGE,updateInner);
 
+    this.__sort;
+    this.setSortFunction = function(func){
+        this.__sort = func;
+    }
+}
+
+Collection.prototype.sort = function(f){
+    if(!f){
+        f = this.__sort;
+    }
+    this.container.sort(f);
+    this.announceChange("sort");
 }
 
 Collection.prototype.announceChange = function(changeType){
     this.length = this.container.length;
+    if(this.__sort){
+        this.container.sort(this.__sort);
+    }
+
     var colChange = new CollectionChangeEvent(this, changeType);
+    this.__meta.changeIdentityCounter++;
     this.emit(colChange);
     //updateInner();
     if(this.__meta.owner){

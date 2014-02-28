@@ -32,6 +32,7 @@ shape.registerCtrl("base/ul",{
         }
     },
     toView:function(){
+        //console.log("UL list: model changed");
         var self = this;
         this.expander(function(){
             self.afterChildExpansion(self);

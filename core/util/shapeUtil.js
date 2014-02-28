@@ -210,15 +210,28 @@ function PropertiesFence(context, properties, callback){
     var refreshDuringCallback  = false;
     var callLevel = 0;
 
+    function getShapeSafeValue(o){
+        if(o && o.__meta){
+            if(o.__meta.changeIdentityCounter){
+                return o.__meta.__localId + o.__meta.changeIdentityCounter;
+            }
+           return o.__meta.__localId;
+        }
+        return o;
+    }
+
     function saveValues(){
         for(var i=0;i<properties.length;i++){
-            self[properties[i]] = context[properties[i]];
+            self[properties[i]] = getShapeSafeValue(context[properties[i]]);
         }
     }
 
     function valuesChanged(){
         for(var i=0;i<properties.length;i++){
-            if(self[properties[i]] !== context[properties[i]]) {
+            var o1 = getShapeSafeValue(self[properties[i]]);
+            var o2 = getShapeSafeValue(context[properties[i]]);
+
+            if( o1 !== o2) {
                 return true;
             }
         }

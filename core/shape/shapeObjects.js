@@ -245,8 +245,7 @@ function ChangeWatcher(model, chain, handler){
     function addWatcher(model,property, nw){
         //console.log("Adding watcher " + model + "." + property);
         var chainLink = shape.checkChain(model, property);
-        if(chainLink)
-        {
+        if(chainLink){
             wprint("Unknown property "+property+" in model "+model.getClassName()+ " while evaluating chain " + chain);
         }else{
             model.bindableProperty(property);

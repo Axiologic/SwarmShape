@@ -173,6 +173,7 @@ function SoundPubSub(){
 
     this.pub = function(target, message){
         if(channelSubscribers[target] != undefined){
+            //console.log("SPS: Pub for "+ target);
             compactAndStore(target, message);
             dispatchNext();
             return channelSubscribers[target];
