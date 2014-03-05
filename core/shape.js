@@ -61,6 +61,10 @@ function Shape(){
      newTransient(className,args) : create a transient object
      lookup(className, pk)        : lookup in persistence after an existing object (with PK)
      */
+
+    this.alert = function(message, okHandler, cancelHandler){
+        //look in body, add child,etc...
+    }
 }
 
 window.shape = new Shape();

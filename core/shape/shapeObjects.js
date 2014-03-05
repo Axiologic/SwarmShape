@@ -21,6 +21,7 @@
 
 //public (global) functions
 addChangeWatcher = function(model, chain, handler){
+    chain = chain.trim();
     var wrongLink = shape.checkChain(model, chain);
     if(!wrongLink){
         return new ChangeWatcher(model, chain, handler);
