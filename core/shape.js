@@ -64,6 +64,70 @@ function Shape(){
 
     this.alert = function(message, okHandler, cancelHandler){
         //look in body, add child,etc...
+        var message = message;
+        var stopBlink = false;
+
+        if(!message){
+            message = "Something went wrong!";
+        }
+        var overLay=document.createElement('div');
+        overLay.setAttribute("id","overlayModal");
+        document.getElementsByTagName("body")[0].appendChild(overLay);
+        var dialogBox=document.createElement('div');
+        dialogBox.setAttribute("class","modalDialog");
+        dialogBox.setAttribute("id","dialogBox");
+        //document.getElementsByTagName("body")[0].appendChild(dialogBox);
+        dialogBox.innerHTML = '<div class="contentModal">' +
+                                '<label class="labelModal">'+message+'</label>' +
+                                '<div class="actionModal">' +
+                                    '<button id="okButton" class="modalButton">Ok</button>' +
+                                    '<button id="cancelButton" class="modalButton">Cancel</button>' +
+                                '</div>' +
+                              '</div>'
+                              //'<embed src="deps/sound/alertSound.mp3" autostart="true" hidden="true" loop="false">';
+        document.getElementsByTagName("body")[0].appendChild(dialogBox);
+        document.getElementById("okButton").onclick=function(){
+            document.getElementById("overlayModal").remove();
+            document.getElementById("dialogBox").remove();
+            stopBlink = true;
+            console.log("okHandler ",okHandler);
+            if(okHandler){
+               okHandler();
+            }
+
+        };
+        if(cancelHandler){
+            document.getElementById("cancelButton").onclick=function(){
+                document.getElementById("overlayModal").remove();
+                document.getElementById("dialogBox").remove();
+                stopBlink = true;;
+                cancelHandler();
+            };
+        }else{
+            document.getElementById("cancelButton").remove();
+        }
+
+        var snd = new Audio("deps/sound/alertSound.wav"); // buffers automatically when created
+        snd.play();
+
+        function blink(){
+              if(stopBlink){
+                  document.title = shape.appTitle;
+                  return;
+              }
+
+             if(document.title == L("Alert")){
+                 document.title = L(shape.appTitle);
+             } else{
+                 document.title = L("Alert");
+             }
+
+            setTimeout(function(){
+                blink();
+            },1000);
+        }
+
+        blink();
     }
 }
 
