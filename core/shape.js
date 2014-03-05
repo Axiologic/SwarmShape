@@ -80,13 +80,11 @@ function Shape(){
         dialogBox.innerHTML = '<div class="contentModal">' +
                                 '<label class="labelModal">'+message+'</label>' +
                                 '<div class="actionModal">' +
-                                    '<button id="okButton" class="modalButton">Ok</button>' +
-                                    '<button id="cancelButton" class="modalButton">Cancel</button>' +
+                                    '<button id="okButtonModal" class="modalButton">Ok</button>' +
                                 '</div>' +
-                              '</div>'
-                              //'<embed src="deps/sound/alertSound.mp3" autostart="true" hidden="true" loop="false">';
+                              '</div>';
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
-        document.getElementById("okButton").onclick=function(){
+        document.getElementById("okButtonModal").onclick=function(){
             document.getElementById("overlayModal").remove();
             document.getElementById("dialogBox").remove();
             stopBlink = true;
@@ -97,14 +95,14 @@ function Shape(){
 
         };
         if(cancelHandler){
-            document.getElementById("cancelButton").onclick=function(){
+            var cancelButton = '<button id="cancelButtonModal" class="modalButton">Cancel</button>';
+            $('.actionModal').append(cancelButton);
+            document.getElementById("cancelButtonModal").onclick=function(){
                 document.getElementById("overlayModal").remove();
                 document.getElementById("dialogBox").remove();
-                stopBlink = true;;
+                stopBlink = true;
                 cancelHandler();
             };
-        }else{
-            document.getElementById("cancelButton").remove();
         }
 
         var snd = new Audio("deps/sound/alertSound.wav"); // buffers automatically when created
