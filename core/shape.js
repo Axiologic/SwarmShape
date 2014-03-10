@@ -62,7 +62,7 @@ function Shape(){
      lookup(className, pk)        : lookup in persistence after an existing object (with PK)
      */
 
-    this.alert = function(message, okHandler, cancelHandler){
+    this.alert = function(message, okHandler, cancelHandler, soundHandler){
         //look in body, add child,etc...
         var message = message;
         var stopBlink = false;
@@ -104,9 +104,11 @@ function Shape(){
                 cancelHandler();
             };
         }
+        if(soundHandler){
+            var snd = new Audio("deps/sound/alertSound.wav"); // buffers automatically when created
+            snd.play();
 
-        var snd = new Audio("deps/sound/alertSound.wav"); // buffers automatically when created
-        snd.play();
+        }
 
         function blink(){
               if(stopBlink){

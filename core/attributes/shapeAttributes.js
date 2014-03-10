@@ -24,6 +24,17 @@ shape.registerAttribute("shape-visible",{
    "expandHTMLTag":false
 });
 
+shape.registerAttribute("shape-disable",{
+    "applyAttribute":function(dom, newValue, ctrl){
+        if(newValue == undefined || newValue == null || newValue == false || newValue == 0 || newValue == "false"){
+            $(dom).removeAttr('disabled');
+        } else {
+            $(dom).attr('disabled','disabled');
+        }
+    },
+    "expandHTMLTag":false
+});
+
 shape.registerAttribute("shape-event",{
     "applyAttribute" : null,
     "expandHTMLTag"  : true
@@ -96,15 +107,15 @@ shape.registerAttribute("shape-block",{
     "expandHTMLTag"  : false
 });
 
-shape.registerAttribute("shape-disable",{
-    "applyAttribute" : function(dom, newValue, ctrl){
-        var d = $(dom);
-        if(newValue){
-
-        } else {
-            d.removeAttribute("disabled");
-        }
-    },
-    "expandHTMLTag"  : false
-});
+//shape.registerAttribute("shape-disable",{
+//    "applyAttribute" : function(dom, newValue, ctrl){
+//        var d = $(dom);
+//        if(newValue){
+//
+//        } else {
+//            d.removeAttribute("disabled");
+//        }
+//    },
+//    "expandHTMLTag"  : false
+//});
 

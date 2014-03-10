@@ -1,0 +1,62 @@
+/*start modalAlert*/
+#overlayModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 1005;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+}
+.modalDialog{
+
+    left: 1%;
+    margin: 0 auto;
+    min-height: 50px;
+    /*height: 50%;*/
+    padding: 1px;
+    position: fixed;
+    right: 1%;
+    top: 25%;
+    bottom:25%;
+    width: 330px;
+    z-index: 1006;
+}
+.contentModal{
+    background: none repeat scroll 0 0 #03B8E6;
+    border-radius: 5px;
+    padding: 20px 20px 40px;
+    position: relative;
+    text-align: center;
+    min-height: 50px;
+}
+.labelModal{
+    color: #ffffff;
+    font-size: 18px;
+    min-height: 60px;
+    min-width: 210px;
+    position: relative;
+    top: 5px;
+    word-wrap: break-word;
+}
+.actionModal{
+    margin: 0 auto;
+    position: relative;
+    top: 30px;
+    min-width: 150px;
+}
+.modalButton{
+    font-size: 1.1em;
+    margin-right: 3px;
+    min-width: 70px;
+    /*border: none;*/
+
+}
+.verticalCenter{
+    height:100%;
+}
+
+
+/*end modalAlert*/
