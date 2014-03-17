@@ -337,21 +337,34 @@ if (!Object.prototype.bindableProperty) {
                             this.getInnerValues()[prop] = value;
                             this.getOuterValues()[prop] = value;
                         } else {
-                            oldValue = this.getOuterValues()[prop];
-                            if(value){
-                                if(propDesc.transient != true){
-                                    if(value.setDirectOwner){
-                                        value.setDirectOwner(this, prop);
-                                    }
+                            if(propDesc.embed){
+                                oldValue = this.getOuterValues()[prop];
+                                if(value){
+                                        if(value.setDirectOwner){
+                                            value.setDirectOwner(this, prop);
+                                        }
+                                    this.getInnerValues()[prop] = value.getInnerValues();
+                                } else {
+                                    delete this.getInnerValues()[prop];
                                 }
-                                var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
-                                if(encodeFun == undefined){
-                                    encodeFun = shape.getTypeBuilder(value.getClassName()).encode;
-                                }
-                                this.getInnerValues()[prop] = encodeFun(value);
                             } else {
-                                delete this.getInnerValues()[prop];
+                                oldValue = this.getOuterValues()[prop];
+                                if(value){
+                                    if(propDesc.transient != true){
+                                        if(value.setDirectOwner){
+                                            value.setDirectOwner(this, prop);
+                                        }
+                                    }
+                                    var encodeFun = shape.getTypeBuilder(propDesc.type).encode;
+                                    if(encodeFun == undefined){
+                                        encodeFun = shape.getTypeBuilder(value.getClassName()).encode;
+                                    }
+                                    this.getInnerValues()[prop] = encodeFun(value);
+                                } else {
+                                    delete this.getInnerValues()[prop];
+                                }
                             }
+
                             this.getOuterValues()[prop] = value;
                         }
                     }

@@ -44,11 +44,16 @@ function QSClassDescription(declaration, qsName){
 
     function newMember (memberDesc){
         var res;
-        var callFunc = shape.getTypeBuilder(memberDesc.type).initializer;
+        var typeName = memberDesc.type;
+        if(memberDesc.embed){
+            typeName = "EmbeddedObject";
+        }
+
+        var callFunc = shape.getTypeBuilder(typeName).initializer;
         if(callFunc){
             res = callFunc(memberDesc.type,undefined, memberDesc );
         }else{
-            wprint("Can't create object with type "+memberDesc.type);
+            wprint("Can't create object with type "+ memberDesc.type);
         }
         return res;
     }
@@ -118,6 +123,16 @@ function QSClassDescription(declaration, qsName){
         }
         for(var item in expressions){
             ret[item]=expressions[item];
+        }
+        return ret;
+    }
+
+    this.getEmbedFields = function(){
+        var ret = {};
+        for(var item in members){
+            if(members[item].embed){
+                ret[item] = members[item];
+            }
         }
         return ret;
     }
@@ -249,7 +264,7 @@ ShapeUtil.prototype.initSchemaSupport = function(){
 
     Shape.prototype.getClassDescription = function(modelName, ignoreWarning){
         var ret = classRegistry[modelName];
-        if(ignoreWarning==undefined&&!ret){
+        if(ignoreWarning == undefined && !ret){
             wprint("Undefined class " + modelName);
         }
         return ret;

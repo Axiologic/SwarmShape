@@ -1,7 +1,10 @@
 
-function ModelObject(type,args, owner){
+function ModelObject(type,args, owner, isEmbedded){
     var desc = shape.getClassDescription(type);
-    this.isEmbededObject = false;
+    if(!isEmbedded){
+        isEmbedded = false;
+    }
+    this.isEmbededObject = isEmbedded;
     this.repository = {};
     try{
         if(!owner){
@@ -16,7 +19,7 @@ function ModelObject(type,args, owner){
 }
 
 ModelObject.prototype.makeEmbedded = function(owner){
-    this.isEmbededObject = false;
+    this.isEmbededObject = true;
 }
 
 ModelObject.prototype.createMember = function(memberName){

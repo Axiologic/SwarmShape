@@ -8,6 +8,17 @@ shape.registerTypeBuilder("object",{
                     return null;
                 }
             }
+        },
+        factory: function(type,args,memberDesc){
+            var result = {};
+            makeEventEmitter(result);
+            return result;
+        },
+        encode:function(outerObject){
+            return outerObject;
+        },
+        decode:function(member, innerValue){
+            return innerValue;
         }
     }
 );

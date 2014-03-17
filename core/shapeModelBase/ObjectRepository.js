@@ -59,11 +59,9 @@ ShapeUtil.prototype.initRepositories = function(){
     }
 
 
-    Shape.prototype.newEmbedded = function(className){
+    Shape.prototype.newEmbedded = function(typeName){
         var args = ShapeUtil.prototype.mkArgs(arguments,1);
-        var res =  Shape.prototype.newRawObject(className,args);
-        res.__meta.pk = "l://"+res.__meta.__localId;
-        return res;
+        return lookup(typeName, null, true, true, args);
     }
 
     Shape.prototype.newEntity = function(typeName){

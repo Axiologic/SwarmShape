@@ -159,6 +159,16 @@ ShapeUtil.prototype.initPersistences = function () {
         shapePubSub.blockCallBacks();
         generatePC1Level(target, newValues);
         target.__meta.innerValues = newValues;
+
+
+        var embedFields = target.getClassDescription().getEmbedFields();
+        for(var emb in embedFields){
+            if(newValues[emb]){
+                var newEmbed =  shape.newEmbedded(embedFields[emb].type);
+                BasePersistence.prototype.server2local(newEmbed,newValues[emb]);
+                target[emb] = newEmbed;
+            }
+        }
         shapePubSub.releaseCallBacks();
     }
 
