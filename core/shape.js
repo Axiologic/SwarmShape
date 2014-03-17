@@ -62,31 +62,38 @@ function Shape(){
      lookup(className, pk)        : lookup in persistence after an existing object (with PK)
      */
 
+    var dialogCounter = 0;
     this.alert = function(message, okHandler, cancelHandler, soundHandler){
         //look in body, add child,etc...
         var message = message;
         var stopBlink = false;
+        dialogCounter++;
+        var okId = "shape_alert_okButtonModal"+ dialogCounter;
+        var cancelId = "shape_alert_cancel"+ dialogCounter;
+        var dialogId = "shape_alert_dialogId"+ dialogCounter;
+        var overlayId = "shape_alert_overlay"+ dialogCounter;
 
         if(!message){
             message = "Something went wrong!";
         }
         var overLay=document.createElement('div');
-        overLay.setAttribute("id","overlayModal");
+        overLay.setAttribute("id",overlayId);
+        overLay.setAttribute("class","shape_alert_overlay");
         document.getElementsByTagName("body")[0].appendChild(overLay);
         var dialogBox=document.createElement('div');
         dialogBox.setAttribute("class","modalDialog");
-        dialogBox.setAttribute("id","dialogBox");
-        //document.getElementsByTagName("body")[0].appendChild(dialogBox);
+        dialogBox.setAttribute("id",dialogId);
+        //document.getElementsByTagName("body")[0].appendChild(dialogId);
         dialogBox.innerHTML = '<div class="contentModal">' +
                                 '<label class="labelModal">'+message+'</label>' +
                                 '<div class="actionModal">' +
-                                    '<button id="okButtonModal" class="modalButton">Ok</button>' +
+                                    '<button id="'+ okId + '" class="modalButton">Ok</button>' +
                                 '</div>' +
                               '</div>';
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
-        document.getElementById("okButtonModal").onclick=function(){
-            document.getElementById("overlayModal").remove();
-            document.getElementById("dialogBox").remove();
+        document.getElementById(okId).onclick=function(){
+            document.getElementById(overlayId).remove();
+            document.getElementById(dialogId).remove();
             stopBlink = true;
             console.log("okHandler ",okHandler);
             if(okHandler){
@@ -95,11 +102,11 @@ function Shape(){
 
         };
         if(cancelHandler){
-            var cancelButton = '<button id="cancelButtonModal" class="modalButton">Cancel</button>';
+            var cancelButton = '<button id="'+cancelId+'" class="modalButton">Cancel</button>';
             $('.actionModal').append(cancelButton);
-            document.getElementById("cancelButtonModal").onclick=function(){
-                document.getElementById("overlayModal").remove();
-                document.getElementById("dialogBox").remove();
+            document.getElementById(cancelId).onclick=function(){
+                document.getElementById(overlayId).remove();
+                document.getElementById(dialogId).remove();
                 stopBlink = true;
                 cancelHandler();
             };

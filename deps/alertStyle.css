@@ -1,5 +1,5 @@
 /*start modalAlert*/
-#overlayModal {
+.shape_alert_overlay {
     position: fixed;
     top: 0;
     left: 0;
