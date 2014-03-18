@@ -19,6 +19,13 @@ shape.registerCtrl("base/input",{
     },
     toView:function(){
         if(this.model != undefined && this.model != null){
+            if(this.isCheckbox){
+                if(this.model){
+                    $(this.view).attr("checked","true");
+                } else {
+                    $(this.view).removeAttr("checked");
+                }
+            }
             this.view.value = this.model;
             //$(this.view).removeAttr("disabled");
         } else {

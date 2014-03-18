@@ -172,6 +172,8 @@ ShapeUtil.prototype.initPersistences = function () {
         shapePubSub.releaseCallBacks();
     }
 
+    Shape.prototype.server2local = BasePersistence.prototype.server2local;
+
     Shape.prototype.getPersistenceForClass = function (className) {
         var classDesc = shape.getClassDescription(className);
         var persistenceName = "null";
