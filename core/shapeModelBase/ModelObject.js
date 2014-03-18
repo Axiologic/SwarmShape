@@ -55,7 +55,7 @@ ModelObject.prototype.setDirectOwner = function(owner, property){
             owner.__meta.innerValues[property] = this.__meta.innerValues;
             this.__meta.owner = myOwner;
         } else{
-            wprint("It is wrong to assign an embedded object as persistent member of another object!");
+            //wprint("It is wrong to assign an embedded object as persistent member of another object!");
         }
     } else {
         //do nothing

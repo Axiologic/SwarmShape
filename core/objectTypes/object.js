@@ -17,7 +17,7 @@ shape.registerTypeBuilder("object",{
         encode:function(outerObject){
             return outerObject;
         },
-        decode:function(member, innerValue){
+        decode:function(innerValue, member){
             return innerValue;
         }
     }
