@@ -8,6 +8,7 @@ shape.registerCtrl("ViewCacheCtrl",{
 
 
     beginExpansion:function(){
+        this.init();
         var self = this;
         if(!this.fence){
             this.__defineGetter__("computedContext",function(){
@@ -23,8 +24,9 @@ shape.registerCtrl("ViewCacheCtrl",{
         this.fence.acquire();
     },
     init:function(){
-        this.cache = {};
-
+        if(!this.cache){
+            this.cache = {};
+        }
     },
     watchModelChanges:function(){
         this.isCWRoot = true;
