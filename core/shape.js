@@ -136,7 +136,60 @@ function Shape(){
 
         blink();
     }
+
+
+
+    this.popup = function(title, model, context){
+        //look in body, add child,etc...
+        var message = message;
+        var stopBlink = false;
+        dialogCounter++;
+        var closeId = "shape_close_okButtonModal"+ dialogCounter;
+        var dialogId = "shape_popup_dialogId"+ dialogCounter;
+        var dialogBodyId = "shape_popup_dialogBodyId"+ dialogCounter;
+        var overlayId = "shape_alert_overlay"+ dialogCounter;
+
+        if(!model){
+            console.log("Popup model can't be null");
+        }
+        var overLay = document.createElement('div');
+        overLay.setAttribute("id",overlayId);
+        overLay.setAttribute("class","shape_alert_overlay");
+        document.getElementsByTagName("body")[0].appendChild(overLay);
+        var dialogBox=document.createElement('div');
+        dialogBox.setAttribute("class","modalDialog");
+        if(context){
+            dialogBox.setAttribute("shape-context",context);
+        }
+        dialogBox.setAttribute("id",dialogId);
+
+        dialogBox.innerHTML = '<div class="contentModal">' +
+            '<label class="labelModal">' + title + '</label>' +
+            '<div> <div shape-ctrl="DynamicController" class="actionModal" id="' + dialogBodyId + '" shape-context="' + context + '" /> No model</div> </div>' +
+            '<button id="'+ closeId + '" class="modalButton">Close</button>' +
+            '</div>' +
+            '</div>';
+
+        document.getElementsByTagName("body")[0].appendChild(dialogBox);
+        function closeFunction(){
+            document.getElementById(overlayId).remove();
+            document.getElementById(dialogId).remove();
+        };
+
+        document.getElementById(closeId).onclick    = closeFunction;
+        document.getElementById(overlayId).onclick  = closeFunction;
+
+        var dialogBody = document.getElementById(dialogBodyId);
+        shape.expandShapeComponent(dialogBody, null, model);
+
+
+    }
 }
+
+
+
+
+
 
 window.shape = new Shape();
 shape = window.shape;

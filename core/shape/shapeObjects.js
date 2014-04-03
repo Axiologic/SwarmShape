@@ -21,9 +21,15 @@
 
 //public (global) functions
 addChangeWatcher = function(model, chain, handler){
+
+    if(!model){
+        wprint("Can't add change watcher for a null root model, with chain '" + chain +" handler ", handler);
+        return ;
+    }
+
     chain = chain.trim();
     var wrongLink = shape.checkChain(model, chain);
-    if(!wrongLink){
+    if(!wrongLink ){
         return new ChangeWatcher(model, chain, handler);
     }else{
         wprint("Found wrong link (misspelling?) '"+wrongLink+"' from chain '"+chain+"' in model with type '"+ model.getClassName()+"'!");

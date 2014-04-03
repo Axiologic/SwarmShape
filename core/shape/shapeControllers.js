@@ -150,6 +150,17 @@ BaseController.prototype.watchModelChanges = function(){
 
 
 BaseController.prototype.onModelChanged = function(oldModel){
+
+    var debugInfo = "ctrl: " + this.ctrlName;
+
+    if(this.model && this.model.meta){
+        var modelName = this.model.getClassName();
+        debugInfo+= " Type of model:";
+        debugInfo+= modelName;
+    }
+
+    $(this.view).attr("shape-debug",debugInfo);
+
     //console.log("model changed");
     /*if(oldModel !== this.model){
         var oldcw = this.changeWatchers;
@@ -177,8 +188,8 @@ BaseController.prototype.changeModel = function(model){
 
     this.model = model;
     this.modelInitialized = true;
+    this.onModelChanged(oldModel);
     if(this.initialised){
-        this.onModelChanged(oldModel);
         this.toView();
     } else{
         try2InitCtrl(this);
