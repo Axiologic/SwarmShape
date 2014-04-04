@@ -154,20 +154,21 @@ function Shape(){
         }
         var overLay = document.createElement('div');
         overLay.setAttribute("id",overlayId);
-        overLay.setAttribute("class","shape_alert_overlay");
+        overLay.setAttribute("class","shape_popUp_overlay");
         document.getElementsByTagName("body")[0].appendChild(overLay);
         var dialogBox=document.createElement('div');
-        dialogBox.setAttribute("class","modalDialog");
+        dialogBox.setAttribute("class","modalPopUp");
         if(context){
             dialogBox.setAttribute("shape-context",context);
         }
         dialogBox.setAttribute("id",dialogId);
 
-        dialogBox.innerHTML = '<div class="contentModal">' +
-            '<label class="labelModal">' + title + '</label>' +
-            '<div> <div shape-ctrl="DynamicController" class="actionModal" id="' + dialogBodyId + '" shape-context="' + context + '" /> No model</div> </div>' +
-            '<button id="'+ closeId + '" class="modalButton">Close</button>' +
-            '</div>' +
+        dialogBox.innerHTML = '<div class="contentPopUp">' +
+            '<div class="headerPopUp">' +
+            '<label class="headerTitle">' + title + '</label>' +
+            '<button id="'+ closeId + '" class="popUpCloseButton">&times;</button>' +
+            '</div>'+
+            '<div> <div shape-ctrl="DynamicController" class="bodyPopUp" id="' + dialogBodyId + '" shape-context="' + context + '" > No model</div> </div>' +
             '</div>';
 
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
