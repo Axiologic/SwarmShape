@@ -349,6 +349,12 @@ function decode_b64(s){
 
 ShapeUtil.prototype.executionQueue = new ShapeQueue();
 
+//ShapeUtil.prototype.messageChannel =    new MessageChannel();
+
+askExecution = function(){
+    //ShapeUtil.prototype.messageChannel.postMessage(cb);
+    setTimeout(doExecution,0);
+}
 
 function doExecution(){
     var cb = ShapeUtil.prototype.executionQueue.dequeue();
@@ -356,15 +362,17 @@ function doExecution(){
         cb();
         var cb = ShapeUtil.prototype.executionQueue.peek();
         if(cb){
-            setTimeout(doExecution,0);
+            askExecution();
         }
     }
 }
 
+//ShapeUtil.prototype.messageChannel.onmessage = doExecution;
+
 ShapeUtil.prototype.executeNext = function(callBack, priority, length){
     ShapeUtil.prototype.executionQueue.enqueue(callBack, priority, length);
     if(ShapeUtil.prototype.executionQueue.length() == 1){
-        setTimeout(doExecution,0);
+        askExecution();
     }
 }
 

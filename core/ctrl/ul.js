@@ -5,7 +5,7 @@
 function fakeAppender(view, elements, size){
     var currentIndex = 0;
     if(!size){
-      size = 10;
+      size = 30;
   }
 
   function appender(){
@@ -23,12 +23,13 @@ function fakeAppender(view, elements, size){
       }
       view.append(fragment);
       if(currentIndex < length){
-          ShapeUtil.prototype.executeNext(appender, currentIndex/size,length);
+          ShapeUtil.prototype.executeNext(appender, 1,1);
       }
   }
 
     ShapeUtil.prototype.executeNext(appender, 0, 1);
 }
+
 
 var ulCtrl = {
     beginExpansion:function(){
