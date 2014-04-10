@@ -2,7 +2,7 @@ function ShapeQueue() {
     var items = [];
     this.enqueue = function(item, urgency, total) {
 
-        if(total < 5){
+        if(total < 10){
             items.splice(urgency,0,item);
         } else {
             items.push(item);

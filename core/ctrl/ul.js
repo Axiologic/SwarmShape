@@ -4,8 +4,9 @@
 
 function fakeAppender(view, elements, size){
     var currentIndex = 0;
+    var lengthFakeCounter = 1;
     if(!size){
-      size = 30;
+      size = 5;
   }
 
   function appender(){
@@ -22,8 +23,9 @@ function fakeAppender(view, elements, size){
           i++;
       }
       view.append(fragment);
+      lengthFakeCounter++;
       if(currentIndex < length){
-          ShapeUtil.prototype.executeNext(appender, 1,1);
+          ShapeUtil.prototype.executeNext(appender, 1,lengthFakeCounter);
       }
   }
 
