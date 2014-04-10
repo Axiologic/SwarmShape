@@ -14,9 +14,18 @@
     - endF - called at the end of a refresh
  */
 
+
 function DOMCache(){
     var cache = {};
     var ctrlCache = {};
+    var urgency = 0;
+    var refreshQueue = [];
+    var duringRefresh = false;
+    var self  = this;
+
+    var oldColl;
+    var oldColl_length = 0;
+
 
     function getComponentBinder(model, parentCtrl, callBack){
         return function(content){
@@ -27,8 +36,14 @@ function DOMCache(){
                     break;
                 default:
                     wprint("Something is wrong... component should have only one root!!! "+content);
+                    newElem = newElem[0];
             }
-            ctrlCache[model]=shape.expandExistingDOM(newElem, parentCtrl, model);
+
+            ctrlCache[model] = false;
+            urgency++;
+            ShapeUtil.prototype.executeNext(function(){
+                ctrlCache[model] = shape.expandExistingDOM(newElem, parentCtrl, model);
+            }, urgency, oldColl_length);
             cache[model] = newElem;
             callBack(newElem);
         }
@@ -37,18 +52,16 @@ function DOMCache(){
     function createDOMForModel(model, parentCtrl, callBack){
         if(cache[model] != undefined){
             callBack(cache[model]);
-            ctrlCache[model].toView();
+            if(ctrlCache[model]) {
+                ctrlCache[model].toView();
+            }
             return;
         }
+
         shape.getPerfectShape(undefined, model,parentCtrl.getContextName(),getComponentBinder(model, parentCtrl, callBack));
     }
 
-    var refreshQueue = [];
-    var duringRefresh = false;
-    var self  = this;
 
-    var oldColl;
-    var oldColl_length = 0;
 
     //Optimisation: use the Fence class form shapeUtil...
 
@@ -82,15 +95,21 @@ function DOMCache(){
             return;
         }
 
+
+
+        urgency = 0;
+        var elements = [];
         for(var i = 0; i < coll.length; i++){
             var m = coll.getAt(i);
-            createDOMForModel(m,parentCtrl, function (newDom){
+
+            createDOMForModel(m, parentCtrl, function (newDom){
              itemF(newDom);
+             elements.push(newDom);
 
              endCounter--;
 
-             if(endCounter == 0){
-                 endF();
+             if(endCounter == 0 ){
+                 endF(elements);
                  duringRefresh = false;
                  var x = refreshQueue.pop();
                  if(x != undefined){
@@ -99,5 +118,6 @@ function DOMCache(){
              }
             });
         }
+
     };
 }

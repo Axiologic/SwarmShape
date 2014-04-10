@@ -346,3 +346,25 @@ function decode_b64(s){
         return "";
     }
 }
+
+ShapeUtil.prototype.executionQueue = new ShapeQueue();
+
+
+function doExecution(){
+    var cb = ShapeUtil.prototype.executionQueue.dequeue();
+    if(cb){
+        cb();
+        var cb = ShapeUtil.prototype.executionQueue.peek();
+        if(cb){
+            setTimeout(doExecution,0);
+        }
+    }
+}
+
+ShapeUtil.prototype.executeNext = function(callBack, priority, length){
+    ShapeUtil.prototype.executionQueue.enqueue(callBack, priority, length);
+    if(ShapeUtil.prototype.executionQueue.length() == 1){
+        setTimeout(doExecution,0);
+    }
+}
+

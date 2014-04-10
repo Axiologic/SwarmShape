@@ -13,6 +13,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(modelName){
             mapControllersModels[name] = modelName;
         }
+        return functObj;
     }
 
     Shape.prototype.checkTypeModelForController = function(ctrlName, modelName){
@@ -118,6 +119,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if( content == undefined){
             var fileName = shapeUrlRegistry[shapeName];
             if(fileName != undefined) {
+                console.log("Looking for a view " + shapeName);
                 ajaxCall(shapeName,fileName, function(newContent){
                     shapeRegistry[shapeName] = newContent;
                     shapeRegistry[requestedShapeName] = newContent;
@@ -381,7 +383,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
                     ctrl.contextName = context;
                 }
             } else {
-                wprint("Ëxpading multiple times!?");
+                wprint("Expanding multiple times!?");
             }
            //BaseController.prototype.bindAttribute(ctrl, {name:"shape-context", value:context}, domObj, parentCtrl);
         }
