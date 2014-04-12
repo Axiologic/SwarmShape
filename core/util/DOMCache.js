@@ -44,7 +44,6 @@ function DOMCache(){
 
             $(newElem).addClass('shape_loading');
 
-
             ShapeUtil.prototype.executeNext(function(){
                 ctrlCache[model] = shape.expandExistingDOM(newElem, parentCtrl, model);
                 $(newElem).removeClass('shape_loading');
