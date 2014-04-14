@@ -58,7 +58,7 @@ function DOMCache(){
         if(cache[model] != undefined){
             callBack(cache[model]);
             if(ctrlCache[model]) {
-                ctrlCache[model].toView();
+                //ctrlCache[model].toView();
             }
             return;
         }
