@@ -185,6 +185,31 @@ function Shape(){
 
 
     }
+    this.confirmationBox = function(message){
+        var message = message;
+        var stopBlink = false;
+        dialogCounter++;
+
+        var confirmBoxId = "shape_confirmBox_Id"+ dialogCounter;
+
+        var confirmationBox=document.createElement('div');
+        confirmationBox.setAttribute("class","wrapConfirmationBox");
+
+        confirmationBox.setAttribute("id",confirmBoxId);
+
+        confirmationBox.innerHTML = '<div class="contentConfirmBox">' +
+            '<label>' + message + '</label>' +
+            '</div>';
+
+        document.getElementsByTagName("body")[0].appendChild(confirmationBox);
+        setTimeout(function(){
+            document.getElementById(confirmBoxId).remove();
+        }, 2500);
+
+
+
+
+    }
 }
 
 
