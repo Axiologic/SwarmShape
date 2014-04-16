@@ -13,6 +13,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
         if(modelName){
             mapControllersModels[name] = modelName;
         }
+        Shape.prototype.registerCtrlClass(name,functObj);
         return functObj;
     }
 
@@ -60,6 +61,18 @@ ShapeUtil.prototype.initDOMHandling = function(){
         shapeUrlRegistry[viewName] = url;
     }
 
+    /* better implementation?
+    Shape.prototype.getController = function (ctrlName, parentCtrl, isCWRoot){
+        //dprint("Creating controller " + ctrlName);
+
+        var newCtrl = newInstance ("ctrl", ctrlName, ctrlName, parentCtrl);
+        //var newCtrl         = new BaseController(ctrlName, parentCtrl);
+        //var base =  shapeControllers[ctrlName];
+
+        newCtrl.isCWRoot = isCWRoot;
+        return newCtrl;
+    }*/
+
     Shape.prototype.getController = function (ctrlName, parentCtrl, isCWRoot){
         //dprint("Creating controller " + ctrlName);
         var newCtrl         = new BaseController(ctrlName, parentCtrl);
@@ -93,14 +106,14 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function ajaxCall(key, url, callBack){
-        if(shapePubSub.hasChannel(key))
-        {
+        if(shapePubSub.hasChannel(key)){
             var subCall = function(response){
                 shapePubSub.unsub(key, subCall);
                 callBack(response.response);
             };
             shapePubSub.sub(key, subCall);
         }else{
+            lprint("Looking for a view " + key);
             shapePubSub.addChannel(key);
             /*var stack = printStackTrace();*/
             $.get(url, function(response){
@@ -112,25 +125,27 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function getShapeContent(shapeName, callBack){
-        shapeName = shapeName.replace(/\/|\ /,".");
+        //ShapeUtil.prototype.executeNext(function(){
+            shapeName = shapeName.replace(/\/|\ /,".");
 
-        var requestedShapeName = shapeName;
-        var content = shapeRegistry[shapeName];
-        if( content == undefined){
-            var fileName = shapeUrlRegistry[shapeName];
-            if(fileName != undefined) {
-                console.log("Looking for a view " + shapeName);
-                ajaxCall(shapeName,fileName, function(newContent){
-                    shapeRegistry[shapeName] = newContent;
-                    shapeRegistry[requestedShapeName] = newContent;
-                    callBack(newContent);
-                });
-            } else{
-                wprint("Could not find html view:" + shapeName);
+            var requestedShapeName = shapeName;
+            var content = shapeRegistry[shapeName];
+            if( content == undefined){
+                var fileName = shapeUrlRegistry[shapeName];
+                if(fileName != undefined) {
+
+                    ajaxCall(shapeName,fileName, function(newContent){
+                        shapeRegistry[shapeName] = newContent;
+                        shapeRegistry[requestedShapeName] = newContent;
+                        callBack(newContent);
+                    });
+                } else{
+                    wprint("Could not find html view:" + shapeName);
+                }
+            } else {
+                callBack(content);
             }
-        } else {
-            callBack(content);
-        }
+       // }, 1,1);
     }
 
 
@@ -316,9 +331,11 @@ ShapeUtil.prototype.initDOMHandling = function(){
     }
 
     function expandHTMLElement(domObj, parentCtrl, rootModel, expandChilds){
-        var modelChain = $(domObj).attr("shape-model");
-        var ctrlName  = $(domObj).attr("shape-ctrl");
-        var context  = $(domObj).attr("shape-context");
+        var domView = $(domObj);
+
+        var modelChain = domView.attr("shape-model");
+        var ctrlName  = domView.attr("shape-ctrl");
+        var context  = domView.attr("shape-context");
         var isCWRoot = (rootModel != undefined);
         ctrlExist(ctrlName);
 
@@ -342,11 +359,11 @@ ShapeUtil.prototype.initDOMHandling = function(){
 
 
         if(ctrlName == undefined){
-            if( ($(domObj).is('div') || $(domObj).is('span') ) && $(domObj).attr("shape-view") == undefined && !transparentModel){
+            if( (domView.is('div') || domView.is('span') ) && domView.attr("shape-view") == undefined && !transparentModel){
                 ctrlName = "DynamicController";
                 //isCWRoot = true;
             }else{
-                ctrlName =  "base/" + domObj.nodeName.toLowerCase();
+                ctrlName =  "base/" +  domView.get(0).nodeName.toLowerCase();
             }
         }
         var ctrl = shape.getController(ctrlName, parentCtrl, isCWRoot);

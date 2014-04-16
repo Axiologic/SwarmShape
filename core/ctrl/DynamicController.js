@@ -17,6 +17,7 @@ shape.registerCtrl("DynamicController",{
         this.fence.acquire();
     },
     init:function(){
+        console.log("Creating an DynamicController");
         //this.isCWRoot = true;
     },
     watchModelChanges:function(){

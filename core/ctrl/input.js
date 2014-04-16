@@ -16,6 +16,7 @@ shape.registerCtrl("base/input",{
             $(this.view).on("click",this.onChange);
             $(this.view).focus();
         }
+
     },
     toView:function(){
         if(this.model != undefined && this.model != null){

@@ -25,6 +25,7 @@ shape.registerCtrl("ViewCacheCtrl",{
     },
     init:function(){
         if(!this.cache){
+            console.log("Creating an ViewCacheCtrl");
             this.cache = {};
         }
     },
@@ -40,38 +41,49 @@ shape.registerCtrl("ViewCacheCtrl",{
      canDestroyChildren : function(children){
         return false;
     },
+    requestAppender:function(callback){
+        var self = this;
+        var model = this.model;    // don't relay on this.model in callback
+
+        this.cache[this.model] = true;
+        shape.getPerfectShape(undefined, this.model, this.getContextName(), function(newElem){
+            if(self.currentView && self.currentView !== true){
+                self.currentView.css("display","none");
+            }
+            self.currentView = $(newElem);
+            self.cache[model] = self.currentView;
+            $(self.view).append(self.currentView);
+            shape.expandExistingDOM(self.currentView, self, model);
+            callback();
+        });
+    },
     expander:function(callback){
         if(this.model){
-            if(this.lastInserted){
-                this.lastInserted.detach();
+            if(this.currentView){
+                this.currentView.css("display","none");
                 //$(this.view).empty();
             }
 
             var existingView = this.cache[this.model];
             if(existingView){
-                this.lastInserted = existingView;
-                $(this.view).append(existingView);
+                if(existingView !== true){
+                    this.currentView = existingView;
+                    this.currentView.css("display","block");
+                }
+
+                //$(this.view).append(existingView);
                 callback();
             } else {
-                var self = this;
-                var model = this.model;    // don't relay on this.model in callback
-                shape.getPerfectShape(undefined, this.model, this.getContextName(), function(newElem){
-                    self.lastInserted = $(newElem);
-                    $(self.view).append(self.lastInserted);
-                    shape.bindAttributes(self.view, self);
-                    self.cache[model] = self.lastInserted;
-                    callback();
-                });
+                this.requestAppender(callback);
             }
        }
         else{
-                    if(this.view){
-                        if(this.lastInserted){
-                            this.lastInserted.detach();
-                        }
-                    }
-                    callback();
-                }
+            if(this.currentView){
+                //this.currentView.detach();
+                this.currentView.css("display","none");
+            }
+            callback();
+        }
     },
     toView:function(){
         this.beginExpansion();

@@ -37,11 +37,13 @@ function BaseController(ctrlName, parentCtrl){
     this.__waitCounter = 1;
     this.children = {};
     makeBindable(this);
+    /*
     setTimeout(function(){
        if(!this.initialised){
             wprint("Ctrl "+this.ctrlName+" isn't initialiazed! "+this.__waitCounter);
        }
     }.bind(this),3000);
+    */
 }
 
 
@@ -391,6 +393,7 @@ BaseController.prototype.bindDirectAttributes = function(element,parentCtrl){
                 ctrl.bindAttribute(ctrl, this, element, parentCtrl);
             }
         });
+    //TODO:  review this stuff!!!!
     delete element.rememberString;
 }
 

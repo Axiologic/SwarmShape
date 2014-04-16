@@ -32,7 +32,7 @@ function ShapeProfiler(algName){
         }
         ret += " in " + diff + " milliseconds";
         if(!returnString){
-            dprint("Profiling " + name + " " + ret);
+            lprint("Profiling " + name + " " + ret);
         }
         return ret;
     }

@@ -1,41 +1,8 @@
-/**
- obsolete controller for ul, list should be used instead
- */
-
-function fakeAppender(view, elements, size){
-    var currentIndex = 0;
-    var lengthFakeCounter = 1;
-    if(!size){
-      size = 5;
-  }
-
-  function appender(){
-      var arr = [];
-      var length = elements.length;
-      for(var i = 0;i< size && currentIndex < length;i++, currentIndex++){
-          arr.push(elements[currentIndex]);
-      }
-
-      var fragment = document.createDocumentFragment();
-      var i = 0;
-      while(i < arr.length){
-          fragment.appendChild(arr[i]);
-          i++;
-      }
-      view.append(fragment);
-      lengthFakeCounter++;
-      if(currentIndex < length){
-          ShapeUtil.prototype.executeNext(appender, 1,lengthFakeCounter);
-      }
-  }
-
-    ShapeUtil.prototype.executeNext(appender, 0, 1);
-}
 
 
 var ulCtrl = {
     beginExpansion:function(){
-        this.domCache = new DOMCache();
+        this.domCache = new DOMCache2(this);
         var self = this;
         this.expander(function(){
             self.afterExpansion(self);
@@ -46,32 +13,13 @@ var ulCtrl = {
     },
     expander:function(callback){
         var view = $(this.view);
-
-        var selfCtrl = this;
         if(this.model){
-            this.domCache.doRefresh( this.model, this,
-                function(){
-                    //view.detachTemp();
-                    this.profiler = new ShapeProfiler("List");
-                    view.children().each(function(){$(this).detach()});
-                },
-                function(newElement){
-                    this.profiler.step();
-                    //$(newElement).appendTo(view);
-                },
-                function(elements){
-                    this.profiler.stop();
-                    if(elements){
-                        fakeAppender(view, elements);
-                        //view.append(elements);
-                    }
-                    //view.reattach();
-                    callback();
-                }
-            );
-        }else{
-            callback();
+            this.domCache.merge(this.model, view);
+        }else {
+            this.domCache.merge(null);
+            view.empty();
         }
+        callback();
     },
     toView:function(){
         //console.log("UL list: model changed");
