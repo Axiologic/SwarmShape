@@ -1,11 +1,11 @@
-function ShapeQueue() {
+function TaskPriorityQueue() {
     var items = [];
-    this.enqueue = function(item, urgency, total) {
-
-        if(total < 10){
-            items.splice(urgency,0,item);
-        } else {
+    this.enqueue = function(item, urgency) {
+        if(urgency < 5){
             items.push(item);
+            //items.splice(urgency,0,item);
+        }else {
+            items.unshift(item);
         }
     }
 

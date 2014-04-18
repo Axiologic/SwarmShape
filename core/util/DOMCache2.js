@@ -15,13 +15,19 @@
  */
 
 
-function DOMCache2(param_parentCtrl){
+function DOMCache2(param_parentCtrl, priorityList, pageSize){
     var cache = {};
     var ctrlCache = {};
-    var urgency = 0;
+    var urgency = priorityList;
     var oldColl;
-    var oldColl_length = 0;
+
     var parentCtrl = param_parentCtrl;
+    var pagination = shape.newTransient("Pagination", pageSize);
+    this.pagination = pagination;
+
+    if(!pagination.pageSize){
+        pagination.pageSize = 5;
+    }
 
     function getComponentBinder(model,placeHolder, callBack){
         return function(content){
@@ -36,29 +42,36 @@ function DOMCache2(param_parentCtrl){
             }
 
             ctrlCache[model] = false;
-            urgency++;
+            if(!priorityList){
+                urgency++;
+            }
 
             $(newElem).addClass('shape_loading');
 
             ShapeUtil.prototype.executeNext(function(){
                 ctrlCache[model] = shape.expandExistingDOM(newElem, parentCtrl, model);
                 $(newElem).removeClass('shape_loading');
-            }, urgency, oldColl_length);
+            }, urgency);
             cache[model] = newElem;
             callBack(placeHolder, newElem);
         }
     }
 
-    function getCachedViewForModel(model){
-
-        if(cache[model] != undefined){
-            if(ctrlCache[model]) {
+    function getCachedViewForModel(modelItem){
+        var cachedView = cache[modelItem];
+        if(cachedView != undefined){
+            if(ctrlCache[modelItem]) {
                 //ctrlCache[model].toView();
             }
-            return cache[model];
-        }
 
-        return null;
+        } else {
+            var cachedView = $(document.createElement("div"));
+            shape.getPerfectShape(undefined, modelItem, parentCtrl.getContextName(), getComponentBinder(modelItem, cachedView, function(cachedView, expanded){
+                $(cachedView).append(expanded);
+                cache[modelItem] = expanded;
+            }));
+        }
+        return cachedView;
     }
 
     this.merge = function(model, view){
@@ -68,26 +81,13 @@ function DOMCache2(param_parentCtrl){
             return;
         }
 
-        /*if(oldColl != model){
-            view.empty();
-            oldColl = [];
-        }*/
-
-
-        var placeHolder, fromCache ;
-        var inserts = 0;
-        for(var i = 0, len = model.length; i< len; i++){
+        var fromCache ;
+        var maxCount = pagination.pageSize < model.length ? pagination.pageSize : model.length;
+        for(var i = 0, len = maxCount; i< len; i++){
             var childList = view.children();
             var modelItem = model.getAt(i);
 
-            fromCache = getCachedViewForModel(modelItem);
-            placeHolder = null;
-            if(!fromCache){
-                placeHolder = document.createElement("div");
-                fromCache = placeHolder;
-            }
-
-
+           fromCache = getCachedViewForModel(modelItem);
            if(oldColl.length <= i ){
                  view.append(fromCache);
                  oldColl.push(modelItem);
@@ -99,28 +99,32 @@ function DOMCache2(param_parentCtrl){
                        var prev = childList[i-1];
                        $(fromCache).insertAfter(prev);
                    }
-
                    oldColl.splice(i,0,modelItem);
-                   inserts++;
                }
            }
-
-            if(placeHolder){
-                shape.getPerfectShape(undefined, modelItem, parentCtrl.getContextName(), getComponentBinder(modelItem, placeHolder, function(placeHolder, expanded){
-                    $(placeHolder).replaceWith(expanded);
-                    cache[modelItem] = expanded;
-                }));
-            }
         }
+
 
 
         childList = view.children();
         var i = childList.length;
-        oldColl.splice(model.length,oldColl.length - model.length);
-        while(i > model.length){
+        var removeCount = oldColl.length - pagination.pageSize;
+        if(removeCount > 0 ){
+            oldColl.splice(pagination.pageSize,  removeCount);
+        }
+
+        while(i > pagination.pageSize){
             var child = childList[i-1];
             $(child).detach();
             i--;
+        }
+
+        if(oldColl.length < model.length){
+            fromCache = getCachedViewForModel(pagination);
+            view.append(fromCache);
+        } else {
+            fromCache = getCachedViewForModel(pagination);
+            $(fromCache).detach();
         }
     }
 }

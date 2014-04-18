@@ -2,16 +2,41 @@
 
 var ulCtrl = {
     beginExpansion:function(){
-        this.domCache = new DOMCache2(this);
+
         var self = this;
         this.expander(function(){
             self.afterExpansion(self);
         });
     },
     init:function(){
-        this.myView = $(this.view);
+        if(!this.domCache){
+            var view  = $(this.view);
+            var priority        = view.attr("data-shape-param-priority");
+            var defaultElements = view.attr("data-shape-param-elements");
+            if(defaultElements){
+                defaultElements = parseInt(defaultElements);
+            }
+
+            if(!defaultElements || defaultElements < 1){
+                if(detectMobile){
+                    defaultElements = 5;
+                } else {
+                    defaultElements = 10;
+                }
+            }
+
+            this.priorityList = priority;
+            this.defaultElements = defaultElements;
+            this.domCache = new DOMCache2(this, this.priorityList, this.defaultElements);
+            this.on("wantMoreElements",this.moreElements);
+        }
+    },
+    moreElements:function(){
+        this.domCache.pagination.more(this.defaultElements);
+        this.expander();
     },
     expander:function(callback){
+        this.init();
         var view = $(this.view);
         if(this.model){
             this.domCache.merge(this.model, view);
@@ -19,7 +44,9 @@ var ulCtrl = {
             this.domCache.merge(null);
             view.empty();
         }
-        callback();
+        if(callback){
+            callback();
+        }
     },
     toView:function(){
         //console.log("UL list: model changed");

@@ -347,7 +347,7 @@ function decode_b64(s){
     }
 }
 
-ShapeUtil.prototype.executionQueue = new ShapeQueue();
+ShapeUtil.prototype.executionQueue = new TaskPriorityQueue();
 
 //ShapeUtil.prototype.messageChannel =    new MessageChannel();
 
@@ -370,7 +370,7 @@ function doExecution(){
 //ShapeUtil.prototype.messageChannel.onmessage = doExecution;
 
 ShapeUtil.prototype.executeNext = function(callBack, priority, length){
-    ShapeUtil.prototype.executionQueue.enqueue(callBack, priority, length);
+    ShapeUtil.prototype.executionQueue.enqueue(callBack, priority);
     if(ShapeUtil.prototype.executionQueue.length() == 1){
         askExecution();
     }
