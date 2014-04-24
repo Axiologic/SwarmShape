@@ -108,12 +108,13 @@ function DOMCache2(param_parentCtrl, priorityList, pageSize){
 
         childList = view.children();
         var i = childList.length;
-        var removeCount = oldColl.length - pagination.pageSize;
+        var realSize = pagination.pageSize > model.length ? model.length : pagination.pageSize;
+        var removeCount = oldColl.length - realSize;
         if(removeCount > 0 ){
-            oldColl.splice(pagination.pageSize,  removeCount);
+            oldColl.splice(realSize,  removeCount);
         }
 
-        while(i > pagination.pageSize){
+        while(i > realSize){
             var child = childList[i-1];
             $(child).detach();
             i--;
