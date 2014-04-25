@@ -92,8 +92,8 @@ function Shape(){
                               '</div>';
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
         document.getElementById(okId).onclick=function(){
-            document.getElementById(overlayId).remove();
-            document.getElementById(dialogId).remove();
+            $("#"+overlayId).remove();
+            $("#"+dialogId).remove();
             stopBlink = true;
             console.log("okHandler ",okHandler);
             if(okHandler){
@@ -105,8 +105,8 @@ function Shape(){
             var cancelButton = '<button id="'+cancelId+'" class="modalButton">Cancel</button>';
             $('.actionModal').append(cancelButton);
             document.getElementById(cancelId).onclick=function(){
-                document.getElementById(overlayId).remove();
-                document.getElementById(dialogId).remove();
+                $("#"+overlayId).remove();
+                $("#"+dialogId).remove();
                 stopBlink = true;
                 cancelHandler();
             };
@@ -173,8 +173,8 @@ function Shape(){
 
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
         function closeFunction(){
-            document.getElementById(overlayId).remove();
-            document.getElementById(dialogId).remove();
+            $("#"+overlayId).remove();
+            $("#"+dialogId).remove();
         };
 
         document.getElementById(closeId).onclick    = closeFunction;
@@ -203,7 +203,7 @@ function Shape(){
 
         document.getElementsByTagName("body")[0].appendChild(confirmationBox);
         setTimeout(function(){
-            document.getElementById(confirmBoxId).remove();
+            $("#"+confirmBoxId).remove();
         }, 2500);
 
 
