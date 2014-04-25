@@ -74,6 +74,17 @@ function DOMCache2(param_parentCtrl, priorityList, pageSize){
         return cachedView;
     }
 
+    function cleanOrAddMore(model, view){
+        var fromCache ;
+        if(oldColl.length < model.length){
+            fromCache = getCachedViewForModel(pagination);
+            view.append(fromCache);
+        } else {
+            fromCache = getCachedViewForModel(pagination);
+            $(fromCache).detach();
+        }
+    }
+
     this.merge = function(model, view){
         urgency = 0;
         if(!model || !oldColl){
@@ -83,49 +94,45 @@ function DOMCache2(param_parentCtrl, priorityList, pageSize){
 
         var fromCache ;
         var maxCount = pagination.pageSize < model.length ? pagination.pageSize : model.length;
+
         for(var i = 0, len = maxCount; i< len; i++){
             var childList = view.children();
             var modelItem = model.getAt(i);
 
-           fromCache = getCachedViewForModel(modelItem);
-           if(oldColl.length <= i ){
-                 view.append(fromCache);
-                 oldColl.push(modelItem);
-           }else {
-               if(oldColl[i] !== modelItem){
-                   if(i == 0){
-                       view.prepend(fromCache);
-                   } else{
-                       var prev = childList[i-1];
-                       $(fromCache).insertAfter(prev);
-                   }
-                   oldColl.splice(i,0,modelItem);
-               }
-           }
+            fromCache = getCachedViewForModel(modelItem);
+            if(oldColl.length <= i ){
+                view.append(fromCache);
+                oldColl.push(modelItem);
+            }else {
+                if(oldColl[i] !== modelItem){
+                    if(i == 0){
+                        view.prepend(fromCache);
+                    } else{
+                        var prev = childList[i-1];
+                        $(fromCache).insertAfter(prev);
+                    }
+                    oldColl.splice(i,0,modelItem);
+                }
+            }
         }
 
 
+        cleanOrAddMore(model, view);
 
         childList = view.children();
         var i = childList.length;
-        var realSize = pagination.pageSize > model.length ? model.length : pagination.pageSize;
-        var removeCount = oldColl.length - realSize;
+
+        var removeCount = oldColl.length - maxCount;
         if(removeCount > 0 ){
-            oldColl.splice(realSize,  removeCount);
+            oldColl.splice(maxCount - 1,  removeCount);
         }
 
-        while(i > realSize){
+        while(i > maxCount){
             var child = childList[i-1];
             $(child).detach();
             i--;
         }
 
-        if(oldColl.length < model.length){
-            fromCache = getCachedViewForModel(pagination);
-            view.append(fromCache);
-        } else {
-            fromCache = getCachedViewForModel(pagination);
-            $(fromCache).detach();
-        }
+        cleanOrAddMore(model, view);
     }
 }
