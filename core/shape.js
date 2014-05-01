@@ -168,7 +168,7 @@ function Shape(){
             '<label class="headerTitle">' + title + '</label>' +
             '<button id="'+ closeId + '" class="popUpCloseButton">&times;</button>' +
             '</div>'+
-            '<div> <div shape-ctrl="DynamicController" class="bodyPopUp" id="' + dialogBodyId + '" shape-context="' + context + '" > No model</div> </div>' +
+            '<div> <div shape-ctrl="DynamicController" class="bodyPopUp" id="' + dialogBodyId + '" shape-context="' + context + '" ><div class="loadingPreview"></div></div> </div>' +
             '</div>';
 
         document.getElementsByTagName("body")[0].appendChild(dialogBox);
