@@ -12,13 +12,13 @@
 }
 .modalDialog{
 
-    left: 1%;
+    left: 25%;
     margin: 0 auto;
     min-height: 50px;
     /*height: 50%;*/
     padding: 1px;
     position: fixed;
-    right: 1%;
+    right: 25%;
     top: 25%;
     bottom:25%;
     width: 330px;
@@ -31,6 +31,7 @@
     position: relative;
     text-align: center;
     min-height: 50px;
+    z-index:1007;
 }
 .labelModal{
     color: #ffffff;
@@ -52,6 +53,7 @@
     margin-right: 3px;
     min-width: 70px;
     /*border: none;*/
+    z-index:1007;
 
 }
 .verticalCenter{
@@ -75,12 +77,12 @@
 }
 .modalPopUp{
     /*bottom: 25%;*/
-    left: 1%;
+    left: 25%;
     margin: 0 auto;
     min-width: 330px;
     padding: 1px;
     position: fixed;
-    right: 1%;
+    right: 25%;
     top: 25%;
     width: 350px;
     z-index: 1006;
@@ -131,9 +133,9 @@
 /*confirmation style start*/
 .wrapConfirmationBox{
     bottom: 1%;
-    left: 1%;
+    left: 25%;
     position: fixed;
-    right: 1%;
+    right: 25%;
     z-index: 1008;
 }
 .contentConfirmBox{
