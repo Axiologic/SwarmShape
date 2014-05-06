@@ -27,8 +27,9 @@ var ulCtrl = {
 
             this.priorityList = priority;
             this.defaultElements = defaultElements;
-            this.domCache = new DOMCache2(this, this.priorityList, this.defaultElements);
+            this.domCache = new DOMCache3(this, this.priorityList, this.defaultElements);
             this.on("wantMoreElements",this.moreElements);
+            //this.model.on("CollectionChange", toView);
         }
     },
     moreElements:function(){
