@@ -21,6 +21,10 @@ function Shape(){
     ShapeUtil.prototype.initDOMHandling();
     ShapeUtil.prototype.initPersistences();
 
+    this.__config = {};
+    this.config = function(js){
+        this.__config = js;
+    }
 
     function mergeInRepository(repo, key, newValues){
         if(repo[key]==undefined){

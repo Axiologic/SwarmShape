@@ -375,4 +375,3 @@ ShapeUtil.prototype.executeNext = function(callBack, priority, length){
         askExecution();
     }
 }
-

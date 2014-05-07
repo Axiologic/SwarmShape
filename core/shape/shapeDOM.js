@@ -4,6 +4,7 @@ ShapeUtil.prototype.initDOMHandling = function(){
     var mapControllersModels = {};
 
     var shapeUrlRegistry = {};
+    var shapeUrlStrings = {};
     var shapeRegistry = {};
     var shapeAttributes = {};
 
@@ -60,6 +61,15 @@ ShapeUtil.prototype.initDOMHandling = function(){
         viewName = viewName.replace(/\/|\ /,".");
         shapeUrlRegistry[viewName] = url;
     }
+
+
+    Shape.prototype.registerShapeString = function(viewName,value){
+        viewName = viewName.replace(/\/|\ /,".");
+        shapeUrlStrings[viewName] = value;
+        shapeUrlRegistry[viewName] = true;
+    }
+
+
 
     /* better implementation?
     Shape.prototype.getController = function (ctrlName, parentCtrl, isCWRoot){
@@ -131,16 +141,24 @@ ShapeUtil.prototype.initDOMHandling = function(){
             var requestedShapeName = shapeName;
             var content = shapeRegistry[shapeName];
             if( content == undefined){
-                var fileName = shapeUrlRegistry[shapeName];
-                if(fileName != undefined) {
+                var content = shapeUrlStrings[shapeName];
+                if(content){
+                    var newContent = decodeURI(content);
+                    shapeRegistry[shapeName] = newContent;
+                    shapeRegistry[requestedShapeName] = newContent;
+                    callBack(newContent);
+                } else {
+                    var fileName = shapeUrlRegistry[shapeName];
+                    if(fileName != undefined) {
 
-                    ajaxCall(shapeName,fileName, function(newContent){
-                        shapeRegistry[shapeName] = newContent;
-                        shapeRegistry[requestedShapeName] = newContent;
-                        callBack(newContent);
-                    });
-                } else{
-                    wprint("Could not find html view:" + shapeName);
+                        ajaxCall(shapeName,fileName, function(newContent){
+                            shapeRegistry[shapeName] = newContent;
+                            shapeRegistry[requestedShapeName] = newContent;
+                            callBack(newContent);
+                        });
+                    } else{
+                        wprint("Could not find html view:" + shapeName);
+                    }
                 }
             } else {
                 callBack(content);
