@@ -10,6 +10,67 @@
     opacity: 0.9;
     filter: alpha(opacity=90);
 }
+#overLayIncompatibleBrowser{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #E9EEF1;
+    z-index: 1009;
+    bottom: 0;
+
+}
+.contentUnsupported{
+    background: none repeat scroll 0 0 #FFFFFF;
+    height: auto;
+    margin: 1%;
+    padding: 3%;
+
+
+}
+.headerUnsupported{
+    color: #1C1C1C;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+}
+.descriptionUnsuported{
+    color: #3C3C3C;
+    font-size: 17px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+}
+.optionList{
+   list-style: none;
+    width:350px;
+    margin: 0px auto;
+    padding-top: 10px;
+}
+.itemsToPickFrom{
+   display: inline-block;
+    width:110px;
+    margin: 0px auto;
+    margin-top:20px;
+}
+.imgBrowserIcon{
+    background-size: contain ;
+    background-position:center center;
+    height: 80px;
+    width: 80px;
+    margin-left: 15px;
+    border: none;
+}
+.labelBrowser{
+   text-align: center;
+    color: #3B5998;
+    font-weight: bold;
+}
+.itemsToPickFrom:hover .labelBrowser{
+    text-decoration: underline;
+}
 .modalDialog{
 
     left: 25%;
