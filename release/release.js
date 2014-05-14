@@ -22,3 +22,8 @@ function esprint(str, err){
 function eprint(str, err){
     console.log(str,err);
 }
+
+
+function hookConsoleOnMobile(){
+
+}

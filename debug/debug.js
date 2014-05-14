@@ -2,7 +2,7 @@
 function cprint(){
     var str = dumpArgs(arguments);
     console.log(str);
-    ShapeDebugUtil_bufferConsole(str);
+    __ShapeDebugUtil_bufferConsole(str);
 }
 
 function dprint(){
@@ -41,34 +41,35 @@ var shape__linePrint_hasConsole = typeof console; // for IE...
 ShapeDebugUtil_bigBuffer = [];
 
 var browser_console;
-ShapeDebugUtil_bufferConsole = function(){
+__ShapeDebugUtil_bufferConsole = function(){
     var line = "";
     for(var i=0;i<arguments.length;i++){
         line += " ";
         line += arguments[i];
     }
     ShapeDebugUtil_bigBuffer.push(line);
-    if(browser_console){
-        browser_console.log(line);
-    }
+    return line;
 }
+
 
 if (!shape__linePrint_hasConsole  || !console || !console.log || !console.error) {
-    //nothing
-} else {
-    var browser_console = console;
+    console = {log: __ShapeDebugUtil_bufferConsole, error: __ShapeDebugUtil_bufferConsole};
 }
 
-
-console = {log: ShapeDebugUtil_bufferConsole, error: ShapeDebugUtil_bufferConsole};
+hookConsoleOnMobile = function(){
+    console = {log: __ShapeDebugUtil_bufferConsole, error: __ShapeDebugUtil_bufferConsole};
+}
 
 
 function shape__linePrint(prefix, text, fullStack, noConsole){
     var text = shape__prettyStack(fullStack,3)+'>>'+text;
 
-    ShapeDebugUtil_bufferConsole(prefix + text);
+    __ShapeDebugUtil_bufferConsole(prefix + text);
     if(shape__linePrint_hasConsole && !noConsole){
-        console.log(text);
+        if(browser_console){
+            browser_console.log(text);
+        }
+
     }
 }
 var debug_shape_baseUrl;
@@ -80,7 +81,7 @@ function debug__getBaseUrl(){
     return debug_shape_baseUrl;
 }
 
-console.log("xxxxxxxxxxx");
+
 function shape__prettyStack(fullStack, add){
     var options = {e:fullStack};
     var trace = printStackTrace(options);
