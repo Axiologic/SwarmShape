@@ -56,6 +56,8 @@ if (isNaN(objBrMajorVersion)) {
 }
 // Android Mobile
 var isAndroidMobile = objAgent.indexOf('Android') > -1 && objAgent.indexOf('Mozilla/5.0') > -1 && objAgent.indexOf('AppleWebKit') > -1;
+var isIOSMobile = objAgent.indexOf('iPhone') > -1 && objAgent.indexOf('Mozilla/5.0') > -1 && objAgent.indexOf('AppleWebKit') > -1;
+
 var isOperaMobile = objAgent.indexOf('Opera') > -1 && objAgent.indexOf('Android') > -1;
 if(isAndroidMobile || isOperaMobile){
     var androidVersion = parseFloat(objAgent.slice(objAgent.indexOf("Android")+8));
@@ -65,13 +67,16 @@ var regExAppleWebKit = new RegExp(/AppleWebKit\/([\d.]+)/);
 var resultAppleWebKitRegEx = regExAppleWebKit.exec(objAgent);
 var appleWebKitVersion = (resultAppleWebKitRegEx === null ? null : parseFloat(regExAppleWebKit.exec(objAgent)[1]));
 var isAndroidBrowser = isAndroidMobile && appleWebKitVersion !== null && appleWebKitVersion < 537;
+var isiOsBrowser = isIOSMobile && appleWebKitVersion !== null && appleWebKitVersion < 537;
 
+lprint("Browser:" + resultAppleWebKitRegEx + " Agent:" + objAgent);
 
 if((objbrowserName == "Microsoft Internet Explorer" && objBrMajorVersion < 10)
     || (objbrowserName == "Firefox" && objBrMajorVersion < 5)
     || (objbrowserName == "Chrome" && objBrMajorVersion < 14)
     || (objbrowserName == "Safari" && objBrMajorVersion < 5 && !isAndroidBrowser)
     || (isAndroidBrowser && androidVersion < 4)
+    || (isiOsBrowser)
     || ((objbrowserName == "Opera" || navigator.appName == "Opera") && objBrMajorVersion < 21)
     || (!window.WebSocket)
     || (!window.localStorage))

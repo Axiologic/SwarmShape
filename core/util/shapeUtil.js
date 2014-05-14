@@ -12,6 +12,19 @@ function ShapeUtil(){
 
 }
 
+
+
+//pretty print for bindable objects, donn't print __meta stuff
+J = function(obj) {
+    var tmpObj={};
+    for(var v in obj) {
+        if(v != "__meta"){
+            tmpObj[v] = obj[v];
+        }
+    }
+    return JSON.stringify(tmpObj);
+}
+
 window.onerror = function(message, filename, lineno, colno, error){
 
     if(error != null){
@@ -27,109 +40,6 @@ window.onerror = function(message, filename, lineno, colno, error){
 };
 
 
-function cprint(){
-    var str = dumpArgs(arguments);
-    console.log(str);
-    ShapeUtil.prototype.bufferConsole(str);
-}
-
-function dprint(){
-    var str =   dumpArgs(arguments);
-    shape__linePrint("Debug:",str);
-}
-
-function lprint(){
-    var str =   dumpArgs(arguments);
-    shape__linePrint("Log:",str, null, true);
-}
-
-function wprint (){
-    shape__linePrint("Warning:",dumpArgs(arguments));
-}
-
-function esprint(str, err){
-    if(err){
-        shape__linePrint("Error:", str + " : "+err.message,err.stack);
-    } else {
-        shape__linePrint("Error:", str);
-    }
-}
-
-function eprint(str, err){
-    if(err){
-        shape__linePrint("Error:", str + " : " + err.message, err.stack);
-    } else {
-        shape__linePrint("Error:", str);
-    }
-}
-
-
-//pretty print for bindable objects, donn't print __meta stuff
-J = function(obj) {
-    var tmpObj={};
-    for(var v in obj) {
-        if(v != "__meta"){
-            tmpObj[v] = obj[v];
-        }
-    }
-    return JSON.stringify(tmpObj);
-}
-
-//internal stuff
-var shape__linePrint_hasConsole = typeof console; // for IE...
-
-ShapeUtil.prototype.bigBuffer = [];
-ShapeUtil.prototype.bufferConsole = function(){
-    var line = "";
-    for(var i=0;i<arguments.length;i++){
-        line += " ";
-        line += arguments[i];
-    }
-
-    if(ShapeUtil.prototype.haveDebugConsole != false){
-        ShapeUtil.prototype.bigBuffer.push(line);
-    }
-
-}
-
-if (!shape__linePrint_hasConsole  || !console || !console.log || !console.error) {
-    console = {log: ShapeUtil.prototype.bufferConsole, error: ShapeUtil.prototype.bufferConsole};
-}
-
-function shape__linePrint(prefix, text, fullStack, noConsole){
-    var text = shape__prettyStack(fullStack,3)+'>>'+text;
-
-    ShapeUtil.prototype.bufferConsole(prefix + text);
-    if(shape__linePrint_hasConsole && !noConsole){
-       console.log(text);
-    }
-}
-
-function shape__prettyStack(fullStack, add){
-    var options = {e:fullStack};
-    var trace = printStackTrace(options);
-    var strTrace;
-    if(add==undefined){
-        add=2;
-    }
-    if(fullStack == undefined || fullStack == false){
-        for(var i=0;i<trace.length;i++){
-            if(trace[i].indexOf("prettyStack") != -1){
-                strTrace =  trace[i+add];
-                if(strTrace != null){
-                    strTrace = strTrace.replace(getBaseUrl(),"");
-                } else{
-                    strTrace = trace[trace.length -1];
-                }
-            }
-        }
-    }
-    else{
-        var lines = trace[0].split("\n");
-        strTrace =  lines[1] + ":";
-    }
-    return strTrace;
-}
 
 function fragmentToObject(fragment){
     fragment = decodeURI(fragment);
@@ -275,47 +185,6 @@ var counterUUID = 0;
 function generateShapeUUID(){
     counterUUID++;
     return "SHAPE_UUID_" + counterUUID;
-}
-
-function dumpArgs(args){
-    function stringify(o){
-        if(typeof o == "string" || typeof o == "number"){
-            return o;
-        }
-
-        try{
-            return J(o);
-        }   catch(err){
-            if(o && typeof o == "object"){
-                if(o.__meta) {
-                    return  "{"+obj.getClassName + o.getPK()+"}";
-                }
-                var ret = "";
-                var first = true;
-                for(var i in o){
-                    if(first){
-                        first = false;
-                        ret +=  "{ ";
-                    } else {
-                        ret +=  ", ";
-                    }
-                    ret +=  i;
-                    ret +=  ":";
-                    ret +=  stringify(o[i]);
-                }
-                ret+="}";
-                return ret
-            }
-        }
-    }
-
-    var str = "";
-    for(var i=0; i<args.length; i++) {
-        str += " ";
-        str += stringify(args[i]);
-    }
-
-    return str;
 }
 
 
