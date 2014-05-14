@@ -92,3 +92,6 @@ shape.registerCtrl("ViewCacheCtrl",{
         this.beginExpansion();
     }
 });
+
+
+lprint("Initialising Shape controllers...");

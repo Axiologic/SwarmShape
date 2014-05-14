@@ -53,13 +53,15 @@ ShapeDebugUtil_bufferConsole = function(){
     }
 }
 
-console = {log: ShapeDebugUtil_bufferConsole, error: ShapeDebugUtil_bufferConsole};
-
 if (!shape__linePrint_hasConsole  || !console || !console.log || !console.error) {
     //nothing
 } else {
-    var oldConsole = console;
+    var browser_console = console;
 }
+
+
+console = {log: ShapeDebugUtil_bufferConsole, error: ShapeDebugUtil_bufferConsole};
+
 
 function shape__linePrint(prefix, text, fullStack, noConsole){
     var text = shape__prettyStack(fullStack,3)+'>>'+text;
@@ -78,6 +80,7 @@ function debug__getBaseUrl(){
     return debug_shape_baseUrl;
 }
 
+console.log("xxxxxxxxxxx");
 function shape__prettyStack(fullStack, add){
     var options = {e:fullStack};
     var trace = printStackTrace(options);

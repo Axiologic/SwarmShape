@@ -124,3 +124,5 @@ function DbPersistence(spaceName) {
 
 DbPersistence.prototype = new BasePersistence();
 //BasePersistence.prototype.registerPersistence("db", new DbPersistence());
+
+lprint("Initialising basic types and persistence...");

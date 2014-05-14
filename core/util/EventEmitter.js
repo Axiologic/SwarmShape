@@ -54,3 +54,5 @@ createPubSubChannel = function(name){
     makeEventEmitter(o);
     return o;
 }
+
+lprint("Initialising EventEmitters...");

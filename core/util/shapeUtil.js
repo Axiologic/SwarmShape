@@ -244,3 +244,6 @@ ShapeUtil.prototype.executeNext = function(callBack, priority, length){
         askExecution();
     }
 }
+
+
+lprint("Initialising ShapeUtil...");

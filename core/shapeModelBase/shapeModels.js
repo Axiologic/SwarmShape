@@ -341,7 +341,7 @@ ShapeUtil.prototype.initSchemaSupport = function(){
 
 }
 
-
+lprint("Initialising Shape models...");
 
 
 
