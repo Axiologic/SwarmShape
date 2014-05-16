@@ -28,7 +28,7 @@ shape.registerCtrl("button",{
             action = this.shape_action;
         }
 
-        dprint("Click action: ", action);
+        //dprint("Click action: ", action);
         this.emit(new ClickEvent(action, this.model));
     }
 });

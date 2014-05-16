@@ -99,7 +99,7 @@ function Shape(){
             $("#"+overlayId).remove();
             $("#"+dialogId).remove();
             stopBlink = true;
-            console.log("okHandler ",okHandler);
+
             if(okHandler){
                okHandler();
             }
