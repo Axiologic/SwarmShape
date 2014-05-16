@@ -40,6 +40,25 @@ window.onerror = function(message, filename, lineno, colno, error){
 };
 
 
+$(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+
+    // This is the default error handler for ajax request.
+
+    // Extract all the information required to understand.
+    var requestResponse = {
+        url: ajaxSettings.url,
+        method: ajaxSettings.type,
+        data: ajaxSettings.data,
+        httpStatus: jqXHR.status,
+        error: thrownError || jqXHR.statusText,
+        data: ajaxSettings.data
+    };
+
+        // Notify the user so he might not wonder.
+    lprint('Something went wrong with an loading ', J(requestResponse));
+
+});
+
 
 function fragmentToObject(fragment){
     fragment = decodeURI(fragment);
