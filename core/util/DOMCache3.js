@@ -66,8 +66,10 @@ function DOMCache3(param_parentCtrl, priorityList, pageSize){
 
         } else {
             var cachedView = $(document.createElement("div"));
+            cachedView.attr("data_shape_DOMCache3",modelItem.toString());
             shape.getPerfectShape(undefined, modelItem, parentCtrl.getContextName(), getComponentBinder(modelItem, cachedView, function(cachedView, expanded){
-                $(cachedView).append(expanded);
+                cachedView.attr("data_shape_DOMCache3",modelItem.toString());
+                cachedView.append(expanded);
                 cache[modelItem] = expanded;
             }));
         }
@@ -113,38 +115,32 @@ function DOMCache3(param_parentCtrl, priorityList, pageSize){
         var fromCache ;
         var maxCount = pagination.pageSize < model.length ? pagination.pageSize : model.length;
 
+        oldColl = [];
         for(var i = 0, len = maxCount; i< len; i++){
             var childList = view.children();
+            var currentChild = $(childList[i]);
             var modelItem = model.getAt(i);
+            oldColl.push(modelItem);
 
             fromCache = getCachedViewForModel(modelItem);
-            if(oldColl.length <= i ){
+            var customAttrCC = currentChild.attr("data_shape_DOMCache3");
+            if(childList.length <= i ){
                 view.append(fromCache);
-                oldColl.push(modelItem);
-            }else {
-                if(oldColl[i] !== modelItem){
+            } else {
+                if(customAttrCC !== modelItem.toString()){
                     if(i == 0){
                         view.prepend(fromCache);
                     } else{
-                        var prev = childList[i-1];
-                        $(fromCache).insertAfter(prev);
+                        var prev =  $(childList[i-1]);
+                        $(prev).after(fromCache);
                     }
-                    oldColl.splice(i,0,modelItem);
                 }
             }
         }
 
 
-        cleanOrAddMore(model, view);
-
         childList = view.children();
         var i = childList.length;
-
-        var removeCount = oldColl.length - maxCount;
-        if(removeCount > 0 ){
-            oldColl.splice(maxCount - 1,  removeCount);
-        }
-
         while(i > maxCount){
             var child = childList[i-1];
             $(child).detach();
@@ -152,5 +148,7 @@ function DOMCache3(param_parentCtrl, priorityList, pageSize){
         }
 
         cleanOrAddMore(model, view);
+
+
     }
 }
