@@ -36,7 +36,7 @@
     margin: 0 auto;
     text-align: center;
 }
-.descriptionUnsuported{
+.descriptionUnsupported{
     color: #3C3C3C;
     font-size: 17px;
     font-weight: bold;
@@ -48,6 +48,7 @@
     width:350px;
     margin: 0px auto;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 .itemsToPickFrom{
    display: inline-block;
