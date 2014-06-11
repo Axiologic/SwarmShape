@@ -185,7 +185,8 @@ function Shape(){
         document.getElementById(overlayId).onclick  = closeFunction;
 
         var dialogBody = document.getElementById(dialogBodyId);
-        shape.expandShapeComponent(dialogBody, null, model);
+       var ctrl = shape.expandShapeComponent(dialogBody, null, model);
+        ctrl.on("closePopup",closeFunction);
 
 
     }
