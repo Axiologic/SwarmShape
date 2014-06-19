@@ -112,5 +112,6 @@ if ( !app ) {
     }
 }
 
-
+//todo: check for safari, and ios6 in browsers and in phoneGap...
+var shape_workaround_ios6_setTimeout = false;
 
