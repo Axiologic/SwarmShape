@@ -101,18 +101,18 @@ function try2InitCtrl(ctrl){
 
             var debugInfo = "ctrl: " + ctrl.ctrlName;
 
-            if(this.model && this.model.meta){
-                var modelName = this.model.getClassName();
+            if(ctrl.model && ctrl.model.meta){
+                var modelName = ctrl.model.getClassName();
                 debugInfo+= " Type of model:";
                 debugInfo+= modelName;
             }
 
             $(ctrl.view).attr("shape-debug",debugInfo);
 
-            Shape.prototype.checkTypeModelForController(this.ctrlName,modelName);
+            Shape.prototype.checkTypeModelForController(ctrl.ctrlName,modelName);
             ctrl.initialised = true;
             ctrl.init();
-            ctrl.onModelChanged(this.model);
+            ctrl.onModelChanged(ctrl.model);
             ctrl.onViewChanged();
             ctrl.toView();
             if(ctrl.parentCtrl){
@@ -179,23 +179,28 @@ BaseController.prototype.onViewChanged = function(){
 }
 
 BaseController.prototype.changeModel = function(model){
-     var oldModel = this.model;
-    if(this.isCWRoot){
-        if(this.model && this.model!==model){
-            if(this.canDestroyChildren()){
-                this.destroyChildren();
+    try{
+        var oldModel = this.model;
+        if(this.isCWRoot){
+            if(this.model && this.model!==model){
+                if(this.canDestroyChildren()){
+                    this.destroyChildren();
+                }
             }
         }
+
+        this.model = model;
+        this.modelInitialized = true;
+        this.onModelChanged(oldModel);
+        if(this.initialised){
+            this.toView();
+        } else{
+            try2InitCtrl(this);
+        }
+    } catch(err){
+        eprint("Unknown error when changing models", err);
     }
 
-    this.model = model;
-    this.modelInitialized = true;
-    this.onModelChanged(oldModel);
-    if(this.initialised){
-        this.toView();
-    } else{
-        try2InitCtrl(this);
-    }
 }
 BaseController.prototype.beginExpansion = function(){
     this.afterExpansion(this);
