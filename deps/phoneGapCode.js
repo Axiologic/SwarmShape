@@ -28,35 +28,35 @@ if ( appPhoneGap ) {
     }
     if (isAndroidMobile && androidVersion < 4) {
         $(document).ready(function () {
-            var siteLink = "http://192.168.2.140/channels";
-            var marketFirefoxLink = "https://play.google.com/store/apps/details?id=org.mozilla.firefox";
-            var pageSwitchBrowser = document.createElement('div');
-            pageSwitchBrowser.setAttribute("id", 'overLayIncompatibleBrowser');
-            pageSwitchBrowser.innerHTML = '<div class="contentUnsupported">' +
-                '<div class="headerUnsupported">' +
-                '<label class="titleUnsupported">Improve Your Experience</label>' +
-                '</div>' +
-                '<div class="descriptionUnsupported"><label>You\'re using a Android version we don\'t support.</label><label>You can access this application from web by tapping the follow icon, we strongly recommend Firefox Browser.</label></div>' +
-                '<ul class="optionList" style="width: 300px">' +
-                '<li class="itemsToPickFrom" style="display: block"><a href="#null" id="siteLink" target="_system"><img class="imgBrowserIcon" src="img/channel64.png"/><div class="labelBrowser"><label>TheBuzzCenter</label></div></a></li>' +
-                '</ul>' +
-                '<div class="descriptionUnsupported"><label>If you don\'t have Firefox browser installed on your device tap on the follow icon.</label></div>' +
-                '<ul class="optionList" style="width: 300px">' +
-                '<li class="itemsToPickFrom" style="display: block"><a href="#null" id="marketFirefoxLink" target="_system" ><img class="imgBrowserIcon" src="img/firefox-icon.png"/><div class="labelBrowser"><label>Mozilla Firefox</label></div></a></li>' +
-                '</ul>' +
-                '</div>';
-            document.getElementsByTagName("body")[0].appendChild(pageSwitchBrowser);
-            document.getElementById("siteLink").addEventListener("click", function () {
-                openExternalLink(siteLink);
-            }, false);
-            document.getElementById("marketFirefoxLink").addEventListener("click", function () {
-                openExternalLink(marketFirefoxLink);
-            }, false);
-            function openExternalLink(link) {
-                //alert("openExternalLink "+link);
-                navigator.app.loadUrl(link, { openExternal: true });
-                return false;
-            }
+//            var siteLink = "http://192.168.2.140/channels";
+//            var marketFirefoxLink = "https://play.google.com/store/apps/details?id=org.mozilla.firefox";
+//            var pageSwitchBrowser = document.createElement('div');
+//            pageSwitchBrowser.setAttribute("id", 'overLayIncompatibleBrowser');
+//            pageSwitchBrowser.innerHTML = '<div class="contentUnsupported">' +
+//                '<div class="headerUnsupported">' +
+//                '<label class="titleUnsupported">Improve Your Experience</label>' +
+//                '</div>' +
+//                '<div class="descriptionUnsupported"><label>You\'re using a Android version we don\'t support.</label><label>You can access this application from web by tapping the follow icon, we strongly recommend Firefox Browser.</label></div>' +
+//                '<ul class="optionList" style="width: 300px">' +
+//                '<li class="itemsToPickFrom" style="display: block"><a href="#null" id="siteLink" target="_system"><img class="imgBrowserIcon" src="img/channel64.png"/><div class="labelBrowser"><label>TheBuzzCenter</label></div></a></li>' +
+//                '</ul>' +
+//                '<div class="descriptionUnsupported"><label>If you don\'t have Firefox browser installed on your device tap on the follow icon.</label></div>' +
+//                '<ul class="optionList" style="width: 300px">' +
+//                '<li class="itemsToPickFrom" style="display: block"><a href="#null" id="marketFirefoxLink" target="_system" ><img class="imgBrowserIcon" src="img/firefox-icon.png"/><div class="labelBrowser"><label>Mozilla Firefox</label></div></a></li>' +
+//                '</ul>' +
+//                '</div>';
+//            document.getElementsByTagName("body")[0].appendChild(pageSwitchBrowser);
+//            document.getElementById("siteLink").addEventListener("click", function () {
+//                openExternalLink(siteLink);
+//            }, false);
+//            document.getElementById("marketFirefoxLink").addEventListener("click", function () {
+//                openExternalLink(marketFirefoxLink);
+//            }, false);
+//            function openExternalLink(link) {
+//                //alert("openExternalLink "+link);
+//                navigator.app.loadUrl(link, { openExternal: true });
+//                return false;
+//            }
         })
     }
     function onDeviceReady() {
