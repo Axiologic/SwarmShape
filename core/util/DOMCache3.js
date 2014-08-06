@@ -25,6 +25,14 @@ function DOMCache3(param_parentCtrl, priorityList, pageSize){
     var pagination = shape.newTransient("Pagination", pageSize);
     this.pagination = pagination;
 
+    this.clearCache = function(){
+         for(var v in cache ){
+             delete cache[v];
+             ctrlCache[v].free();
+             delete ctrlCache[v];
+         }
+    }
+
     if(!pagination.pageSize){
         pagination.pageSize = 5;
     }

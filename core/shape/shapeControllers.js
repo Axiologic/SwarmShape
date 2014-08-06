@@ -55,6 +55,9 @@ BaseController.prototype.getCtxtCtrl = function(){
     return this.ctxtCtrl;
 }
 
+
+
+
 /*
  hasTransparentModel - doesn't have his own model,inherits the same wih he first non transparentModel
     isCWRoot = all change watchers will be relative to this ctrl, breaks the whole chain from context controller
@@ -173,6 +176,9 @@ BaseController.prototype.onModelChanged = function(oldModel){
         }
     } */
 }
+
+
+
 
 BaseController.prototype.onViewChanged = function(){
 
@@ -410,4 +416,23 @@ BaseController.prototype.remember = function (str, element){
     var orig  = element.rememberString[str];
     element.rememberString[str] = str;
     return orig;
+}
+
+
+BaseController.prototype.onViewNameChanged = function(){
+    this.onViewChanged();
+    this.toView(true);
+    return null;
+}
+
+BaseController.prototype.onContextChanged = function(){
+    this.onViewChanged();
+    this.toView(true);
+    return null;
+}
+
+
+BaseController.prototype.free = function(){
+    this.destroyChildren();
+    return null;
 }

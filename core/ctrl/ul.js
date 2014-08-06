@@ -2,7 +2,6 @@
 
 var ulCtrl = {
     beginExpansion:function(){
-
         var self = this;
         this.expander(function(){
             self.afterExpansion(self);
@@ -49,9 +48,11 @@ var ulCtrl = {
             callback();
         }
     },
-    toView:function(){
-        //console.log("UL list: model changed");
+    toView:function(clearCache){
         var self = this;
+        if(clearCache){
+            this.domCache.clearCache();
+        }
         this.expander(function(){
             self.afterChildExpansion(self);
         });

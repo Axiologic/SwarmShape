@@ -13,7 +13,6 @@ function ShapeUtil(){
 }
 
 
-
 //pretty print for bindable objects, donn't print __meta stuff
 J = function(obj) {
     var tmpObj={};

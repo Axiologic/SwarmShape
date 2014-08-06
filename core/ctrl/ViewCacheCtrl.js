@@ -34,6 +34,9 @@ shape.registerCtrl("ViewCacheCtrl",{
         var self = this;
         this.parentCtrl.addChangeWatcher(this.chain,
             function(changedModel, modelProperty, value){
+                if(value == null){
+                    this.clearCache();
+                }
                 self.changeModel(value);
             }
         );
@@ -85,7 +88,15 @@ shape.registerCtrl("ViewCacheCtrl",{
             callback();
         }
     },
-    toView:function(){
+    clearCache:function(){
+        for(var v in this.cache){
+            delete this.cache[v];
+        }
+    },
+    toView:function(clearCache){
+        if(clearCache){
+            //this.clearCache();
+        }
         this.beginExpansion();
     },
     autoExpand:function(){

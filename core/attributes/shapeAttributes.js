@@ -46,7 +46,12 @@ shape.registerAttribute("shape-ctrl",{
 });
 
 shape.registerAttribute("shape-view",{
-    "applyAttribute" : null,
+    "applyAttribute" : function(dom, newValue, ctrl){
+    if(newValue){
+        ctrl.viewtName = newValue;
+    }
+    ctrl.onViewNameChanged();
+},
     "expandHTMLTag"  : true
 });
 
@@ -55,18 +60,17 @@ shape.registerAttribute("shape-model",{
     "expandHTMLTag"  : true
 });
 
-/*
+
 shape.registerAttribute("shape-context",{
     "applyAttribute" : function(dom, newValue, ctrl){
         if(newValue){
             ctrl.contextName = newValue;
         }
-
-        ctrl.autoExpand();
+        ctrl.onContextChanged();
     },
     "expandHTMLTag"  : true
 });
-*/
+
 
 shape.registerAttribute("shape-value",{
     "applyAttribute" : function(dom, newValue, ctrl){
