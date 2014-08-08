@@ -52,6 +52,8 @@ var ulCtrl = {
         var self = this;
         if(clearCache){
             this.domCache.clearCache();
+            var view = $(this.view);
+            view.empty();
         }
         this.expander(function(){
             self.afterChildExpansion(self);
