@@ -7,11 +7,14 @@ shape.registerCtrl("base/input",{
     isCheckbox:false,
     init:function(){
 
-        this.isCheckbox = ($(this.view).attr("type") == "checkbox");
+        this.isCheckbox = ($(this.view).attr("type") == "checkbox" || $(this.view).attr("type") == "radio");
         this.isOnKey = ($(this.view).attr("shape-param") == "eachKey");
         if(!this.isOnKey){
             $(this.view).on("change",this.onChange);
-        } else {
+        }else if(this.isCheckbox) {
+            $(this.view).on("click",this.onChange);
+        }
+        else {
             $(this.view).keyup(this.onChange);
             $(this.view).on("click",this.onChange);
             $(this.view).focus();
@@ -26,14 +29,18 @@ shape.registerCtrl("base/input",{
                 } else {
                     $(this.view).removeAttr("checked");
                 }
+                this.view.value = this.model;
             }
-            this.view.value = this.model;
+            if(this.view.value != this.model){
+                this.view.value = this.model;
+            }
+
             //$(this.view).removeAttr("disabled");
         } else {
             //$(this.view).attr("disabled","disabled");
         }
     },
-    onChange:function(){
+    onChange:function(event){
         if(this.isCheckbox){
             this.model = ! this.model;
         } else{
