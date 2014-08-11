@@ -27,8 +27,10 @@ function DOMCache3(param_parentCtrl, priorityList, pageSize){
 
     this.clearCache = function(){
          for(var v in cache ){
+             if(ctrlCache[v]) {
+                 ctrlCache[v].free();
+             }
              delete cache[v];
-             ctrlCache[v].free();
              delete ctrlCache[v];
          }
     }

@@ -5,8 +5,6 @@
  */
 
 shape.registerCtrl("ViewCacheCtrl",{
-
-
     beginExpansion:function(){
         this.init();
         var self = this;
@@ -35,7 +33,7 @@ shape.registerCtrl("ViewCacheCtrl",{
         this.parentCtrl.addChangeWatcher(this.chain,
             function(changedModel, modelProperty, value){
                 if(value == null){
-                    this.clearCache();
+                    //this.clearCache();
                 }
                 self.changeModel(value);
             }
@@ -90,13 +88,13 @@ shape.registerCtrl("ViewCacheCtrl",{
     },
     clearCache:function(){
         for(var v in this.cache){
+            this.cache[v].css("display","none");
+            this.cache[v].remove();
             delete this.cache[v];
         }
+        this.currentView = undefined;
     },
     toView:function(clearCache){
-        if(clearCache){
-            //this.clearCache();
-        }
         this.beginExpansion();
     },
     autoExpand:function(){

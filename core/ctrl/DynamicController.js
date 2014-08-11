@@ -9,6 +9,11 @@ shape.registerCtrl("DynamicController",{
             });
 
             this.fence = new PropertiesFence(this, ["model", "view", "computedContext"], function(){
+                var contextName = self.getContextName();
+                if(self.savedContextName != contextName){
+                    //self.clearCache();
+                    self.savedContextName = contextName;
+                }
                 self.expander(function(){
                     self.afterExpansion(self);
                 });
@@ -56,7 +61,7 @@ shape.registerCtrl("DynamicController",{
             callback();
         }
     },
-    toView:function(){
+    toView:function(clearCache){
         this.beginExpansion();
     },
     autoExpand:function(){
